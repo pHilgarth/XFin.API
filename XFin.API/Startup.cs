@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using XFin.API.DAL.DbContexts;
 
 namespace XFin.API
 {
@@ -21,6 +23,11 @@ namespace XFin.API
             services.AddCors();
 
             services.AddControllers();
+
+            services.AddDbContextPool<XFinDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("XFinDb"));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
