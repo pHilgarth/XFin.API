@@ -18,6 +18,8 @@ namespace XFin.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
             services.AddControllers();
         }
 
@@ -32,6 +34,8 @@ namespace XFin.API
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            app.UseCors(options => options.AllowAnyOrigin());
 
             app.UseRouting();
 
