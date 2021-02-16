@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using XFin.API.DAL.DbContexts;
+using XFin.API.DAL.Repositories;
 
 namespace XFin.API
 {
@@ -28,6 +29,8 @@ namespace XFin.API
             {
                 options.UseSqlServer(Configuration.GetConnectionString("XFinDb"));
             });
+
+            services.AddScoped<IDepositorRepository, DepositorRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
