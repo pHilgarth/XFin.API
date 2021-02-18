@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Models;
 using XFin.API.DAL.DbContexts;
 
 namespace XFin.API.DAL.Repositories
@@ -22,9 +23,55 @@ namespace XFin.API.DAL.Repositories
          * Public Members
          * 
         *************************************************************************************************************/
-        public List<Depositor> GetDepositors(bool includeAccounts)
+        public List<DepositorModel> GetDepositors(bool includeAccounts)
         {
-            var depositors = context.Depositors.Include(d => d.BankAccounts).ToList();
+            var depositors = new List<DepositorModel>();
+
+            if (includeAccounts)
+            {
+                foreach (var depositor in context.Depositors.Include(d => d.BankAccounts))
+                {
+                    var depositorModel = new DepositorModel
+                    {
+                        Id              = depositor.Id,
+                        Name            = depositor.Name,
+                        BankAccounts    = new List<BankAccountModel>()
+                    };
+
+                    foreach (var bankAccount in depositor.BankAccounts)
+                    {
+                        depositorModel.BankAccounts.Add(
+                            new BankAccountModel
+                            {
+                                Id              = bankAccount.Id,
+                                DepositorId     = bankAccount.DepositorId,
+                                Balance         = bankAccount.Balance,
+                                AccountNumber   = bankAccount.AccountNumber,
+                                Iban            = bankAccount.Iban,
+                                Bic             = bankAccount.Bic,
+                                Bank            = bankAccount.Bank,
+                                AccountType     = bankAccount.AccountType
+                            });
+                    }
+
+                    depositors.Add(depositorModel);
+
+                }
+
+                return depositors;
+            }
+            else
+            {
+                foreach (var depositor in context.Depositors.ToList<Depositor>())
+                {
+                    depositors.Add(
+                        new DepositorModel
+                        {
+                            Id      = depositor.Id,
+                            Name    = depositor.Name
+                        });
+                }
+            }
 
             return depositors;
         }

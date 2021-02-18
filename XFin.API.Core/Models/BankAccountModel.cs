@@ -1,38 +1,30 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace XFin.API.Core.Entities
+namespace XFin.API.Core.Models
 {
-    public class BankAccount
+    public class BankAccountModel
     {
         /*************************************************************************************************************
          * 
          * Public Members
          * 
         *************************************************************************************************************/
-        [Key]
         public int Id { get; set; }
 
-        [ForeignKey("DepositorId")]
         public int DepositorId { get; set; }
-        public Depositor Depositor { get; set; }
 
-        [Required]
         public decimal Balance { get; set; }
 
-        [Required]
         public string AccountNumber { get; set; }
 
-        [Required]
         public string Iban { get; set; }
 
-        [Required]
         public string Bic { get; set; }
 
-        [Required]
         public string Bank { get; set; }
 
-        [Required]
         public string AccountType { get; set; }
     }
 }

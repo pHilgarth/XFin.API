@@ -9,7 +9,7 @@ using XFin.API.DAL.DbContexts;
 namespace XFin.API.DAL.Migrations
 {
     [DbContext(typeof(XFinDbContext))]
-    [Migration("20210216212558_InitialMigration")]
+    [Migration("20210218190151_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

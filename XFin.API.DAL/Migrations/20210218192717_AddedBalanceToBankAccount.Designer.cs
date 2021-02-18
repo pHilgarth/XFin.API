@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XFin.API.DAL.DbContexts;
 
 namespace XFin.API.DAL.Migrations
 {
     [DbContext(typeof(XFinDbContext))]
-    partial class XFinDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210218192717_AddedBalanceToBankAccount")]
+    partial class AddedBalanceToBankAccount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
