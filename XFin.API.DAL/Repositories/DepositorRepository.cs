@@ -18,6 +18,7 @@ namespace XFin.API.DAL.Repositories
         {
             this.context = context;
         }
+
         /*************************************************************************************************************
          * 
          * Public Members
@@ -27,17 +28,17 @@ namespace XFin.API.DAL.Repositories
         {
             var depositors = new List<DepositorModel>();
 
-            if (includeAccounts)
+            foreach (var depositor in context.Depositors.Include(d => d.BankAccounts))
             {
-                foreach (var depositor in context.Depositors.Include(d => d.BankAccounts))
+                var depositorModel = new DepositorModel
                 {
-                    var depositorModel = new DepositorModel
-                    {
-                        Id              = depositor.Id,
-                        Name            = depositor.Name,
-                        BankAccounts    = new List<BankAccountModel>()
-                    };
+                    Id              = depositor.Id,
+                    Name            = depositor.Name,
+                    BankAccounts    = new List<BankAccountModel>()
+                };
 
+                if (includeAccounts)
+                {
                     foreach (var bankAccount in depositor.BankAccounts)
                     {
                         depositorModel.BankAccounts.Add(
@@ -53,33 +54,61 @@ namespace XFin.API.DAL.Repositories
                                 AccountType     = bankAccount.AccountType
                             });
                     }
-
-                    depositors.Add(depositorModel);
-
                 }
 
-                return depositors;
+                depositors.Add(depositorModel);
+
+            }
+
+            return depositors.Count != 0 ? depositors : null;
+        }
+
+        public DepositorModel GetDepositor(int id, bool includeAccounts)
+        {
+            var depositor = context.Depositors.Where(d => d.Id == id).Include(d => d.BankAccounts).FirstOrDefault();
+
+            if (depositor != null)
+            {
+                var depositorModel = new DepositorModel
+                {
+                    Id = depositor.Id,
+                    Name = depositor.Name,
+                    BankAccounts = new List<BankAccountModel>()
+                };
+
+                if (includeAccounts)
+                {
+                    foreach (var bankAccount in depositor.BankAccounts)
+                    {
+                        depositorModel.BankAccounts.Add(
+                            new BankAccountModel
+                            {
+                                Id = bankAccount.Id,
+                                DepositorId = bankAccount.DepositorId,
+                                Balance = bankAccount.Balance,
+                                AccountNumber = bankAccount.AccountNumber,
+                                Iban = bankAccount.Iban,
+                                Bic = bankAccount.Bic,
+                                Bank = bankAccount.Bank,
+                                AccountType = bankAccount.AccountType
+                            });
+                    }
+                }
+
+                return depositorModel;
             }
             else
             {
-                foreach (var depositor in context.Depositors.ToList<Depositor>())
-                {
-                    depositors.Add(
-                        new DepositorModel
-                        {
-                            Id      = depositor.Id,
-                            Name    = depositor.Name
-                        });
-                }
+                return null;
             }
-
-            return depositors;
         }
+
         /*************************************************************************************************************
          * 
          * Private Members
          * 
         *************************************************************************************************************/
         private readonly XFinDbContext context;
+
     }
 }

@@ -16,6 +16,7 @@ namespace XFin.API.Controllers
         {
             this.repo = repo;
         }
+
         /*************************************************************************************************************
          * 
          * Public Members
@@ -24,8 +25,19 @@ namespace XFin.API.Controllers
         [HttpGet()]
         public IActionResult GetDepositors(bool includeAccounts = false)
         {
-            return Ok(repo.GetDepositors(includeAccounts));
+            var depositors = repo.GetDepositors(includeAccounts);
+
+            return depositors != null ? Ok(depositors) : NoContent();
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetDepositor(int id, bool includeAccounts = false)
+        {
+            var depositor = repo.GetDepositor(id, includeAccounts);
+
+            return depositor != null ? Ok(depositor) : NotFound($"Depositor with id {id} not found!");
+        }
+
         /*************************************************************************************************************
          * 
          * Private Members
