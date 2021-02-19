@@ -35,7 +35,7 @@ namespace XFin.API.Controllers
         {
             var depositor = repo.GetDepositor(id, includeAccounts);
 
-            return depositor != null ? Ok(depositor) : NotFound($"Depositor with id {id} not found!");
+            return depositor != null ? Ok(depositor) : NotFound();
         }
 
         /*************************************************************************************************************
