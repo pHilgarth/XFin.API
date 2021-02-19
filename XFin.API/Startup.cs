@@ -23,8 +23,7 @@ namespace XFin.API
         {
             services.AddCors();
 
-            services.AddControllers(setupAction =>
-                setupAction.ReturnHttpNotAcceptable = true);
+            services.AddControllers(setupAction => setupAction.ReturnHttpNotAcceptable = true);
 
             services.AddDbContextPool<XFinDbContext>(options =>
             {
