@@ -30,7 +30,7 @@ namespace XFin.API
                 options.UseSqlServer(Configuration.GetConnectionString("XFinDb"));
             });
 
-            services.AddScoped<IDepositorRepository, DepositorRepository>();
+            services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -6,14 +6,9 @@ namespace XFin.API.Core.Models
 {
     public class BankAccountModel
     {
-        /*************************************************************************************************************
-         * 
-         * Public Members
-         * 
-        *************************************************************************************************************/
         public int Id { get; set; }
 
-        public int DepositorId { get; set; }
+        public int AccountHolderId { get; set; }
 
         public decimal Balance { get; set; }
 
