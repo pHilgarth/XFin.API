@@ -9,21 +9,11 @@ namespace XFin.API.DAL.Repositories
 {
     public class AccountHolderRepository : IAccountHolderRepository
     {
-        /*************************************************************************************************************
-         * 
-         * Constructors
-         * 
-        *************************************************************************************************************/
         public AccountHolderRepository(XFinDbContext context)
         {
             this.context = context;
         }
 
-        /*************************************************************************************************************
-         * 
-         * Public Members
-         * 
-        *************************************************************************************************************/
         public List<AccountHolderModel> GetAccountHolders(bool includeAccounts)
         {
             return new List<AccountHolderModel>();
@@ -105,11 +95,6 @@ namespace XFin.API.DAL.Repositories
             //}
         }
 
-        /*************************************************************************************************************
-         * 
-         * Private Members
-         * 
-        *************************************************************************************************************/
         private readonly XFinDbContext context;
 
     }

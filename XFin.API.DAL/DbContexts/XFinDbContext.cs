@@ -240,24 +240,6 @@ namespace XFin.API.DAL.DbContexts
                     CounterPartTransactionToken = "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2"
                 });
 
-            modelBuilder.Entity<CounterPartTransaction>().HasData(
-                new CounterPartTransaction
-                {
-                    Id = 1
-                },
-                new CounterPartTransaction
-                {
-                    Id = 2
-                },
-                new CounterPartTransaction
-                {
-                    Id = 3
-                },
-                new CounterPartTransaction
-                {
-                    Id = 4
-                });
-
             base.OnModelCreating(modelBuilder);
         }
     }
