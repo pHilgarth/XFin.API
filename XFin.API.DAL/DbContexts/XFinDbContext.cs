@@ -9,7 +9,6 @@ namespace XFin.API.DAL.DbContexts
     {
         public XFinDbContext(DbContextOptions<XFinDbContext> options) : base(options) { }
 
-
         public DbSet<AccountHolder> AccountHolders { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
 

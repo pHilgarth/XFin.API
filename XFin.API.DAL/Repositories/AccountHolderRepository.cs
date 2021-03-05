@@ -33,7 +33,9 @@ namespace XFin.API.DAL.Repositories
 
             foreach (var accountHolder in accountHolders)
             {
-                var bankAccounts = context.BankAccounts.Where(b => b.AccountHolderId == accountHolder.Id).Include(b => b.BankAccountIdentifier);
+                var bankAccounts = context.BankAccounts.Where(b => b.AccountHolderId == accountHolder.Id)
+                    .Include(b => b.BankAccountIdentifier)
+                    .Include(b => b.Transactions);
 
                 foreach (var bankAccount in bankAccounts)
                 {
@@ -88,7 +90,7 @@ namespace XFin.API.DAL.Repositories
 
         private string CalculateAccountNumber(string iban)
         {
-            return iban.Substring(iban.Length - 12);
+            return iban.Substring(iban.Length - 10).TrimStart('0');
         }
 
         public AccountHolderModel GetAccountHolder(int id, bool includeAccounts)
@@ -140,7 +142,7 @@ namespace XFin.API.DAL.Repositories
                 (t.Date.Year < year || t.Date.Year == year && t.Date.Month <= month));
 
             var expenses = bankAccount.Transactions.Where(
-                t => t.Amount > 0m &&
+                t => t.Amount < 0m &&
                 (t.Date.Year < year || t.Date.Year == year && t.Date.Month <= month));
 
             var revenuesTotal = revenues.Select(r => r.Amount).Sum();
