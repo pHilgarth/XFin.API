@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
@@ -14,13 +15,44 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
         }
 
-        public List<AccountHolderModel> GetAccountHolders(bool includeAccounts)
+        public List<AccountHolderModel> GetAccountHolders(bool includeAccounts, int year, int month)
         {
-            return new List<AccountHolderModel>();
-            //var accountHolders = new List<AccountHolderModel>();
+            var accountHolders = new List<AccountHolderModel>();
 
-            //foreach (var accountHolder in context.AccountHolders.Include(d => d.BankAccounts))
-            //{
+            foreach (var accountHolder in context.AccountHolders)
+            {
+                var accountHolderModel = new AccountHolderModel
+                {
+                    Id = accountHolder.Id,
+                    Name = accountHolder.Name,
+                    BankAccounts = new List<BankAccountModel>()
+                };
+
+                accountHolders.Add(accountHolderModel);
+            }
+
+            foreach (var accountHolder in accountHolders)
+            {
+                var bankAccounts = context.BankAccounts.Where(b => b.AccountHolderId == accountHolder.Id).Include(b => b.BankAccountIdentifier);
+
+                foreach (var bankAccount in bankAccounts)
+                {
+                    accountHolder.BankAccounts.Add(new BankAccountModel
+                    {
+                        Id = bankAccount.Id,
+                        AccountHolderId = bankAccount.AccountHolderId,
+                        Balance = CalculateBalance(bankAccount, year, month),
+                        AccountNumber = CalculateAccountNumber(bankAccount.BankAccountIdentifierIban),
+                        Iban = bankAccount.BankAccountIdentifierIban,
+                        Bic = bankAccount.BankAccountIdentifier.Bic,
+                        Bank = bankAccount.Bank,
+                        AccountType = bankAccount.AccountType
+                    });
+                }
+            }
+
+            return accountHolders;
+
             //    var accountHolderModel = new AccountHolderModel
             //    {
             //        Id              = accountHolder.Id,
@@ -52,6 +84,11 @@ namespace XFin.API.DAL.Repositories
             //}
 
             //return accountHolders.Count != 0 ? accountHolders : null;
+        }
+
+        private string CalculateAccountNumber(string iban)
+        {
+            return iban.Substring(iban.Length - 12);
         }
 
         public AccountHolderModel GetAccountHolder(int id, bool includeAccounts)
@@ -93,6 +130,23 @@ namespace XFin.API.DAL.Repositories
             //{
             //    return null;
             //}
+        }
+
+        private decimal CalculateBalance(BankAccount bankAccount, int year, int month)
+        {
+
+            var revenues = bankAccount.Transactions.Where(
+                t => t.Amount > 0m &&
+                (t.Date.Year < year || t.Date.Year == year && t.Date.Month <= month));
+
+            var expenses = bankAccount.Transactions.Where(
+                t => t.Amount > 0m &&
+                (t.Date.Year < year || t.Date.Year == year && t.Date.Month <= month));
+
+            var revenuesTotal = revenues.Select(r => r.Amount).Sum();
+            var expensesTotal = Math.Abs(expenses.Select(e => e.Amount).Sum());
+
+            return revenuesTotal - expensesTotal;
         }
 
         private readonly XFinDbContext context;

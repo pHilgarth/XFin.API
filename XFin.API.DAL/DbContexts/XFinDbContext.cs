@@ -82,7 +82,7 @@ namespace XFin.API.DAL.DbContexts
                 {
                     Id = 1,
                     AccountHolderId = 1,
-                    BankAccountIban = "DE21654913200071808000",
+                    BankAccountIdentifierIban = "DE21654913200071808000",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
                     AccountType = "Konto"
                 },
@@ -90,7 +90,7 @@ namespace XFin.API.DAL.DbContexts
                 {
                     Id = 2,
                     AccountHolderId = 1,
-                    BankAccountIban = "DE21654913200071808019",
+                    BankAccountIdentifierIban = "DE21654913200071808019",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
                     AccountType = "Konto"
                 },
@@ -98,7 +98,7 @@ namespace XFin.API.DAL.DbContexts
                 {
                     Id = 3,
                     AccountHolderId = 1,
-                    BankAccountIban = "DE21654913200071808400",
+                    BankAccountIdentifierIban = "DE21654913200071808400",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
                     AccountType = "Sparkonto"
                 },
@@ -106,7 +106,7 @@ namespace XFin.API.DAL.DbContexts
                 {
                     Id = 4,
                     AccountHolderId = 2,
-                    BankAccountIban = "DE66654913200027911004",
+                    BankAccountIdentifierIban = "DE66654913200027911004",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
                     AccountType = "Girokonto"
                 },
@@ -114,7 +114,7 @@ namespace XFin.API.DAL.DbContexts
                 {
                     Id = 5,
                     AccountHolderId = 2,
-                    BankAccountIban = "DE66654913200027911403",
+                    BankAccountIdentifierIban = "DE66654913200027911403",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
                     AccountType = "Sparkonto"
                 });
