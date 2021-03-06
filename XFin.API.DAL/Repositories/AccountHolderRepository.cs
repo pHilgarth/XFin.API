@@ -15,7 +15,7 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
         }
 
-        public List<AccountHolderModel> GetAccountHolders(bool includeAccounts, int year, int month)
+        public List<AccountHolderModel> GetAccountHolders(bool includeAccounts)
         {
             var accountHolders = new List<AccountHolderModel>();
 
@@ -31,6 +31,9 @@ namespace XFin.API.DAL.Repositories
                 accountHolders.Add(accountHolderModel);
             }
 
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+
             foreach (var accountHolder in accountHolders)
             {
                 var bankAccounts = context.BankAccounts.Where(b => b.AccountHolderId == accountHolder.Id)
@@ -43,7 +46,7 @@ namespace XFin.API.DAL.Repositories
                     {
                         Id = bankAccount.Id,
                         AccountHolderId = bankAccount.AccountHolderId,
-                        Balance = CalculateBalance(bankAccount, year, month),
+                        Balance = CalculateBalance(bankAccount, currentYear, currentMonth),
                         AccountNumber = CalculateAccountNumber(bankAccount.BankAccountIdentifierIban),
                         Iban = bankAccount.BankAccountIdentifierIban,
                         Bic = bankAccount.BankAccountIdentifier.Bic,
