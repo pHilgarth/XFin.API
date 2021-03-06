@@ -13,9 +13,9 @@ namespace XFin.API.Controllers
         }
 
         [HttpGet()]
-        public IActionResult GetAccountHolders(int year, int month, bool includeAccounts = false)
+        public IActionResult GetAccountHolders(bool includeAccounts = false)
         {
-            var accountHolders = repo.GetAccountHolders(includeAccounts, year, month);
+            var accountHolders = repo.GetAccountHolders(includeAccounts);
 
             return accountHolders != null ? Ok(accountHolders) : NoContent();
         }
