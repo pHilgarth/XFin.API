@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
@@ -9,6 +10,8 @@ namespace XFin.API.Core.Models
         public int Id { get; set; }
 
         public int AccountHolderId { get; set; }
+
+        public string AccountHolder { get; set; }
 
         public decimal Balance { get; set; }
 
@@ -21,5 +24,9 @@ namespace XFin.API.Core.Models
         public string Bank { get; set; }
 
         public string AccountType { get; set; }
+
+        public ICollection<TransactionModel> Revenues { get; set; }
+
+        public ICollection<TransactionModel> Expenses { get; set; }
     }
 }
