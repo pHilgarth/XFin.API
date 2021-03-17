@@ -4,14 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
+using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
 
 namespace XFin.API.DAL.Repositories
 {
     public class AccountHolderRepository : IAccountHolderRepository
     {
-        public AccountHolderRepository(XFinDbContext context)
+        public AccountHolderRepository(ITransactionService calculator, XFinDbContext context)
         {
+            this.calculator = calculator;
             this.context = context;
         }
 
@@ -31,69 +33,37 @@ namespace XFin.API.DAL.Repositories
                 accountHolders.Add(accountHolderModel);
             }
 
-            var currentYear = DateTime.Now.Year;
-            var currentMonth = DateTime.Now.Month;
-
-            foreach (var accountHolder in accountHolders)
+            if (includeAccounts)
             {
-                var bankAccounts = context.BankAccounts.Where(b => b.AccountHolderId == accountHolder.Id)
-                    .Include(b => b.BankAccountIdentifier)
-                    .Include(b => b.Transactions);
+                var currentYear = DateTime.Now.Year;
+                var currentMonth = DateTime.Now.Month;
 
-                foreach (var bankAccount in bankAccounts)
+                foreach (var accountHolder in accountHolders)
                 {
-                    accountHolder.BankAccounts.Add(new BankAccountModel
+                    var bankAccounts = context.BankAccounts.Where(b => b.AccountHolderId == accountHolder.Id)
+                        .Include(b => b.BankAccountIdentifier)
+                        .Include(b => b.Transactions);
+
+                    foreach (var bankAccount in bankAccounts)
                     {
-                        Id = bankAccount.Id,
-                        AccountHolderId = bankAccount.AccountHolderId,
-                        Balance = CalculateBalance(bankAccount, currentYear, currentMonth),
-                        AccountNumber = CalculateAccountNumber(bankAccount.BankAccountIdentifierIban),
-                        Iban = bankAccount.BankAccountIdentifierIban,
-                        Bic = bankAccount.BankAccountIdentifier.Bic,
-                        Bank = bankAccount.Bank,
-                        AccountType = bankAccount.AccountType
-                    });
+                        var iban = bankAccount.BankAccountIdentifierIban;
+
+                        accountHolder.BankAccounts.Add(new BankAccountModel
+                        {
+                            Id = bankAccount.Id,
+                            AccountHolderId = bankAccount.AccountHolderId,
+                            Balance = calculator.CalculateBalance(bankAccount, currentYear, currentMonth),
+                            AccountNumber = iban.Substring(iban.Length - 10).TrimStart('0'),
+                            Iban = iban,
+                            Bic = bankAccount.BankAccountIdentifier.Bic,
+                            Bank = bankAccount.Bank,
+                            AccountType = bankAccount.AccountType
+                        });
+                    }
                 }
             }
 
             return accountHolders;
-
-            //    var accountHolderModel = new AccountHolderModel
-            //    {
-            //        Id              = accountHolder.Id,
-            //        Name            = accountHolder.Name,
-            //        BankAccounts    = new List<BankAccountModel>()
-            //    };
-
-            //    if (includeAccounts)
-            //    {
-            //        foreach (var bankAccount in accountHolder.BankAccounts)
-            //        {
-            //            accountHolderModel.BankAccounts.Add(
-            //                new BankAccountModel
-            //                {
-            //                    Id              = bankAccount.Id,
-            //                    AccountHolderId     = bankAccount.AccountHolderId,
-            //                    Balance         = bankAccount.Balance,
-            //                    AccountNumber   = bankAccount.AccountNumber,
-            //                    Iban            = bankAccount.Iban,
-            //                    Bic             = bankAccount.Bic,
-            //                    Bank            = bankAccount.Bank,
-            //                    AccountType     = bankAccount.AccountType
-            //                });
-            //        }
-            //    }
-
-            //    accountHolders.Add(accountHolderModel);
-
-            //}
-
-            //return accountHolders.Count != 0 ? accountHolders : null;
-        }
-
-        private string CalculateAccountNumber(string iban)
-        {
-            return iban.Substring(iban.Length - 10).TrimStart('0');
         }
 
         public AccountHolderModel GetAccountHolder(int id, bool includeAccounts)
@@ -137,23 +107,7 @@ namespace XFin.API.DAL.Repositories
             //}
         }
 
-        private decimal CalculateBalance(BankAccount bankAccount, int year, int month)
-        {
-
-            var revenues = bankAccount.Transactions.Where(
-                t => t.Amount > 0m &&
-                (t.Date.Year < year || t.Date.Year == year && t.Date.Month <= month));
-
-            var expenses = bankAccount.Transactions.Where(
-                t => t.Amount < 0m &&
-                (t.Date.Year < year || t.Date.Year == year && t.Date.Month <= month));
-
-            var revenuesTotal = revenues.Select(r => r.Amount).Sum();
-            var expensesTotal = Math.Abs(expenses.Select(e => e.Amount).Sum());
-
-            return revenuesTotal - expensesTotal;
-        }
-
+        private readonly ITransactionService calculator;
         private readonly XFinDbContext context;
 
     }
