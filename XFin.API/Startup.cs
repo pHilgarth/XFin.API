@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
 using XFin.API.DAL.Repositories;
 
@@ -31,6 +32,9 @@ namespace XFin.API
             });
 
             services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
+            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+
+            services.AddScoped<ITransactionService, TransactionsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
