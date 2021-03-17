@@ -9,11 +9,12 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
         public int BankAccountId { get; set; }
-        public string SourceAccountNumber { get; set; }
+        public string CounterPartAccountNumber { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
         public string Reference { get; set; }
         public ExternalPartyModel ExternalParty { get; set; }
+        public TransactionCategoryModel CounterPartTransactionCategory { get; set; }
         public TransactionCategoryModel TransactionCategory { get; set; }
 
     }

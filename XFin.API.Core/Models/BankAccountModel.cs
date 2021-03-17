@@ -11,7 +11,7 @@ namespace XFin.API.Core.Models
 
         public int AccountHolderId { get; set; }
 
-        public string AccountHolder { get; set; }
+        public string AccountHolderName { get; set; }
 
         public decimal Balance { get; set; }
 
