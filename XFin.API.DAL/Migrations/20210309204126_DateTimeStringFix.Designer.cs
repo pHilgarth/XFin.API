@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using XFin.API.DAL.DbContexts;
 
 namespace XFin.API.DAL.Migrations
 {
     [DbContext(typeof(XFinDbContext))]
-    partial class XFinDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210309204126_DateTimeStringFix")]
+    partial class DateTimeStringFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,6 +180,9 @@ namespace XFin.API.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("BankAccountIban")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("BankAccountIdentifierIban")
                         .HasColumnType("nvarchar(450)");
 
@@ -188,19 +193,19 @@ namespace XFin.API.DAL.Migrations
 
                     b.HasIndex("BankAccountIdentifierIban");
 
-                    b.ToTable("ExternalParties");
+                    b.ToTable("ExternalParty");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            BankAccountIdentifierIban = "Arbeitgeber_Iban",
+                            BankAccountIban = "Arbeitgeber_Iban",
                             Name = "Arbeitgeber"
                         },
                         new
                         {
                             Id = 2,
-                            BankAccountIdentifierIban = "Aldi_Iban",
+                            BankAccountIban = "Aldi_Iban",
                             Name = "Aldi"
                         });
                 });
@@ -365,7 +370,7 @@ namespace XFin.API.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionCategories");
+                    b.ToTable("TransactionCategory");
 
                     b.HasData(
                         new
