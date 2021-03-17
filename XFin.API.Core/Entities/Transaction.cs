@@ -23,7 +23,7 @@ namespace XFin.API.Core.Entities
         public ExternalParty ExternalParty { get; set; }
 
         [Required]
-        public DateTimeOffset Date { get; set; }
+        public DateTime Date { get; set; }
 
         [Required]
         public decimal Amount { get; set; }
