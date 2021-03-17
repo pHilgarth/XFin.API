@@ -11,6 +11,9 @@ namespace XFin.API.DAL.DbContexts
 
         public DbSet<AccountHolder> AccountHolders { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<ExternalParty> ExternalParties { get; set; }
+        public DbSet<TransactionCategory> TransactionCategories { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -123,20 +126,20 @@ namespace XFin.API.DAL.DbContexts
                 {
                     Id = 1,
                     Name = "Arbeitgeber",
-                    BankAccountIban = "Arbeitgeber_Iban"
+                    BankAccountIdentifierIban = "Arbeitgeber_Iban"
                 },
                 new ExternalParty
                 {
                     Id = 2,
                     Name = "Aldi",
-                    BankAccountIban = "Aldi_Iban"
+                    BankAccountIdentifierIban = "Aldi_Iban"
                 });
 
             modelBuilder.Entity<Transaction>().HasData(
                 new Transaction
                 {
                     Id = 1,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountId = 1,
@@ -145,7 +148,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 2,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountId = 2,
@@ -154,7 +157,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 3,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountId = 3,
@@ -163,7 +166,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 4,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountId = 4,
@@ -172,7 +175,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 5,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountId = 5,
@@ -181,7 +184,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 6,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 100m,
                     Reference = "Umbuchung 000 - 019",
                     BankAccountId = 2,
@@ -191,7 +194,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 7,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = -100m,
                     Reference = "Umbuchung 000 - 019",
                     BankAccountId = 1,
@@ -201,7 +204,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 8,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 50m,
                     Reference = "Einnahme von extern, z.B. Arbeitgeber",
                     BankAccountId = 1,
@@ -211,7 +214,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 9,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = -75m,
                     Reference = "Ausgabe nach extern, z.B. Aldi Kartenzahlung",
                     BankAccountId = 1,
@@ -221,7 +224,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 10,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = 10m,
                     Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
                     BankAccountId = 1,
@@ -231,7 +234,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 11,
-                    Date = new DateTimeOffset(),
+                    Date = DateTime.Parse("01.03.2021"),
                     Amount = -10m,
                     Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
                     BankAccountId = 1,
