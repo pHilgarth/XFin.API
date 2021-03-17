@@ -11,8 +11,8 @@ namespace XFin.API.Core.Entities
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("BankAccountIban")]
-        public string BankAccountIban { get; set; }
+        [ForeignKey("BankAccountIdentifierIban")]
+        public string BankAccountIdentifierIban { get; set; }
         public BankAccountIdentifier BankAccountIdentifier { get; set; }
 
         public string Name { get; set; }
