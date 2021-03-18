@@ -8,6 +8,7 @@ namespace XFin.API.Core.Services
     {
         decimal CalculateBalance(BankAccount bankAccount, int year, int month);
 
+        decimal GetProportionPreviousMonth(BankAccount bankAccount, int year, int month);
         //returns expenses from a certain month
         ICollection<Transaction> GetExpensesInMonth(ICollection<Transaction> transactions, int year, int month);
 

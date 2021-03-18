@@ -15,6 +15,8 @@ namespace XFin.API.Core.Models
 
         public decimal Balance { get; set; }
 
+        public decimal ProportionPreviousMonth { get; set; }
+
         public string Iban { get; set; }
 
         public string Bic { get; set; }

@@ -15,6 +15,22 @@ namespace XFin.API.Core.Services
             return revenues - expenses;
         }
 
+        public decimal GetProportionPreviousMonth(BankAccount bankAccount, int year, int month)
+        {
+            if (month == 1)
+            {
+                //prev month is december last year, so reduce year by one and set month to december!
+                year--;
+                month = 12;
+            }
+            else
+            {
+                month--;
+            }
+
+            return CalculateBalance(bankAccount, year, month);
+        }
+
         //returns expenses from a certain month
         public ICollection<Transaction> GetExpensesInMonth(ICollection<Transaction> transactions, int year, int month)
         {

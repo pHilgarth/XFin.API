@@ -33,6 +33,7 @@ namespace XFin.API.DAL.Repositories
                     AccountHolderId         = bankAccount.AccountHolderId,
                     AccountHolderName       = bankAccount.AccountHolder.Name,
                     Balance                 = transactionService.CalculateBalance(bankAccount, year, month),
+                    ProportionPreviousMonth = transactionService.GetProportionPreviousMonth(bankAccount, year, month),
                     Iban                    = bankAccount.BankAccountIdentifierIban,
                     Bic                     = bankAccount.BankAccountIdentifier.Bic,
                     Bank                    = bankAccount.Bank,
