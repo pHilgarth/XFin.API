@@ -16,76 +16,79 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
         }
 
-        public BankAccountModel GetBankAccount(int id, bool includeTransactions, int year, int month)
+        public BankAccountModel GetBankAccount(string accountNumber, bool includeTransactions, int year, int month)
         {
-            var bankAccount = context.BankAccounts.Where(b => b.Id == id)
+            var bankAccount = context.BankAccounts.Where(b => b.AccountNumber == accountNumber)
                 .Include(b => b.AccountHolder)
                 .Include(b => b.BankAccountIdentifier)
                 .Include(b => b.Transactions)
                 .FirstOrDefault();
 
-            var iban = bankAccount.BankAccountIdentifierIban;
-
-            var bankAccountModel = new BankAccountModel
+            if (bankAccount != null)
             {
-                Id = bankAccount.Id,
-                AccountHolderId = bankAccount.AccountHolderId,
-                AccountHolderName = bankAccount.AccountHolder.Name,
-                Balance = transactionService.CalculateBalance(bankAccount, year, month),
-                AccountNumber = GetAccountNumberFromIban(iban),
-                Iban = iban,
-                Bic = bankAccount.BankAccountIdentifier.Bic,
-                Bank = bankAccount.Bank,
-                AccountType = bankAccount.AccountType,
-                Revenues = new List<TransactionModel>(),
-                Expenses = new List<TransactionModel>()
-            };
 
-            if (includeTransactions)
-            {
-                var revenues = transactionService.GetRevenuesInMonth(bankAccount.Transactions, year, month);
-                var expenses = transactionService.GetExpensesInMonth(bankAccount.Transactions, year, month);
-
-                foreach (var revenue in revenues)
+                var bankAccountModel = new BankAccountModel
                 {
-                    var counterPartTransaction = revenue.CounterPartTransactionToken == null
-                        ? null : GetCounterPartTransaction(revenue);
+                    AccountNumber           = bankAccount.AccountNumber,
+                    AccountHolderId         = bankAccount.AccountHolderId,
+                    AccountHolderName       = bankAccount.AccountHolder.Name,
+                    Balance                 = transactionService.CalculateBalance(bankAccount, year, month),
+                    Iban                    = bankAccount.BankAccountIdentifierIban,
+                    Bic                     = bankAccount.BankAccountIdentifier.Bic,
+                    Bank                    = bankAccount.Bank,
+                    AccountType             = bankAccount.AccountType,
+                    Revenues                = new List<TransactionModel>(),
+                    Expenses                = new List<TransactionModel>()
+                };
 
-                    bankAccountModel.Revenues.Add(new TransactionModel
+                if (includeTransactions)
+                {
+                    var revenues = transactionService.GetRevenuesInMonth(bankAccount.Transactions, year, month);
+                    var expenses = transactionService.GetExpensesInMonth(bankAccount.Transactions, year, month);
+
+                    foreach (var revenue in revenues)
                     {
-                        Id = revenue.Id,
-                        BankAccountId = revenue.BankAccountId,
-                        CounterPartAccountNumber = GetCounterPartAccountNumber(counterPartTransaction),
-                        Date = revenue.Date,
-                        Amount = revenue.Amount,
-                        Reference = revenue.Reference,
-                        ExternalParty = GetExternalPartyModel(revenue),
-                        CounterPartTransactionCategory = GetTransactionCategoryModel(counterPartTransaction),
-                        TransactionCategory = GetTransactionCategoryModel(revenue)
-                    });
+                        var counterPartTransaction = revenue.CounterPartTransactionToken == null
+                            ? null : GetCounterPartTransaction(revenue);
+
+                        bankAccountModel.Revenues.Add(new TransactionModel
+                        {
+                            Id                              = revenue.Id,
+                            BankAccountNumber               = revenue.BankAccountAccountNumber,
+                            CounterPartAccountNumber        = counterPartTransaction?.BankAccount.AccountNumber,
+                            Date                            = revenue.Date,
+                            Amount                          = revenue.Amount,
+                            Reference                       = revenue.Reference,
+                            ExternalParty                   = GetExternalPartyModel(revenue),
+                            CounterPartTransactionCategory  = GetTransactionCategoryModel(counterPartTransaction),
+                            TransactionCategory             = GetTransactionCategoryModel(revenue)
+                        });
+                    }
+
+                    foreach (var expense in expenses)
+                    {
+                        var counterPartTransaction = expense.CounterPartTransactionToken == null
+                            ? null : GetCounterPartTransaction(expense);
+
+                        bankAccountModel.Expenses.Add(new TransactionModel
+                        {
+                            Id                              = expense.Id,
+                            BankAccountNumber               = expense.BankAccountAccountNumber,
+                            CounterPartAccountNumber        = counterPartTransaction?.BankAccount.AccountNumber,
+                            Date                            = expense.Date,
+                            Amount                          = expense.Amount,
+                            Reference                       = expense.Reference,
+                            ExternalParty                   = GetExternalPartyModel(expense),
+                            CounterPartTransactionCategory  = GetTransactionCategoryModel(counterPartTransaction),
+                            TransactionCategory             = GetTransactionCategoryModel(expense)
+                        });
+                    }
                 }
 
-                foreach (var expense in expenses)
-                {
-                    var counterPartTransaction = expense.CounterPartTransactionToken == null
-                        ? null : GetCounterPartTransaction(expense);
-
-                    bankAccountModel.Expenses.Add(new TransactionModel
-                    {
-                        Id = expense.Id,
-                        BankAccountId = expense.BankAccountId,
-                        CounterPartAccountNumber = GetCounterPartAccountNumber(counterPartTransaction),
-                        Date = expense.Date,
-                        Amount = expense.Amount,
-                        Reference = expense.Reference,
-                        ExternalParty = GetExternalPartyModel(expense),
-                        CounterPartTransactionCategory = GetTransactionCategoryModel(counterPartTransaction),
-                        TransactionCategory = GetTransactionCategoryModel(expense)
-                    });
-                }
+                return bankAccountModel;
             }
 
-            return bankAccountModel;
+            return null;
         }
 
         private readonly ITransactionService transactionService;
@@ -105,17 +108,6 @@ namespace XFin.API.DAL.Repositories
                 Bic = externalParty.BankAccountIdentifier.Bic,
                 Name = externalParty.Name
             };
-        }
-        
-        private string GetAccountNumberFromIban(string iban)
-        {
-            return iban.Substring(iban.Length - 10).TrimStart('0');
-        }
-
-        private string GetCounterPartAccountNumber(Transaction counterPartTransaction)
-        {
-            return counterPartTransaction == null
-                ? null : GetAccountNumberFromIban(counterPartTransaction.BankAccount.BankAccountIdentifierIban);
         }
 
         private Transaction GetCounterPartTransaction(Transaction transaction)
