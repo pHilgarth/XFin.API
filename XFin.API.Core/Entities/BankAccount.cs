@@ -7,7 +7,7 @@ namespace XFin.API.Core.Entities
     public class BankAccount
     {
         [Key]
-        public int Id { get; set; }
+        public string AccountNumber { get; set; }
 
         [ForeignKey("AccountHolderId")]
         public int AccountHolderId { get; set; }

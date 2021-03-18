@@ -12,10 +12,10 @@ namespace XFin.API.Controllers
             this.repo = repo;
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetBankAccount(int id, bool includeTransactions = false, int year = 0, int month = 0)
+        [HttpGet("{accountNumber}")]
+        public IActionResult GetBankAccount(string accountNumber, bool includeTransactions = false, int year = 0, int month = 0)
         {
-            var bankAccount = repo.GetBankAccount(id, includeTransactions, year, month);
+            var bankAccount = repo.GetBankAccount(accountNumber, includeTransactions, year, month);
 
             return bankAccount != null ? Ok(bankAccount) : NoContent();
         }

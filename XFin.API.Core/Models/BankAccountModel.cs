@@ -7,15 +7,13 @@ namespace XFin.API.Core.Models
 {
     public class BankAccountModel
     {
-        public int Id { get; set; }
+        public string AccountNumber { get; set; }
 
         public int AccountHolderId { get; set; }
 
         public string AccountHolderName { get; set; }
 
         public decimal Balance { get; set; }
-
-        public string AccountNumber { get; set; }
 
         public string Iban { get; set; }
 

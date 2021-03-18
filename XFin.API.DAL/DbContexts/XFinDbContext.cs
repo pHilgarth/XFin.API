@@ -82,7 +82,7 @@ namespace XFin.API.DAL.DbContexts
             modelBuilder.Entity<BankAccount>().HasData(
                 new BankAccount
                 {
-                    Id = 1,
+                    AccountNumber = "71808000",
                     AccountHolderId = 1,
                     BankAccountIdentifierIban = "DE21654913200071808000",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -90,7 +90,7 @@ namespace XFin.API.DAL.DbContexts
                 },
                 new BankAccount
                 {
-                    Id = 2,
+                    AccountNumber = "71808019",
                     AccountHolderId = 1,
                     BankAccountIdentifierIban = "DE21654913200071808019",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -98,7 +98,7 @@ namespace XFin.API.DAL.DbContexts
                 },
                 new BankAccount
                 {
-                    Id = 3,
+                    AccountNumber = "71808400",
                     AccountHolderId = 1,
                     BankAccountIdentifierIban = "DE21654913200071808400",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -106,7 +106,7 @@ namespace XFin.API.DAL.DbContexts
                 },
                 new BankAccount
                 {
-                    Id = 4,
+                    AccountNumber = "27911004",
                     AccountHolderId = 2,
                     BankAccountIdentifierIban = "DE66654913200027911004",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -114,7 +114,7 @@ namespace XFin.API.DAL.DbContexts
                 },
                 new BankAccount
                 {
-                    Id = 5,
+                    AccountNumber = "27911403",
                     AccountHolderId = 2,
                     BankAccountIdentifierIban = "DE66654913200027911403",
                     Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -142,7 +142,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
-                    BankAccountId = 1,
+                    BankAccountAccountNumber = "71808000",
                     TransactionCategoryId = 1
                 },
                 new Transaction
@@ -151,7 +151,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
-                    BankAccountId = 2,
+                    BankAccountAccountNumber = "71808019",
                     TransactionCategoryId = 1
                 },
                 new Transaction
@@ -160,7 +160,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
-                    BankAccountId = 3,
+                    BankAccountAccountNumber = "71808400",
                     TransactionCategoryId = 1
                 },
                 new Transaction
@@ -169,7 +169,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
-                    BankAccountId = 4,
+                    BankAccountAccountNumber = "27911004",
                     TransactionCategoryId = 1
                 },
                 new Transaction
@@ -178,7 +178,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
-                    BankAccountId = 5,
+                    BankAccountAccountNumber = "27911403",
                     TransactionCategoryId = 1
                 },
                 new Transaction
@@ -187,7 +187,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 100m,
                     Reference = "Umbuchung 000 - 019",
-                    BankAccountId = 2,
+                    BankAccountAccountNumber = "71808019",
                     TransactionCategoryId = 1,
                     CounterPartTransactionToken = "TOKEN: Umbuchung 000 - 019"
                 },
@@ -197,7 +197,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = -100m,
                     Reference = "Umbuchung 000 - 019",
-                    BankAccountId = 1,
+                    BankAccountAccountNumber = "71808000",
                     TransactionCategoryId = 1,
                     CounterPartTransactionToken = "TOKEN: Umbuchung 000 - 019"
                 },
@@ -207,7 +207,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 50m,
                     Reference = "Einnahme von extern, z.B. Arbeitgeber",
-                    BankAccountId = 1,
+                    BankAccountAccountNumber = "71808000",
                     TransactionCategoryId = 1,
                     ExternalPartyId = 1
                 },
@@ -217,7 +217,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = -75m,
                     Reference = "Ausgabe nach extern, z.B. Aldi Kartenzahlung",
-                    BankAccountId = 1,
+                    BankAccountAccountNumber = "71808000",
                     TransactionCategoryId = 2,
                     ExternalPartyId = 2
                 },
@@ -227,7 +227,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = 10m,
                     Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
-                    BankAccountId = 1,
+                    BankAccountAccountNumber = "71808000",
                     TransactionCategoryId = 2,
                     CounterPartTransactionToken = "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2"
                 },
@@ -237,7 +237,7 @@ namespace XFin.API.DAL.DbContexts
                     Date = DateTime.Parse("01.03.2021"),
                     Amount = -10m,
                     Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
-                    BankAccountId = 1,
+                    BankAccountAccountNumber = "71808000",
                     TransactionCategoryId = 1,
                     CounterPartTransactionToken = "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2"
                 });

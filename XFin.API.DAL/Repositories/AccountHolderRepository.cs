@@ -50,10 +50,9 @@ namespace XFin.API.DAL.Repositories
 
                         accountHolder.BankAccounts.Add(new BankAccountModel
                         {
-                            Id = bankAccount.Id,
+                            AccountNumber = bankAccount.AccountNumber,
                             AccountHolderId = bankAccount.AccountHolderId,
                             Balance = calculator.CalculateBalance(bankAccount, currentYear, currentMonth),
-                            AccountNumber = iban.Substring(iban.Length - 10).TrimStart('0'),
                             Iban = iban,
                             Bic = bankAccount.BankAccountIdentifier.Bic,
                             Bank = bankAccount.Bank,

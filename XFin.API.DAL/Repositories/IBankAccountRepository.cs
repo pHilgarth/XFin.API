@@ -6,6 +6,6 @@ namespace XFin.API.DAL.Repositories
 {
     public interface IBankAccountRepository
     {
-        BankAccountModel GetBankAccount(int id, bool includeTransactions, int year, int month);
+        BankAccountModel GetBankAccount(string accountNumber, bool includeTransactions, int year, int month);
     }
 }

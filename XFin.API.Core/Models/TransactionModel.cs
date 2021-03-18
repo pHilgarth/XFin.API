@@ -8,7 +8,7 @@ namespace XFin.API.Core.Models
     public class TransactionModel
     {
         public int Id { get; set; }
-        public int BankAccountId { get; set; }
+        public string BankAccountNumber { get; set; }
         public string CounterPartAccountNumber { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
