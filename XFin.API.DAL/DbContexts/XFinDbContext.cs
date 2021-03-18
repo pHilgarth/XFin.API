@@ -139,7 +139,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 1,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.01.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountAccountNumber = "71808000",
@@ -148,7 +148,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 2,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.01.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountAccountNumber = "71808019",
@@ -157,7 +157,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 3,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.01.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountAccountNumber = "71808400",
@@ -166,7 +166,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 4,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.01.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountAccountNumber = "27911004",
@@ -175,7 +175,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 5,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.01.2021"),
                     Amount = 500m,
                     Reference = "Kontoinitialisierung",
                     BankAccountAccountNumber = "27911403",
@@ -184,7 +184,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 6,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.02.2021"),
                     Amount = 100m,
                     Reference = "Umbuchung 000 - 019",
                     BankAccountAccountNumber = "71808019",
@@ -194,7 +194,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 7,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.02.2021"),
                     Amount = -100m,
                     Reference = "Umbuchung 000 - 019",
                     BankAccountAccountNumber = "71808000",
@@ -224,7 +224,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 10,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.02.2021"),
                     Amount = 10m,
                     Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
                     BankAccountAccountNumber = "71808000",
@@ -234,7 +234,7 @@ namespace XFin.API.DAL.DbContexts
                 new Transaction
                 {
                     Id = 11,
-                    Date = DateTime.Parse("01.03.2021"),
+                    Date = DateTime.Parse("01.02.2021"),
                     Amount = -10m,
                     Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
                     BankAccountAccountNumber = "71808000",
