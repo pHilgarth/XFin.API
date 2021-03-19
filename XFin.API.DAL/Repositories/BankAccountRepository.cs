@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Enums;
 using XFin.API.Core.Models;
 using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
@@ -49,6 +51,8 @@ namespace XFin.API.DAL.Repositories
 
                     foreach (var revenue in revenues)
                     {
+                        revenue.Date = DateTime.SpecifyKind(revenue.Date, DateTimeKind.Utc);
+
                         var counterPartTransaction = revenue.CounterPartTransactionToken == null
                             ? null : GetCounterPartTransaction(revenue);
 
@@ -62,12 +66,15 @@ namespace XFin.API.DAL.Repositories
                             Reference                       = revenue.Reference,
                             ExternalParty                   = GetExternalPartyModel(revenue),
                             CounterPartTransactionCategory  = GetTransactionCategoryModel(counterPartTransaction),
-                            TransactionCategory             = GetTransactionCategoryModel(revenue)
+                            TransactionCategory             = GetTransactionCategoryModel(revenue),
+                            TransactionType                 = GetTransactionType(revenue)
                         });
                     }
 
                     foreach (var expense in expenses)
                     {
+                        expense.Date = DateTime.SpecifyKind(expense.Date, DateTimeKind.Utc);
+
                         var counterPartTransaction = expense.CounterPartTransactionToken == null
                             ? null : GetCounterPartTransaction(expense);
 
@@ -133,6 +140,24 @@ namespace XFin.API.DAL.Repositories
             }
 
             return null;
+        }
+
+        private string GetTransactionType(Transaction transaction)
+        {
+            if (transaction.ExternalPartyId == null && transaction.CounterPartTransactionToken == null)
+            {
+                return Enum.GetName(typeof(TransactionType), TransactionType.Initialization);
+            }
+            else if (transaction.ExternalPartyId == null)
+            {
+                return Enum.GetName(typeof(TransactionType), TransactionType.Transfer);
+            }
+            else
+            {
+                return transaction.Amount > 0
+                    ? Enum.GetName(typeof(TransactionType), TransactionType.Revenue)
+                    : Enum.GetName(typeof(TransactionType), TransactionType.Expense);
+            }
         }
     }
 }
