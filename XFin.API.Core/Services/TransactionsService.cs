@@ -65,7 +65,7 @@ namespace XFin.API.Core.Services
             month = month == 0 ? DateTime.Now.Month : month;
 
             return transactions.Where(t =>
-                t.Amount > 0 &&
+                t.Amount >= 0 &&
                 t.Date.Year == year && t.Date.Month == month)
                 .ToList();
         }
