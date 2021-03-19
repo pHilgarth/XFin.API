@@ -115,6 +115,22 @@ namespace XFin.API.DAL.Migrations
                             AccountType = "Sparkonto",
                             Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
                             BankAccountIdentifierIban = "DE66654913200027911403"
+                        },
+                        new
+                        {
+                            AccountNumber = "0-Sample",
+                            AccountHolderId = 2,
+                            AccountType = "Sample 0 Account",
+                            Bank = "Sample Bank",
+                            BankAccountIdentifierIban = "Iban-0-Sample"
+                        },
+                        new
+                        {
+                            AccountNumber = "Negative-Sample",
+                            AccountHolderId = 2,
+                            AccountType = "Sample Negative Account",
+                            Bank = "Sample Bank",
+                            BankAccountIdentifierIban = "Iban-Negative-Sample"
                         });
                 });
 
@@ -166,6 +182,16 @@ namespace XFin.API.DAL.Migrations
                         {
                             Iban = "Aldi_Iban",
                             Bic = "Aldi_Bic"
+                        },
+                        new
+                        {
+                            Iban = "Iban-Negative-Sample",
+                            Bic = "Sample Bic Negative"
+                        },
+                        new
+                        {
+                            Iban = "Iban-0-Sample",
+                            Bic = "Sample Bic 0"
                         });
                 });
 
@@ -248,7 +274,7 @@ namespace XFin.API.DAL.Migrations
                             Id = 1,
                             Amount = 500m,
                             BankAccountAccountNumber = "71808000",
-                            Date = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -257,7 +283,7 @@ namespace XFin.API.DAL.Migrations
                             Id = 2,
                             Amount = 500m,
                             BankAccountAccountNumber = "71808019",
-                            Date = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -266,7 +292,7 @@ namespace XFin.API.DAL.Migrations
                             Id = 3,
                             Amount = 500m,
                             BankAccountAccountNumber = "71808400",
-                            Date = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -275,7 +301,7 @@ namespace XFin.API.DAL.Migrations
                             Id = 4,
                             Amount = 500m,
                             BankAccountAccountNumber = "27911004",
-                            Date = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -284,7 +310,7 @@ namespace XFin.API.DAL.Migrations
                             Id = 5,
                             Amount = 500m,
                             BankAccountAccountNumber = "27911403",
-                            Date = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -294,7 +320,7 @@ namespace XFin.API.DAL.Migrations
                             Amount = 100m,
                             BankAccountAccountNumber = "71808019",
                             CounterPartTransactionToken = "TOKEN: Umbuchung 000 - 019",
-                            Date = new DateTime(2021, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung 000 - 019",
                             TransactionCategoryId = 1
                         },
@@ -304,7 +330,7 @@ namespace XFin.API.DAL.Migrations
                             Amount = -100m,
                             BankAccountAccountNumber = "71808000",
                             CounterPartTransactionToken = "TOKEN: Umbuchung 000 - 019",
-                            Date = new DateTime(2021, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung 000 - 019",
                             TransactionCategoryId = 1
                         },
@@ -313,7 +339,7 @@ namespace XFin.API.DAL.Migrations
                             Id = 8,
                             Amount = 50m,
                             BankAccountAccountNumber = "71808000",
-                            Date = new DateTime(2021, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 3, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             ExternalPartyId = 1,
                             Reference = "Einnahme von extern, z.B. Arbeitgeber",
                             TransactionCategoryId = 1
@@ -323,7 +349,7 @@ namespace XFin.API.DAL.Migrations
                             Id = 9,
                             Amount = -75m,
                             BankAccountAccountNumber = "71808000",
-                            Date = new DateTime(2021, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 3, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             ExternalPartyId = 2,
                             Reference = "Ausgabe nach extern, z.B. Aldi Kartenzahlung",
                             TransactionCategoryId = 2
@@ -334,7 +360,7 @@ namespace XFin.API.DAL.Migrations
                             Amount = 10m,
                             BankAccountAccountNumber = "71808000",
                             CounterPartTransactionToken = "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2",
-                            Date = new DateTime(2021, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
                             TransactionCategoryId = 2
                         },
@@ -344,8 +370,26 @@ namespace XFin.API.DAL.Migrations
                             Amount = -10m,
                             BankAccountAccountNumber = "71808000",
                             CounterPartTransactionToken = "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2",
-                            Date = new DateTime(2021, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
+                            TransactionCategoryId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Amount = 0m,
+                            BankAccountAccountNumber = "0-Sample",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
+                            Reference = "[Kontoinitialisierung]",
+                            TransactionCategoryId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Amount = -250m,
+                            BankAccountAccountNumber = "Negative-Sample",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
+                            Reference = "[Kontoinitialisierung]",
                             TransactionCategoryId = 1
                         });
                 });

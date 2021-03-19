@@ -10,8 +10,8 @@ using XFin.API.DAL.DbContexts;
 namespace XFin.API.DAL.Migrations
 {
     [DbContext(typeof(XFinDbContext))]
-    [Migration("20210309200257_DateTimeOffsetToDateTime")]
-    partial class DateTimeOffsetToDateTime
+    [Migration("20210318194355_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -52,10 +52,8 @@ namespace XFin.API.DAL.Migrations
 
             modelBuilder.Entity("XFin.API.Core.Entities.BankAccount", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("AccountHolderId")
                         .HasColumnType("int");
@@ -71,7 +69,7 @@ namespace XFin.API.DAL.Migrations
                     b.Property<string>("BankAccountIdentifierIban")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("AccountNumber");
 
                     b.HasIndex("AccountHolderId");
 
@@ -82,7 +80,7 @@ namespace XFin.API.DAL.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            AccountNumber = "71808000",
                             AccountHolderId = 1,
                             AccountType = "Konto",
                             Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -90,7 +88,7 @@ namespace XFin.API.DAL.Migrations
                         },
                         new
                         {
-                            Id = 2,
+                            AccountNumber = "71808019",
                             AccountHolderId = 1,
                             AccountType = "Konto",
                             Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -98,7 +96,7 @@ namespace XFin.API.DAL.Migrations
                         },
                         new
                         {
-                            Id = 3,
+                            AccountNumber = "71808400",
                             AccountHolderId = 1,
                             AccountType = "Sparkonto",
                             Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -106,7 +104,7 @@ namespace XFin.API.DAL.Migrations
                         },
                         new
                         {
-                            Id = 4,
+                            AccountNumber = "27911004",
                             AccountHolderId = 2,
                             AccountType = "Girokonto",
                             Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
@@ -114,11 +112,27 @@ namespace XFin.API.DAL.Migrations
                         },
                         new
                         {
-                            Id = 5,
+                            AccountNumber = "27911403",
                             AccountHolderId = 2,
                             AccountType = "Sparkonto",
                             Bank = "Volksbank-Raiffeisenbank Laupheim-Illertal eG",
                             BankAccountIdentifierIban = "DE66654913200027911403"
+                        },
+                        new
+                        {
+                            AccountNumber = "0-Sample",
+                            AccountHolderId = 2,
+                            AccountType = "Sample 0 Account",
+                            Bank = "Sample Bank",
+                            BankAccountIdentifierIban = "Iban-0-Sample"
+                        },
+                        new
+                        {
+                            AccountNumber = "Negative-Sample",
+                            AccountHolderId = 2,
+                            AccountType = "Sample Negative Account",
+                            Bank = "Sample Bank",
+                            BankAccountIdentifierIban = "Iban-Negative-Sample"
                         });
                 });
 
@@ -170,6 +184,16 @@ namespace XFin.API.DAL.Migrations
                         {
                             Iban = "Aldi_Iban",
                             Bic = "Aldi_Bic"
+                        },
+                        new
+                        {
+                            Iban = "Iban-Negative-Sample",
+                            Bic = "Sample Bic Negative"
+                        },
+                        new
+                        {
+                            Iban = "Iban-0-Sample",
+                            Bic = "Sample Bic 0"
                         });
                 });
 
@@ -179,9 +203,6 @@ namespace XFin.API.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("BankAccountIban")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankAccountIdentifierIban")
                         .HasColumnType("nvarchar(450)");
@@ -193,19 +214,19 @@ namespace XFin.API.DAL.Migrations
 
                     b.HasIndex("BankAccountIdentifierIban");
 
-                    b.ToTable("ExternalParty");
+                    b.ToTable("ExternalParties");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            BankAccountIban = "Arbeitgeber_Iban",
+                            BankAccountIdentifierIban = "Arbeitgeber_Iban",
                             Name = "Arbeitgeber"
                         },
                         new
                         {
                             Id = 2,
-                            BankAccountIban = "Aldi_Iban",
+                            BankAccountIdentifierIban = "Aldi_Iban",
                             Name = "Aldi"
                         });
                 });
@@ -220,8 +241,8 @@ namespace XFin.API.DAL.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("BankAccountId")
-                        .HasColumnType("int");
+                    b.Property<string>("BankAccountAccountNumber")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CounterPartTransactionToken")
                         .HasColumnType("nvarchar(max)");
@@ -241,7 +262,7 @@ namespace XFin.API.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BankAccountId");
+                    b.HasIndex("BankAccountAccountNumber");
 
                     b.HasIndex("ExternalPartyId");
 
@@ -254,8 +275,8 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 1,
                             Amount = 500m,
-                            BankAccountId = 1,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BankAccountAccountNumber = "71808000",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -263,8 +284,8 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 2,
                             Amount = 500m,
-                            BankAccountId = 2,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BankAccountAccountNumber = "71808019",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -272,8 +293,8 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 3,
                             Amount = 500m,
-                            BankAccountId = 3,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BankAccountAccountNumber = "71808400",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -281,8 +302,8 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 4,
                             Amount = 500m,
-                            BankAccountId = 4,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BankAccountAccountNumber = "27911004",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -290,8 +311,8 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 5,
                             Amount = 500m,
-                            BankAccountId = 5,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BankAccountAccountNumber = "27911403",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Kontoinitialisierung",
                             TransactionCategoryId = 1
                         },
@@ -299,9 +320,9 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 6,
                             Amount = 100m,
-                            BankAccountId = 2,
+                            BankAccountAccountNumber = "71808019",
                             CounterPartTransactionToken = "TOKEN: Umbuchung 000 - 019",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung 000 - 019",
                             TransactionCategoryId = 1
                         },
@@ -309,9 +330,9 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 7,
                             Amount = -100m,
-                            BankAccountId = 1,
+                            BankAccountAccountNumber = "71808000",
                             CounterPartTransactionToken = "TOKEN: Umbuchung 000 - 019",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung 000 - 019",
                             TransactionCategoryId = 1
                         },
@@ -319,8 +340,8 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 8,
                             Amount = 50m,
-                            BankAccountId = 1,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BankAccountAccountNumber = "71808000",
+                            Date = new DateTime(2021, 3, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             ExternalPartyId = 1,
                             Reference = "Einnahme von extern, z.B. Arbeitgeber",
                             TransactionCategoryId = 1
@@ -329,8 +350,8 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 9,
                             Amount = -75m,
-                            BankAccountId = 1,
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            BankAccountAccountNumber = "71808000",
+                            Date = new DateTime(2021, 3, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             ExternalPartyId = 2,
                             Reference = "Ausgabe nach extern, z.B. Aldi Kartenzahlung",
                             TransactionCategoryId = 2
@@ -339,9 +360,9 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 10,
                             Amount = 10m,
-                            BankAccountId = 1,
+                            BankAccountAccountNumber = "71808000",
                             CounterPartTransactionToken = "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
                             TransactionCategoryId = 2
                         },
@@ -349,10 +370,28 @@ namespace XFin.API.DAL.Migrations
                         {
                             Id = 11,
                             Amount = -10m,
-                            BankAccountId = 1,
+                            BankAccountAccountNumber = "71808000",
                             CounterPartTransactionToken = "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2",
-                            Date = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local),
                             Reference = "Umbuchung von 000 Cat1 - 000 Cat2",
+                            TransactionCategoryId = 1
+                        },
+                        new
+                        {
+                            Id = 12,
+                            Amount = 0m,
+                            BankAccountAccountNumber = "0-Sample",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
+                            Reference = "[Kontoinitialisierung]",
+                            TransactionCategoryId = 1
+                        },
+                        new
+                        {
+                            Id = 13,
+                            Amount = -250m,
+                            BankAccountAccountNumber = "Negative-Sample",
+                            Date = new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local),
+                            Reference = "[Kontoinitialisierung]",
                             TransactionCategoryId = 1
                         });
                 });
@@ -370,7 +409,7 @@ namespace XFin.API.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TransactionCategory");
+                    b.ToTable("TransactionCategories");
 
                     b.HasData(
                         new
@@ -415,9 +454,7 @@ namespace XFin.API.DAL.Migrations
                 {
                     b.HasOne("XFin.API.Core.Entities.BankAccount", "BankAccount")
                         .WithMany("Transactions")
-                        .HasForeignKey("BankAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BankAccountAccountNumber");
 
                     b.HasOne("XFin.API.Core.Entities.ExternalParty", "ExternalParty")
                         .WithMany()
