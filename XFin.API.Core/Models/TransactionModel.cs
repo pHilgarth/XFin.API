@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using XFin.API.Core.Entities;
+using XFin.API.Core.Enums;
 
 namespace XFin.API.Core.Models
 {
@@ -16,6 +14,7 @@ namespace XFin.API.Core.Models
         public ExternalPartyModel ExternalParty { get; set; }
         public TransactionCategoryModel CounterPartTransactionCategory { get; set; }
         public TransactionCategoryModel TransactionCategory { get; set; }
+        public string TransactionType { get; set; }
 
     }
 }
