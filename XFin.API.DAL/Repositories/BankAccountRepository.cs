@@ -88,7 +88,8 @@ namespace XFin.API.DAL.Repositories
                             Reference                       = expense.Reference,
                             ExternalParty                   = GetExternalPartyModel(expense),
                             CounterPartTransactionCategory  = GetTransactionCategoryModel(counterPartTransaction),
-                            TransactionCategory             = GetTransactionCategoryModel(expense)
+                            TransactionCategory             = GetTransactionCategoryModel(expense),
+                            TransactionType                 = GetTransactionType(expense)
                         });
                     }
                 }
