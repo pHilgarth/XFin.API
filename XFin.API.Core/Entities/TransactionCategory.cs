@@ -10,5 +10,8 @@ namespace XFin.API.Core.Entities
 
         [Required]
         public string Name { get; set; }
+
+        public ICollection<Transaction> Transactions { get; set; }
+            = new List<Transaction>();
     }
 }

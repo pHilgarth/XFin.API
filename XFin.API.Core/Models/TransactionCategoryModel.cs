@@ -9,5 +9,19 @@ namespace XFin.API.Core.Models
         public int Id { get; set; }
 
         public string Name { get; set; }
+
+        public decimal Balance { get; set; }
+
+        public decimal ProportionPreviousMonth { get; set; }
+
+        public decimal RevenuesTotal { get; set; }
+
+        public decimal Budget { get; set; }
+
+        public decimal ExpensesTotal { get; set; }
+
+        public ICollection<TransactionModel> Revenues { get; set; }
+
+        public ICollection<TransactionModel> Expenses { get; set; }
     }
 }

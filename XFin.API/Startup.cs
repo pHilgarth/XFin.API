@@ -33,6 +33,7 @@ namespace XFin.API
 
             services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+            services.AddScoped<ITransactionCategoryRepository, TransactionCategoryRepository>();
 
             services.AddScoped<ITransactionService, TransactionsService>();
         }

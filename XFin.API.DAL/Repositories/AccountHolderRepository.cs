@@ -52,7 +52,7 @@ namespace XFin.API.DAL.Repositories
                         {
                             AccountNumber = bankAccount.AccountNumber,
                             AccountHolderId = bankAccount.AccountHolderId,
-                            Balance = calculator.CalculateBalance(bankAccount, currentYear, currentMonth),
+                            Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth),
                             Iban = iban,
                             Bic = bankAccount.BankAccountIdentifier.Bic,
                             Bank = bankAccount.Bank,

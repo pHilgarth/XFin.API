@@ -1,0 +1,25 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using XFin.API.DAL.Repositories;
+
+namespace XFin.API.Controllers
+{
+    [ApiController]
+    [Route("api/transactionCategories")]
+    public class TransactionCategoryController : Controller
+    {
+        public TransactionCategoryController(ITransactionCategoryRepository repo)
+        {
+            this.repo = repo;
+        }
+
+        [HttpGet("{accountNumber}")]
+        public IActionResult GetTransactionCategoriesByBankAccount(string accountNumber, bool includeTransactions = false, int year = 0, int month = 0)
+        {
+            var transactionCategories = repo.GetTransactionCategoriesByBankAccount(accountNumber, includeTransactions, year, month);
+
+            return transactionCategories != null ? Ok(transactionCategories) : NoContent();
+        }
+
+        private ITransactionCategoryRepository repo;
+    }
+}

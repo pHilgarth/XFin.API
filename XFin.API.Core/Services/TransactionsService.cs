@@ -7,16 +7,19 @@ namespace XFin.API.Core.Services
 {
     public class TransactionsService : ITransactionService
     {
-        public decimal CalculateBalance(BankAccount bankAccount, int year, int month)
+        public decimal CalculateBalance(ICollection<Transaction> transactions, int year, int month)
         {
-            var revenues = GetRevenuesUpToMonth(bankAccount.Transactions, year, month).Select(r => r.Amount).Sum();
-            var expenses = Math.Abs(GetExpensesUpToMonth(bankAccount.Transactions, year, month).Select(e => e.Amount).Sum());
+            var revenues = GetRevenuesUpToMonth(transactions, year, month).Select(r => r.Amount).Sum();
+            var expenses = Math.Abs(GetExpensesUpToMonth(transactions, year, month).Select(e => e.Amount).Sum());
 
             return revenues - expenses;
         }
 
-        public decimal GetProportionPreviousMonth(BankAccount bankAccount, int year, int month)
+        public decimal GetProportionPreviousMonth(ICollection<Transaction> transactions, int year, int month)
         {
+            year = year == 0 ? DateTime.Now.Year : year;
+            month = month == 0 ? DateTime.Now.Month : month;
+
             if (month == 1)
             {
                 //prev month is december last year, so reduce year by one and set month to december!
@@ -28,7 +31,7 @@ namespace XFin.API.Core.Services
                 month--;
             }
 
-            return CalculateBalance(bankAccount, year, month);
+            return CalculateBalance(transactions, year, month);
         }
 
         //returns expenses from a certain month
