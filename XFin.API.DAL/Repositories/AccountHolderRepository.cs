@@ -67,43 +67,43 @@ namespace XFin.API.DAL.Repositories
 
         public AccountHolderModel GetAccountHolder(int id, bool includeAccounts)
         {
-            return new AccountHolderModel();
-            //var accountHolder = context.AccountHolders.Where(d => d.Id == id).Include(d => d.BankAccounts).FirstOrDefault();
+            var accountHolder = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
 
-            //if (accountHolder != null)
-            //{
-            //    var accountHolderModel = new AccountHolderModel
-            //    {
-            //        Id = accountHolder.Id,
-            //        Name = accountHolder.Name,
-            //        BankAccounts = new List<BankAccountModel>()
-            //    };
+            if (accountHolder != null)
+            {
+                var accountHolderModel = new AccountHolderModel
+                {
+                    Id = accountHolder.Id,
+                    Name = accountHolder.Name,
+                    BankAccounts = new List<BankAccountModel>()
+                };
 
-            //    if (includeAccounts)
-            //    {
-            //        foreach (var bankAccount in accountHolder.BankAccounts)
-            //        {
-            //            accountHolderModel.BankAccounts.Add(
-            //                new BankAccountModel
-            //                {
-            //                    Id = bankAccount.Id,
-            //                    AccountHolderId = bankAccount.AccountHolderId,
-            //                    Balance = bankAccount.Balance,
-            //                    AccountNumber = bankAccount.AccountNumber,
-            //                    Iban = bankAccount.Iban,
-            //                    Bic = bankAccount.Bic,
-            //                    Bank = bankAccount.Bank,
-            //                    AccountType = bankAccount.AccountType
-            //                });
-            //        }
-            //    }
+                if (includeAccounts)
+                {
+                    var bankAccounts = context.BankAccounts
+                        .Where(b => b.AccountHolderId == id)
+                        .Include(b => b.BankAccountIdentifier)
+                        .ToList();
 
-            //    return accountHolderModel;
-            //}
-            //else
-            //{
-            //    return null;
-            //}
+                    foreach (var bankAccount in bankAccounts)
+                    {
+                        accountHolderModel.BankAccounts.Add(new BankAccountModel
+                        {
+                            AccountNumber = bankAccount.AccountNumber,
+                            AccountHolderId = bankAccount.AccountHolderId,
+                            AccountHolderName = accountHolderModel.Name,
+                            Iban = bankAccount.BankAccountIdentifierIban,
+                            Bic = bankAccount.BankAccountIdentifier.Bic,
+                            Bank = bankAccount.Bank,
+                            AccountType = bankAccount.AccountType
+                        });
+                    }
+                }
+
+                return accountHolderModel;
+            }
+
+            return null;
         }
 
         private readonly ITransactionService calculator;
