@@ -23,7 +23,7 @@ namespace XFin.API.Core.Models
 
         public string Bank { get; set; }
 
-        public string AccountType { get; set; }
+        public string Description { get; set; }
 
         public ICollection<TransactionModel> Revenues { get; set; }
 

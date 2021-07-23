@@ -17,6 +17,16 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
         }
 
+        public AccountHolder CreateAccountHolder(AccountHolderCreationModel accountHolder)
+        {
+            var newAccountHolder = new AccountHolder { Name = accountHolder.Name };
+
+            context.AccountHolders.Add(newAccountHolder);
+            context.SaveChanges();
+
+            return newAccountHolder;
+        }
+
         public List<AccountHolderModel> GetAccountHolders(bool includeAccounts)
         {
             var accountHolders = new List<AccountHolderModel>();
@@ -56,7 +66,7 @@ namespace XFin.API.DAL.Repositories
                             Iban = iban,
                             Bic = bankAccount.BankAccountIdentifier.Bic,
                             Bank = bankAccount.Bank,
-                            AccountType = bankAccount.AccountType
+                            Description = bankAccount.Description
                         });
                     }
                 }
@@ -95,7 +105,7 @@ namespace XFin.API.DAL.Repositories
                             Iban = bankAccount.BankAccountIdentifierIban,
                             Bic = bankAccount.BankAccountIdentifier.Bic,
                             Bank = bankAccount.Bank,
-                            AccountType = bankAccount.AccountType
+                            Description = bankAccount.Description
                         });
                     }
                 }

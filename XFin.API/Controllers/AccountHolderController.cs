@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using XFin.API.Core.Entities;
+using XFin.API.Core.Models;
 using XFin.API.DAL.Repositories;
 
 namespace XFin.API.Controllers
@@ -25,7 +27,16 @@ namespace XFin.API.Controllers
         {
             var accountHolder = repo.GetAccountHolder(id, includeAccounts);
 
-            return accountHolder != null ? Ok(accountHolder) : NotFound();
+            return accountHolder != null ? Ok(accountHolder) : NoContent();
+        }
+
+        [HttpPost()]
+        public IActionResult CreateAccountHolder(AccountHolderCreationModel accountHolder)
+        {
+            //TODO
+            //do we need some error handling here?
+            var newAccountHolder = repo.CreateAccountHolder(accountHolder);
+            return Ok(newAccountHolder);
         }
 
         private readonly IAccountHolderRepository repo;

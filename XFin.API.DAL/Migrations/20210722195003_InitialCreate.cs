@@ -21,7 +21,7 @@ namespace XFin.API.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BankAccountIdentifier",
+                name: "BankAccountIdentifiers",
                 columns: table => new
                 {
                     Iban = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -29,7 +29,7 @@ namespace XFin.API.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccountIdentifier", x => x.Iban);
+                    table.PrimaryKey("PK_BankAccountIdentifiers", x => x.Iban);
                 });
 
             migrationBuilder.CreateTable(
@@ -53,7 +53,7 @@ namespace XFin.API.DAL.Migrations
                     AccountHolderId = table.Column<int>(type: "int", nullable: false),
                     BankAccountIdentifierIban = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Bank = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AccountType = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,9 +65,9 @@ namespace XFin.API.DAL.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_BankAccounts_BankAccountIdentifier_BankAccountIdentifierIban",
+                        name: "FK_BankAccounts_BankAccountIdentifiers_BankAccountIdentifierIban",
                         column: x => x.BankAccountIdentifierIban,
-                        principalTable: "BankAccountIdentifier",
+                        principalTable: "BankAccountIdentifiers",
                         principalColumn: "Iban",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -85,9 +85,9 @@ namespace XFin.API.DAL.Migrations
                 {
                     table.PrimaryKey("PK_ExternalParties", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExternalParties_BankAccountIdentifier_BankAccountIdentifierIban",
+                        name: "FK_ExternalParties_BankAccountIdentifiers_BankAccountIdentifierIban",
                         column: x => x.BankAccountIdentifierIban,
-                        principalTable: "BankAccountIdentifier",
+                        principalTable: "BankAccountIdentifiers",
                         principalColumn: "Iban",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -130,81 +130,14 @@ namespace XFin.API.DAL.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AccountHolders",
+                table: "TransactionCategories",
                 columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Patrick Hilgarth" },
-                    { 2, "Ilona Schuhmacher" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "BankAccountIdentifier",
-                columns: new[] { "Iban", "Bic" },
-                values: new object[,]
-                {
-                    { "DE21654913200071808000", "GENODES1VBL" },
-                    { "DE21654913200071808019", "GENODES1VBL" },
-                    { "DE21654913200071808400", "GENODES1VBL" },
-                    { "DE66654913200027911004", "GENODES1VBL" },
-                    { "DE66654913200027911403", "GENODES1VBL" },
-                    { "Arbeitgeber_Iban", "Arbeitgeber_Bic" },
-                    { "Aldi_Iban", "Aldi_Bic" },
-                    { "Iban-Negative-Sample", "Sample Bic Negative" },
-                    { "Iban-0-Sample", "Sample Bic 0" }
-                });
+                values: new object[] { 1, "Nicht zugewiesen" });
 
             migrationBuilder.InsertData(
                 table: "TransactionCategories",
                 columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Nicht zugewiesen" },
-                    { 2, "Essen, Trinken" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "BankAccounts",
-                columns: new[] { "AccountNumber", "AccountHolderId", "AccountType", "Bank", "BankAccountIdentifierIban" },
-                values: new object[,]
-                {
-                    { "71808000", 1, "Konto", "Volksbank-Raiffeisenbank Laupheim-Illertal eG", "DE21654913200071808000" },
-                    { "71808019", 1, "Konto", "Volksbank-Raiffeisenbank Laupheim-Illertal eG", "DE21654913200071808019" },
-                    { "71808400", 1, "Sparkonto", "Volksbank-Raiffeisenbank Laupheim-Illertal eG", "DE21654913200071808400" },
-                    { "27911004", 2, "Girokonto", "Volksbank-Raiffeisenbank Laupheim-Illertal eG", "DE66654913200027911004" },
-                    { "27911403", 2, "Sparkonto", "Volksbank-Raiffeisenbank Laupheim-Illertal eG", "DE66654913200027911403" },
-                    { "Negative-Sample", 2, "Sample Negative Account", "Sample Bank", "Iban-Negative-Sample" },
-                    { "0-Sample", 2, "Sample 0 Account", "Sample Bank", "Iban-0-Sample" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "ExternalParties",
-                columns: new[] { "Id", "BankAccountIdentifierIban", "Name" },
-                values: new object[,]
-                {
-                    { 1, "Arbeitgeber_Iban", "Arbeitgeber" },
-                    { 2, "Aldi_Iban", "Aldi" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Transactions",
-                columns: new[] { "Id", "Amount", "BankAccountAccountNumber", "CounterPartTransactionToken", "Date", "ExternalPartyId", "Reference", "TransactionCategoryId" },
-                values: new object[,]
-                {
-                    { 1, 500m, "71808000", null, new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Kontoinitialisierung", 1 },
-                    { 7, -100m, "71808000", "TOKEN: Umbuchung 000 - 019", new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Umbuchung 000 - 019", 1 },
-                    { 10, 10m, "71808000", "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2", new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Umbuchung von 000 Cat1 - 000 Cat2", 2 },
-                    { 11, -10m, "71808000", "TOKEN: Umbuchung von 000 Cat1 - 000 Cat2", new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Umbuchung von 000 Cat1 - 000 Cat2", 1 },
-                    { 2, 500m, "71808019", null, new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Kontoinitialisierung", 1 },
-                    { 6, 100m, "71808019", "TOKEN: Umbuchung 000 - 019", new DateTime(2021, 2, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Umbuchung 000 - 019", 1 },
-                    { 3, 500m, "71808400", null, new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Kontoinitialisierung", 1 },
-                    { 4, 500m, "27911004", null, new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Kontoinitialisierung", 1 },
-                    { 5, 500m, "27911403", null, new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "Kontoinitialisierung", 1 },
-                    { 8, 50m, "71808000", null, new DateTime(2021, 3, 1, 15, 30, 0, 0, DateTimeKind.Local), 1, "Einnahme von extern, z.B. Arbeitgeber", 1 },
-                    { 9, -75m, "71808000", null, new DateTime(2021, 3, 1, 15, 30, 0, 0, DateTimeKind.Local), 2, "Ausgabe nach extern, z.B. Aldi Kartenzahlung", 2 },
-                    { 13, -250m, "Negative-Sample", null, new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "[Kontoinitialisierung]", 1 },
-                    { 12, 0m, "0-Sample", null, new DateTime(2021, 1, 1, 15, 30, 0, 0, DateTimeKind.Local), null, "[Kontoinitialisierung]", 1 }
-                });
+                values: new object[] { 2, "Essen, Trinken" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_BankAccounts_AccountHolderId",
@@ -255,7 +188,7 @@ namespace XFin.API.DAL.Migrations
                 name: "AccountHolders");
 
             migrationBuilder.DropTable(
-                name: "BankAccountIdentifier");
+                name: "BankAccountIdentifiers");
         }
     }
 }

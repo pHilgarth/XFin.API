@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using XFin.API.Core.Models;
 using XFin.API.DAL.Repositories;
 
 namespace XFin.API.Controllers
@@ -18,6 +19,13 @@ namespace XFin.API.Controllers
             var bankAccount = repo.GetBankAccount(accountNumber, includeTransactions, year, month);
 
             return bankAccount != null ? Ok(bankAccount) : NoContent();
+        }
+
+        [HttpPost]
+        public IActionResult CreateBankAccount(BankAccountCreationModel bankAccount)
+        {
+            var newBankAccount = repo.CreateBankAccount(bankAccount);
+            return Ok(newBankAccount);
         }
 
         private readonly IBankAccountRepository repo;

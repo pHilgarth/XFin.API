@@ -18,6 +18,30 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
         }
 
+        public BankAccount CreateBankAccount(BankAccountCreationModel bankAccount)
+        {
+            var newBankAccountIdentifier = new BankAccountIdentifier
+            {
+                Iban = bankAccount.Iban,
+                Bic = bankAccount.Bic
+            };
+
+            var newBankAccount = new BankAccount
+            {
+                AccountNumber = bankAccount.AccountNumber,
+                AccountHolderId = bankAccount.AccountHolderId,
+                BankAccountIdentifierIban = bankAccount.Iban,
+                Bank = bankAccount.Bank,
+                Description = bankAccount.Description
+            };
+
+            context.BankAccountIdentifiers.Add(newBankAccountIdentifier);
+            context.BankAccounts.Add(newBankAccount);
+            context.SaveChanges();
+
+            return newBankAccount;
+        }
+
         public BankAccountModel GetBankAccount(string accountNumber, bool includeTransactions, int year, int month)
         {
             var bankAccount = context.BankAccounts.Where(b => b.AccountNumber == accountNumber)
@@ -39,7 +63,7 @@ namespace XFin.API.DAL.Repositories
                     Iban                    = bankAccount.BankAccountIdentifierIban,
                     Bic                     = bankAccount.BankAccountIdentifier.Bic,
                     Bank                    = bankAccount.Bank,
-                    AccountType             = bankAccount.AccountType,
+                    Description             = bankAccount.Description,
                     Revenues                = new List<TransactionModel>(),
                     Expenses                = new List<TransactionModel>()
                 };

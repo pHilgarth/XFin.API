@@ -22,8 +22,6 @@ namespace XFin.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
-
             services.AddControllers(setupAction => setupAction.ReturnHttpNotAcceptable = true);
 
             services.AddDbContextPool<XFinDbContext>(options =>
@@ -33,6 +31,7 @@ namespace XFin.API
 
             services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<ITransactionCategoryRepository, TransactionCategoryRepository>();
 
             services.AddScoped<ITransactionService, TransactionsService>();
@@ -50,7 +49,7 @@ namespace XFin.API
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseCors(options => options.AllowAnyOrigin());
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
             app.UseRouting();
 
