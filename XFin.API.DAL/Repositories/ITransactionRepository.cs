@@ -8,6 +8,6 @@ namespace XFin.API.DAL.Repositories
 {
     public interface ITransactionRepository
     {
-        Transaction CreateTransaction(TransactionCreationModel transaction);
+        InternalTransaction CreateTransaction(InternalTransactionCreationModel transaction);
     }
 }

@@ -1,7 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using XFin.API.Core.Entities;
 using XFin.API.Core.Enums;
 using XFin.API.Core.Models;
@@ -12,111 +15,74 @@ namespace XFin.API.DAL.Repositories
 {
     public class BankAccountRepository : IBankAccountRepository
     {
-        public BankAccountRepository(ITransactionService transactionService, XFinDbContext context)
+        public BankAccountRepository(ITransactionService calculator, ITransactionRepository transactionRepo, IMapper mapper, XFinDbContext context)
         {
-            this.transactionService = transactionService;
+            this.calculator = calculator;
+            this.transactionRepo = transactionRepo;
             this.context = context;
+            this.mapper = mapper;
         }
 
-        public BankAccount CreateBankAccount(BankAccountCreationModel bankAccount)
-        {
-            var newBankAccountIdentifier = new BankAccountIdentifier
+        public InternalBankAccount CreateBankAccount(InternalBankAccountCreationModel bankAccount)
+        {//TODO add error handling when wrong id is passed, if no accountholder with this bankAccount.id exists
+            var accountHolder = context.AccountHolders.Where(a => a.Id == bankAccount.AccountHolderId).FirstOrDefault();
+
+            if (accountHolder == null)
             {
-                Iban = bankAccount.Iban,
-                Bic = bankAccount.Bic
+                return null;
+            }
+
+            var newBankAccount = new InternalBankAccount
+            {
+                Iban                = bankAccount.Iban,
+                Bic                 = bankAccount.Bic,
+                AccountHolderId     = bankAccount.AccountHolderId,
+                Bank                = bankAccount.Bank,
+                Description         = bankAccount.Description
             };
 
-            var newBankAccount = new BankAccount
-            {
-                AccountNumber = bankAccount.AccountNumber,
-                AccountHolderId = bankAccount.AccountHolderId,
-                BankAccountIdentifierIban = bankAccount.Iban,
-                Bank = bankAccount.Bank,
-                Description = bankAccount.Description
-            };
-
-            context.BankAccountIdentifiers.Add(newBankAccountIdentifier);
-            context.BankAccounts.Add(newBankAccount);
+            context.InternalBankAccounts.Add(newBankAccount);
             context.SaveChanges();
+
+            if (bankAccount.Balance != 0)
+            {
+                var initializationTransaction = new InternalTransactionCreationModel
+                {
+                    InternalBankAccountId = newBankAccount.Id,
+                    DateString = DateTime.Now.ToShortDateString(),
+                    Amount = bankAccount.Balance,
+                    Reference = "[Kontoinitialisierung]",
+                };
+
+                transactionRepo.CreateTransaction(initializationTransaction);
+            }
 
             return newBankAccount;
         }
 
-        public BankAccountModel GetBankAccount(string accountNumber, bool includeTransactions, int year, int month)
+        public InternalBankAccountModel GetBankAccount(int id, int year, int month)
         {
-            var bankAccount = context.BankAccounts.Where(b => b.AccountNumber == accountNumber)
+            var bankAccount = context.InternalBankAccounts.Where(b => b.Id == id)
                 .Include(b => b.AccountHolder)
-                .Include(b => b.BankAccountIdentifier)
                 .Include(b => b.Transactions)
                 .FirstOrDefault();
 
             if (bankAccount != null)
             {
+                var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
 
-                var bankAccountModel = new BankAccountModel
-                {
-                    AccountNumber           = bankAccount.AccountNumber,
-                    AccountHolderId         = bankAccount.AccountHolderId,
-                    AccountHolderName       = bankAccount.AccountHolder.Name,
-                    Balance                 = transactionService.CalculateBalance(bankAccount.Transactions, year, month),
-                    ProportionPreviousMonth = transactionService.GetProportionPreviousMonth(bankAccount.Transactions, year, month),
-                    Iban                    = bankAccount.BankAccountIdentifierIban,
-                    Bic                     = bankAccount.BankAccountIdentifier.Bic,
-                    Bank                    = bankAccount.Bank,
-                    Description             = bankAccount.Description,
-                    Revenues                = new List<TransactionModel>(),
-                    Expenses                = new List<TransactionModel>()
-                };
+                //foreach (var transaction in bankAccount.Transactions)
+                //{
+                //    transaction.Date = DateTime.SpecifyKind(transaction.Date, DateTimeKind.Utc);
+                //}
 
-                if (includeTransactions)
-                {
-                    var revenues = transactionService.GetRevenuesInMonth(bankAccount.Transactions, year, month);
-                    var expenses = transactionService.GetExpensesInMonth(bankAccount.Transactions, year, month);
+                var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month);
+                var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month);
 
-                    foreach (var revenue in revenues)
-                    {
-                        revenue.Date = DateTime.SpecifyKind(revenue.Date, DateTimeKind.Utc);
-
-                        var counterPartTransaction = revenue.CounterPartTransactionToken == null
-                            ? null : GetCounterPartTransaction(revenue);
-
-                        bankAccountModel.Revenues.Add(new TransactionModel
-                        {
-                            Id                              = revenue.Id,
-                            BankAccountNumber               = revenue.BankAccountAccountNumber,
-                            CounterPartAccountNumber        = counterPartTransaction?.BankAccount.AccountNumber,
-                            Date                            = revenue.Date,
-                            Amount                          = revenue.Amount,
-                            Reference                       = revenue.Reference,
-                            ExternalParty                   = GetExternalPartyModel(revenue),
-                            CounterPartTransactionCategory  = GetTransactionCategoryModel(counterPartTransaction),
-                            TransactionCategory             = GetTransactionCategoryModel(revenue),
-                            TransactionType                 = GetTransactionType(revenue)
-                        });
-                    }
-
-                    foreach (var expense in expenses)
-                    {
-                        expense.Date = DateTime.SpecifyKind(expense.Date, DateTimeKind.Utc);
-
-                        var counterPartTransaction = expense.CounterPartTransactionToken == null
-                            ? null : GetCounterPartTransaction(expense);
-
-                        bankAccountModel.Expenses.Add(new TransactionModel
-                        {
-                            Id                              = expense.Id,
-                            BankAccountNumber               = expense.BankAccountAccountNumber,
-                            CounterPartAccountNumber        = counterPartTransaction?.BankAccount.AccountNumber,
-                            Date                            = expense.Date,
-                            Amount                          = expense.Amount,
-                            Reference                       = expense.Reference,
-                            ExternalParty                   = GetExternalPartyModel(expense),
-                            CounterPartTransactionCategory  = GetTransactionCategoryModel(counterPartTransaction),
-                            TransactionCategory             = GetTransactionCategoryModel(expense),
-                            TransactionType                 = GetTransactionType(expense)
-                        });
-                    }
-                }
+                bankAccountModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
+                bankAccountModel.Expenses = mapper.Map<List<InternalTransactionModel>>(expenses);
+                bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
+                bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, year, month);
 
                 return bankAccountModel;
             }
@@ -124,34 +90,60 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        private readonly ITransactionService transactionService;
+        public InternalBankAccountSimpleModel GetBankAccountSimple(int id, int year, int month)
+        {
+            var bankAccount = context.InternalBankAccounts.Where(b => b.Id == id)
+                .Include(b => b.AccountHolder)
+                .Include(b => b.Transactions)
+                .FirstOrDefault();
+
+            if (bankAccount != null)
+            {
+                var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
+                bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
+
+                return bankAccountModel;
+            }
+
+            return null;
+        }
+
+        public InternalBankAccount UpdateBankAccountPartially(int id, JsonPatchDocument<InternalBankAccountUpdateModel> bankAccountPatch)
+        {
+            var bankAccountEntity = context.InternalBankAccounts.Where(b => b.Id == id).FirstOrDefault();
+            var bankAccountToPatch = mapper.Map<InternalBankAccountUpdateModel>(bankAccountEntity);
+
+            bankAccountPatch.ApplyTo(bankAccountToPatch);
+
+            mapper.Map(bankAccountToPatch, bankAccountEntity);
+
+            context.SaveChanges();
+
+            return bankAccountEntity;
+        }
+
+        private readonly ITransactionService calculator;
+        private readonly ITransactionRepository transactionRepo;
+        private readonly IMapper mapper;
         private readonly XFinDbContext context;
 
-        private ExternalPartyModel GetExternalPartyModel(Transaction transaction)
-        {
-            var externalParty = context.ExternalParties
-                .Where(e => e.Id == transaction.ExternalPartyId)
-                .Include(e => e.BankAccountIdentifier)
-                .FirstOrDefault();
+        //private InternalTransaction GetCounterPartTransaction(InternalTransaction transaction)
+        //{
+        //    var counterPartTransaction = context.InternalTransactions
+        //        .Where(t => t.CounterPartTransactionToken == transaction.CounterPartTransactionToken && t.Id != transaction.Id)
+        //        .Include(t => t.InternalBankAccount)
+        //        .FirstOrDefault();
 
-            return externalParty == null ? null : new ExternalPartyModel
-            {
-                Id = externalParty.Id,
-                Iban = externalParty.BankAccountIdentifierIban,
-                Bic = externalParty.BankAccountIdentifier.Bic,
-                Name = externalParty.Name
-            };
-        }
+        //    if (counterPartTransaction == null)
+        //    {
+        //        counterPartTransaction = context.ExternalTransactions
+        //            .Where(t => t.CounterPartTransactionToken == transaction.CounterPartTransactionToken && t.Id != transaction.Id)
+        //            .Include(t => t.ExternalBankAccount)
+        //            .FirstOrDefault();
+        //    }
+        //}
 
-        private Transaction GetCounterPartTransaction(Transaction transaction)
-        {
-            return context.Transactions
-                .Where(t => t.CounterPartTransactionToken == transaction.CounterPartTransactionToken && t.Id != transaction.Id)
-                .Include(t => t.BankAccount)
-                .FirstOrDefault();
-        }
-
-        private TransactionCategoryModel GetTransactionCategoryModel(Transaction transaction)
+        private TransactionCategoryModel GetTransactionCategoryModel(InternalTransaction transaction)
         {
             if (transaction != null)
             {
@@ -167,22 +159,22 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        private string GetTransactionType(Transaction transaction)
-        {
-            if (transaction.ExternalPartyId == null && transaction.CounterPartTransactionToken == null)
-            {
-                return Enum.GetName(typeof(TransactionType), TransactionType.Initialization);
-            }
-            else if (transaction.ExternalPartyId == null)
-            {
-                return Enum.GetName(typeof(TransactionType), TransactionType.Transfer);
-            }
-            else
-            {
-                return transaction.Amount > 0
-                    ? Enum.GetName(typeof(TransactionType), TransactionType.Revenue)
-                    : Enum.GetName(typeof(TransactionType), TransactionType.Expense);
-            }
-        }
+        //private string GetTransactionType(InternalTransaction transaction)
+        //{
+        //    if (transaction.ExternalPartyId == null && transaction.CounterPartTransactionToken == null)
+        //    {
+        //        return Enum.GetName(typeof(TransactionType), TransactionType.Initialization);
+        //    }
+        //    else if (transaction.ExternalPartyId == null)
+        //    {
+        //        return Enum.GetName(typeof(TransactionType), TransactionType.Transfer);
+        //    }
+        //    else
+        //    {
+        //        return transaction.Amount > 0
+        //            ? Enum.GetName(typeof(TransactionType), TransactionType.Revenue)
+        //            : Enum.GetName(typeof(TransactionType), TransactionType.Expense);
+        //    }
+        //}
     }
 }

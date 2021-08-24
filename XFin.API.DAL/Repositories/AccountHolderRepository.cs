@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,15 +12,16 @@ namespace XFin.API.DAL.Repositories
 {
     public class AccountHolderRepository : IAccountHolderRepository
     {
-        public AccountHolderRepository(ITransactionService calculator, XFinDbContext context)
+        public AccountHolderRepository(ITransactionService calculator, IMapper mapper, XFinDbContext context)
         {
             this.calculator = calculator;
             this.context = context;
+            this.mapper = mapper;
         }
 
         public AccountHolder CreateAccountHolder(AccountHolderCreationModel accountHolder)
         {
-            var newAccountHolder = new AccountHolder { Name = accountHolder.Name };
+            var newAccountHolder = mapper.Map<AccountHolder>(accountHolder);
 
             context.AccountHolders.Add(newAccountHolder);
             context.SaveChanges();
@@ -27,86 +29,75 @@ namespace XFin.API.DAL.Repositories
             return newAccountHolder;
         }
 
-        public List<AccountHolderModel> GetAccountHolders(bool includeAccounts)
+        public List<AccountHolderModel> GetAccountHolders()
         {
-            var accountHolders = new List<AccountHolderModel>();
+            var accountHolders = mapper.Map<List<AccountHolderModel>>(context.AccountHolders);
 
-            foreach (var accountHolder in context.AccountHolders)
+            var currentYear = DateTime.Now.Year;
+            var currentMonth = DateTime.Now.Month;
+
+            foreach (var accountHolder in accountHolders)
             {
-                var accountHolderModel = new AccountHolderModel
+                var bankAccounts = context.InternalBankAccounts.Where(b => b.AccountHolderId == accountHolder.Id)
+                    .Include(b => b.Transactions);
+
+
+                foreach (var bankAccount in bankAccounts)
                 {
-                    Id = accountHolder.Id,
-                    Name = accountHolder.Name,
-                    BankAccounts = new List<BankAccountModel>()
-                };
+                    var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
 
-                accountHolders.Add(accountHolderModel);
-            }
+                    bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
 
-            if (includeAccounts)
-            {
-                var currentYear = DateTime.Now.Year;
-                var currentMonth = DateTime.Now.Month;
-
-                foreach (var accountHolder in accountHolders)
-                {
-                    var bankAccounts = context.BankAccounts.Where(b => b.AccountHolderId == accountHolder.Id)
-                        .Include(b => b.BankAccountIdentifier)
-                        .Include(b => b.Transactions);
-
-                    foreach (var bankAccount in bankAccounts)
-                    {
-                        var iban = bankAccount.BankAccountIdentifierIban;
-
-                        accountHolder.BankAccounts.Add(new BankAccountModel
-                        {
-                            AccountNumber = bankAccount.AccountNumber,
-                            AccountHolderId = bankAccount.AccountHolderId,
-                            Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth),
-                            Iban = iban,
-                            Bic = bankAccount.BankAccountIdentifier.Bic,
-                            Bank = bankAccount.Bank,
-                            Description = bankAccount.Description
-                        });
-                    }
+                    accountHolder.BankAccounts.Add(bankAccountModel);
                 }
             }
 
             return accountHolders;
         }
 
-        public AccountHolderModel GetAccountHolder(int id, bool includeAccounts)
+        public List<AccountHolderSimpleModel> GetAccountHoldersSimple()
+        {
+            return mapper.Map<List<AccountHolderSimpleModel>>(context.AccountHolders);
+        }
+
+        public AccountHolderModel GetAccountHolder(int id, bool simpleAccounts)
         {
             var accountHolder = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
 
             if (accountHolder != null)
             {
-                var accountHolderModel = new AccountHolderModel
-                {
-                    Id = accountHolder.Id,
-                    Name = accountHolder.Name,
-                    BankAccounts = new List<BankAccountModel>()
-                };
+                var accountHolderModel = mapper.Map<AccountHolderModel>(accountHolder);
 
-                if (includeAccounts)
-                {
-                    var bankAccounts = context.BankAccounts
-                        .Where(b => b.AccountHolderId == id)
-                        .Include(b => b.BankAccountIdentifier)
-                        .ToList();
+                var bankAccounts = context.InternalBankAccounts
+                    .Where(b => b.AccountHolderId == id)
+                    .Include(b => b.Transactions)
+                    .ToList();
 
-                    foreach (var bankAccount in bankAccounts)
+                foreach (var bankAccount in bankAccounts)
+                {
+                    var currentYear = DateTime.Now.Year;
+                    var currentMonth = DateTime.Now.Month;
+
+                    if (simpleAccounts)
                     {
-                        accountHolderModel.BankAccounts.Add(new BankAccountModel
-                        {
-                            AccountNumber = bankAccount.AccountNumber,
-                            AccountHolderId = bankAccount.AccountHolderId,
-                            AccountHolderName = accountHolderModel.Name,
-                            Iban = bankAccount.BankAccountIdentifierIban,
-                            Bic = bankAccount.BankAccountIdentifier.Bic,
-                            Bank = bankAccount.Bank,
-                            Description = bankAccount.Description
-                        });
+                        var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
+
+                        bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
+
+                        accountHolderModel.BankAccounts.Add(bankAccountModel);
+                    }
+                    else
+                    {
+                        var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
+                        var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, currentYear, currentMonth);
+                        var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, currentYear, currentMonth);
+
+                        bankAccountModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
+                        bankAccountModel.Expenses = mapper.Map<List<InternalTransactionModel>>(expenses);
+                        bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
+                        bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, currentYear, currentMonth);
+
+                        accountHolderModel.BankAccounts.Add(bankAccountModel);
                     }
                 }
 
@@ -116,7 +107,30 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
+        public AccountHolderSimpleModel GetAccountHolderSimple(int id)
+        {
+            var accountHolder = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
+            var accountHolderModel = mapper.Map<AccountHolderSimpleModel>(accountHolder);
+
+            return accountHolderModel != null ? accountHolderModel : null;
+        }
+
+        public AccountHolder UpdateAccountHolder(int id, AccountHolderUpdateModel accountHolder)
+        {
+            var accountHolderEntity = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
+
+            if (accountHolderEntity != null)
+            {
+                mapper.Map(accountHolder, accountHolderEntity);
+            }
+
+            context.SaveChanges();
+
+            return accountHolderEntity;
+        }
+
         private readonly ITransactionService calculator;
+        private readonly IMapper mapper;
         private readonly XFinDbContext context;
 
     }

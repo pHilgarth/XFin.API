@@ -4,27 +4,27 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace XFin.API.Core.Entities
 {
-    public class BankAccount
+    public class InternalBankAccount
     {
         [Key]
-        public string AccountNumber { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("AccountHolderId")]
         public int AccountHolderId { get; set; }
         public AccountHolder AccountHolder { get; set; }
 
-        [ForeignKey("BankAccountIdentifierIban")]
-        public string BankAccountIdentifierIban { get; set; }
-        public BankAccountIdentifier BankAccountIdentifier { get; set; }
+        [Required]
+        public string Iban { get; set; }
 
+        [Required]
+        public string Bic { get; set; }
 
         [Required]
         public string Bank { get; set; }
 
         public string Description { get; set; }
 
-        public ICollection<Transaction> Transactions { get; set; }
-            = new List<Transaction>();
-
+        public ICollection<InternalTransaction> Transactions { get; set; }
+            = new List<InternalTransaction>();
     }
 }

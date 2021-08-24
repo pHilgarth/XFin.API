@@ -4,16 +4,16 @@ using System.Text;
 
 namespace XFin.API.Core.Models
 {
-    public class TransactionCreationModel
+    public class ExternalTransactionCreationModel
     {
-        public string BankAccountNumber { get; set; }
-
-        public int TransactionCategoryId { get; set; }
+        public int ExternalBankAccountId { get; set; }
 
         public string DateString { get; set; }
 
         public decimal Amount { get; set; }
 
         public string Reference { get; set; }
+
+        public string CounterPartTransactionToken { get; set; }
     }
 }

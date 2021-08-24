@@ -10,7 +10,7 @@ namespace XFin.API.Core.Models
 
         public string Name { get; set; }
 
-        public ICollection<BankAccountModel> BankAccounts { get; set; }
-            = new List<BankAccountModel>();
+        public ICollection<IInternalBankAccountModel> BankAccounts { get; set; }
+            = new List<IInternalBankAccountModel>();
     }
 }

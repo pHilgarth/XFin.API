@@ -15,26 +15,27 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
         }
 
-        public Transaction CreateTransaction(TransactionCreationModel transaction)
+        public InternalTransaction CreateTransaction(InternalTransactionCreationModel transaction)
         {
             var transactionCategory = transaction.TransactionCategoryId > 0 ?
                 context.TransactionCategories.Where(t => t.Id == transaction.TransactionCategoryId).FirstOrDefault() :
                 context.TransactionCategories.Where(t => t.Name == "Nicht zugewiesen").FirstOrDefault();
 
-            var newTransaction = new Transaction
+            var newTransaction = new InternalTransaction
             {
-                BankAccountAccountNumber = transaction.BankAccountNumber,
+                InternalBankAccountId = transaction.InternalBankAccountId,
                 TransactionCategory = transactionCategory,
                 Date = DateTime.Parse(transaction.DateString),
                 Amount = transaction.Amount,
                 Reference = transaction.Reference
             };
 
-            context.Transactions.Add(newTransaction);
+            context.InternalTransactions.Add(newTransaction);
             context.SaveChanges();
 
             //this prevents an object cycle 500 internal server error
             newTransaction.TransactionCategory = null;
+            newTransaction.InternalBankAccount = null;
 
             return newTransaction;
         }

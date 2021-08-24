@@ -7,7 +7,10 @@ namespace XFin.API.DAL.Repositories
     public interface IAccountHolderRepository
     {
         AccountHolder CreateAccountHolder(AccountHolderCreationModel accountHolder);
-        List<AccountHolderModel> GetAccountHolders(bool includeAccounts);
-        AccountHolderModel GetAccountHolder(int id, bool includeAccounts);
+        List<AccountHolderModel> GetAccountHolders();
+        List<AccountHolderSimpleModel> GetAccountHoldersSimple();
+        AccountHolderModel GetAccountHolder(int id, bool includeTransactions);
+        AccountHolderSimpleModel GetAccountHolderSimple(int id);
+        AccountHolder UpdateAccountHolder(int id, AccountHolderUpdateModel accountHolder);
     }
 }

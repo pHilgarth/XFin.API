@@ -36,45 +36,29 @@ namespace XFin.API.DAL.Migrations
                     b.ToTable("AccountHolders");
                 });
 
-            modelBuilder.Entity("XFin.API.Core.Entities.BankAccount", b =>
+            modelBuilder.Entity("XFin.API.Core.Entities.ExternalBankAccount", b =>
                 {
-                    b.Property<string>("AccountNumber")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccountHolderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Bank")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("BankAccountIdentifierIban")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("AccountNumber");
-
-                    b.HasIndex("AccountHolderId");
-
-                    b.HasIndex("BankAccountIdentifierIban");
-
-                    b.ToTable("BankAccounts");
-                });
-
-            modelBuilder.Entity("XFin.API.Core.Entities.BankAccountIdentifier", b =>
-                {
-                    b.Property<string>("Iban")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Bic")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Iban");
+                    b.Property<int>("ExternalPartyId")
+                        .HasColumnType("int");
 
-                    b.ToTable("BankAccountIdentifiers");
+                    b.Property<string>("Iban")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExternalPartyId");
+
+                    b.ToTable("ExternalBankAccounts");
                 });
 
             modelBuilder.Entity("XFin.API.Core.Entities.ExternalParty", b =>
@@ -84,20 +68,17 @@ namespace XFin.API.DAL.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("BankAccountIdentifierIban")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BankAccountIdentifierIban");
 
                     b.ToTable("ExternalParties");
                 });
 
-            modelBuilder.Entity("XFin.API.Core.Entities.Transaction", b =>
+            modelBuilder.Entity("XFin.API.Core.Entities.ExternalTransaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -107,8 +88,67 @@ namespace XFin.API.DAL.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("BankAccountAccountNumber")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("CounterPartTransactionToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ExternalBankAccountId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExternalBankAccountId");
+
+                    b.ToTable("ExternalTransactions");
+                });
+
+            modelBuilder.Entity("XFin.API.Core.Entities.InternalBankAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AccountHolderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Bank")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Bic")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Iban")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountHolderId");
+
+                    b.ToTable("InternalBankAccounts");
+                });
+
+            modelBuilder.Entity("XFin.API.Core.Entities.InternalTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("CounterPartTransactionToken")
                         .HasColumnType("nvarchar(max)");
@@ -116,7 +156,7 @@ namespace XFin.API.DAL.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ExternalPartyId")
+                    b.Property<int>("InternalBankAccountId")
                         .HasColumnType("int");
 
                     b.Property<string>("Reference")
@@ -128,13 +168,11 @@ namespace XFin.API.DAL.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BankAccountAccountNumber");
-
-                    b.HasIndex("ExternalPartyId");
+                    b.HasIndex("InternalBankAccountId");
 
                     b.HasIndex("TransactionCategoryId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("InternalTransactions");
                 });
 
             modelBuilder.Entity("XFin.API.Core.Entities.TransactionCategory", b =>
@@ -165,7 +203,29 @@ namespace XFin.API.DAL.Migrations
                         });
                 });
 
-            modelBuilder.Entity("XFin.API.Core.Entities.BankAccount", b =>
+            modelBuilder.Entity("XFin.API.Core.Entities.ExternalBankAccount", b =>
+                {
+                    b.HasOne("XFin.API.Core.Entities.ExternalParty", "ExternalParty")
+                        .WithMany()
+                        .HasForeignKey("ExternalPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExternalParty");
+                });
+
+            modelBuilder.Entity("XFin.API.Core.Entities.ExternalTransaction", b =>
+                {
+                    b.HasOne("XFin.API.Core.Entities.ExternalBankAccount", "ExternalBankAccount")
+                        .WithMany("Transactions")
+                        .HasForeignKey("ExternalBankAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExternalBankAccount");
+                });
+
+            modelBuilder.Entity("XFin.API.Core.Entities.InternalBankAccount", b =>
                 {
                     b.HasOne("XFin.API.Core.Entities.AccountHolder", "AccountHolder")
                         .WithMany()
@@ -173,33 +233,16 @@ namespace XFin.API.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("XFin.API.Core.Entities.BankAccountIdentifier", "BankAccountIdentifier")
-                        .WithMany()
-                        .HasForeignKey("BankAccountIdentifierIban");
-
                     b.Navigation("AccountHolder");
-
-                    b.Navigation("BankAccountIdentifier");
                 });
 
-            modelBuilder.Entity("XFin.API.Core.Entities.ExternalParty", b =>
+            modelBuilder.Entity("XFin.API.Core.Entities.InternalTransaction", b =>
                 {
-                    b.HasOne("XFin.API.Core.Entities.BankAccountIdentifier", "BankAccountIdentifier")
-                        .WithMany()
-                        .HasForeignKey("BankAccountIdentifierIban");
-
-                    b.Navigation("BankAccountIdentifier");
-                });
-
-            modelBuilder.Entity("XFin.API.Core.Entities.Transaction", b =>
-                {
-                    b.HasOne("XFin.API.Core.Entities.BankAccount", "BankAccount")
+                    b.HasOne("XFin.API.Core.Entities.InternalBankAccount", "InternalBankAccount")
                         .WithMany("Transactions")
-                        .HasForeignKey("BankAccountAccountNumber");
-
-                    b.HasOne("XFin.API.Core.Entities.ExternalParty", "ExternalParty")
-                        .WithMany()
-                        .HasForeignKey("ExternalPartyId");
+                        .HasForeignKey("InternalBankAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("XFin.API.Core.Entities.TransactionCategory", "TransactionCategory")
                         .WithMany("Transactions")
@@ -207,14 +250,17 @@ namespace XFin.API.DAL.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BankAccount");
-
-                    b.Navigation("ExternalParty");
+                    b.Navigation("InternalBankAccount");
 
                     b.Navigation("TransactionCategory");
                 });
 
-            modelBuilder.Entity("XFin.API.Core.Entities.BankAccount", b =>
+            modelBuilder.Entity("XFin.API.Core.Entities.ExternalBankAccount", b =>
+                {
+                    b.Navigation("Transactions");
+                });
+
+            modelBuilder.Entity("XFin.API.Core.Entities.InternalBankAccount", b =>
                 {
                     b.Navigation("Transactions");
                 });

@@ -10,11 +10,12 @@ namespace XFin.API.DAL.DbContexts
         public XFinDbContext(DbContextOptions<XFinDbContext> options) : base(options) { }
 
         public DbSet<AccountHolder> AccountHolders { get; set; }
-        public DbSet<BankAccount> BankAccounts { get; set; }
-        public DbSet<BankAccountIdentifier> BankAccountIdentifiers { get; set; }
+        public DbSet<InternalBankAccount> InternalBankAccounts { get; set; }
+        public DbSet<ExternalBankAccount> ExternalBankAccounts { get; set; }
         public DbSet<ExternalParty> ExternalParties { get; set; }
         public DbSet<TransactionCategory> TransactionCategories { get; set; }
-        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<InternalTransaction> InternalTransactions { get; set; }
+        public DbSet<ExternalTransaction> ExternalTransactions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

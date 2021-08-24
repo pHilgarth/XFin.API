@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace XFin.API.Core.Entities
 {
@@ -11,10 +7,8 @@ namespace XFin.API.Core.Entities
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("BankAccountIdentifierIban")]
-        public string BankAccountIdentifierIban { get; set; }
-        public BankAccountIdentifier BankAccountIdentifier { get; set; }
-
+        [Required]
+        [MaxLength(50)]
         public string Name { get; set; }
     }
 }

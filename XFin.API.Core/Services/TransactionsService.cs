@@ -7,7 +7,7 @@ namespace XFin.API.Core.Services
 {
     public class TransactionsService : ITransactionService
     {
-        public decimal CalculateBalance(ICollection<Transaction> transactions, int year, int month)
+        public decimal CalculateBalance(ICollection<InternalTransaction> transactions, int year, int month)
         {
             var revenues = GetRevenuesUpToMonth(transactions, year, month).Select(r => r.Amount).Sum();
             var expenses = Math.Abs(GetExpensesUpToMonth(transactions, year, month).Select(e => e.Amount).Sum());
@@ -15,7 +15,7 @@ namespace XFin.API.Core.Services
             return revenues - expenses;
         }
 
-        public decimal GetProportionPreviousMonth(ICollection<Transaction> transactions, int year, int month)
+        public decimal GetProportionPreviousMonth(ICollection<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
@@ -35,7 +35,7 @@ namespace XFin.API.Core.Services
         }
 
         //returns expenses from a certain month
-        public ICollection<Transaction> GetExpensesInMonth(ICollection<Transaction> transactions, int year, int month)
+        public ICollection<InternalTransaction> GetExpensesInMonth(ICollection<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
@@ -47,7 +47,7 @@ namespace XFin.API.Core.Services
         }
 
         //returns expenses up to the specified year and month
-        public ICollection<Transaction> GetExpensesUpToMonth(ICollection<Transaction> transactions, int year, int month)
+        public ICollection<InternalTransaction> GetExpensesUpToMonth(ICollection<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
@@ -62,7 +62,7 @@ namespace XFin.API.Core.Services
         }
 
         //returns revenues from a certain month
-        public ICollection<Transaction> GetRevenuesInMonth(ICollection<Transaction> transactions, int year, int month)
+        public ICollection<InternalTransaction> GetRevenuesInMonth(ICollection<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
@@ -74,7 +74,7 @@ namespace XFin.API.Core.Services
         }
 
         //returns revenues up to the specified year and month
-        public ICollection<Transaction> GetRevenuesUpToMonth(ICollection<Transaction> transactions, int year, int month)
+        public ICollection<InternalTransaction> GetRevenuesUpToMonth(ICollection<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;

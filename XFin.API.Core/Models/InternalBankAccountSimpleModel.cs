@@ -5,17 +5,13 @@ using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
-    public class BankAccountModel
+    public class InternalBankAccountSimpleModel : IInternalBankAccountModel
     {
-        public string AccountNumber { get; set; }
+        public int Id { get; set; }
 
         public int AccountHolderId { get; set; }
 
         public string AccountHolderName { get; set; }
-
-        public decimal Balance { get; set; }
-
-        public decimal ProportionPreviousMonth { get; set; }
 
         public string Iban { get; set; }
 
@@ -25,8 +21,6 @@ namespace XFin.API.Core.Models
 
         public string Description { get; set; }
 
-        public ICollection<TransactionModel> Revenues { get; set; }
-
-        public ICollection<TransactionModel> Expenses { get; set; }
+        public decimal Balance { get; set; }
     }
 }

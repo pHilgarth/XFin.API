@@ -15,7 +15,7 @@ namespace XFin.API.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateTransaction(TransactionCreationModel transaction)
+        public IActionResult CreateTransaction(InternalTransactionCreationModel transaction)
         {
             var newTransaction = repo.CreateTransaction(transaction);
             return Ok(newTransaction);

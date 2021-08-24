@@ -6,19 +6,19 @@ namespace XFin.API.Core.Services
 {
     public interface ITransactionService
     {
-        decimal CalculateBalance(ICollection<Transaction> transactions, int year, int month);
+        decimal CalculateBalance(ICollection<InternalTransaction> transactions, int year, int month);
 
-        decimal GetProportionPreviousMonth(ICollection<Transaction> transactions, int year, int month);
+        decimal GetProportionPreviousMonth(ICollection<InternalTransaction> transactions, int year, int month);
         //returns expenses from a certain month
-        ICollection<Transaction> GetExpensesInMonth(ICollection<Transaction> transactions, int year, int month);
+        ICollection<InternalTransaction> GetExpensesInMonth(ICollection<InternalTransaction> transactions, int year, int month);
 
         //returns expenses up to the specified year and month
-        ICollection<Transaction> GetExpensesUpToMonth(ICollection<Transaction> transactions, int year, int month);
+        ICollection<InternalTransaction> GetExpensesUpToMonth(ICollection<InternalTransaction> transactions, int year, int month);
 
         //returns revenues from a certain month
-        ICollection<Transaction> GetRevenuesInMonth(ICollection<Transaction> transactions, int year, int month);
+        ICollection<InternalTransaction> GetRevenuesInMonth(ICollection<InternalTransaction> transactions, int year, int month);
 
         //returns all revenues up to the specified year and month
-        ICollection<Transaction> GetRevenuesUpToMonth(ICollection<Transaction> transactions, int year, int month);
+        ICollection<InternalTransaction> GetRevenuesUpToMonth(ICollection<InternalTransaction> transactions, int year, int month);
     }
 }

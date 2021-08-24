@@ -21,15 +21,16 @@ namespace XFin.API.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BankAccountIdentifiers",
+                name: "ExternalParties",
                 columns: table => new
                 {
-                    Iban = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Bic = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccountIdentifiers", x => x.Iban);
+                    table.PrimaryKey("PK_ExternalParties", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,61 +47,57 @@ namespace XFin.API.DAL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BankAccounts",
+                name: "InternalBankAccounts",
                 columns: table => new
                 {
-                    AccountNumber = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     AccountHolderId = table.Column<int>(type: "int", nullable: false),
-                    BankAccountIdentifierIban = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Iban = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bic = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Bank = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BankAccounts", x => x.AccountNumber);
+                    table.PrimaryKey("PK_InternalBankAccounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_BankAccounts_AccountHolders_AccountHolderId",
+                        name: "FK_InternalBankAccounts_AccountHolders_AccountHolderId",
                         column: x => x.AccountHolderId,
                         principalTable: "AccountHolders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_BankAccounts_BankAccountIdentifiers_BankAccountIdentifierIban",
-                        column: x => x.BankAccountIdentifierIban,
-                        principalTable: "BankAccountIdentifiers",
-                        principalColumn: "Iban",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExternalParties",
+                name: "ExternalBankAccounts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BankAccountIdentifierIban = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ExternalPartyId = table.Column<int>(type: "int", nullable: false),
+                    Iban = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Bic = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExternalParties", x => x.Id);
+                    table.PrimaryKey("PK_ExternalBankAccounts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExternalParties_BankAccountIdentifiers_BankAccountIdentifierIban",
-                        column: x => x.BankAccountIdentifierIban,
-                        principalTable: "BankAccountIdentifiers",
-                        principalColumn: "Iban",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_ExternalBankAccounts_ExternalParties_ExternalPartyId",
+                        column: x => x.ExternalPartyId,
+                        principalTable: "ExternalParties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
+                name: "InternalTransactions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BankAccountAccountNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    InternalBankAccountId = table.Column<int>(type: "int", nullable: false),
                     TransactionCategoryId = table.Column<int>(type: "int", nullable: false),
-                    ExternalPartyId = table.Column<int>(type: "int", nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Reference = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -108,23 +105,40 @@ namespace XFin.API.DAL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.PrimaryKey("PK_InternalTransactions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_BankAccounts_BankAccountAccountNumber",
-                        column: x => x.BankAccountAccountNumber,
-                        principalTable: "BankAccounts",
-                        principalColumn: "AccountNumber",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Transactions_ExternalParties_ExternalPartyId",
-                        column: x => x.ExternalPartyId,
-                        principalTable: "ExternalParties",
+                        name: "FK_InternalTransactions_InternalBankAccounts_InternalBankAccountId",
+                        column: x => x.InternalBankAccountId,
+                        principalTable: "InternalBankAccounts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Transactions_TransactionCategories_TransactionCategoryId",
+                        name: "FK_InternalTransactions_TransactionCategories_TransactionCategoryId",
                         column: x => x.TransactionCategoryId,
                         principalTable: "TransactionCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExternalTransactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExternalBankAccountId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Reference = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CounterPartTransactionToken = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExternalTransactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ExternalTransactions_ExternalBankAccounts_ExternalBankAccountId",
+                        column: x => x.ExternalBankAccountId,
+                        principalTable: "ExternalBankAccounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -140,55 +154,53 @@ namespace XFin.API.DAL.Migrations
                 values: new object[] { 2, "Essen, Trinken" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_BankAccounts_AccountHolderId",
-                table: "BankAccounts",
-                column: "AccountHolderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BankAccounts_BankAccountIdentifierIban",
-                table: "BankAccounts",
-                column: "BankAccountIdentifierIban");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ExternalParties_BankAccountIdentifierIban",
-                table: "ExternalParties",
-                column: "BankAccountIdentifierIban");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_BankAccountAccountNumber",
-                table: "Transactions",
-                column: "BankAccountAccountNumber");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Transactions_ExternalPartyId",
-                table: "Transactions",
+                name: "IX_ExternalBankAccounts_ExternalPartyId",
+                table: "ExternalBankAccounts",
                 column: "ExternalPartyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_TransactionCategoryId",
-                table: "Transactions",
+                name: "IX_ExternalTransactions_ExternalBankAccountId",
+                table: "ExternalTransactions",
+                column: "ExternalBankAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternalBankAccounts_AccountHolderId",
+                table: "InternalBankAccounts",
+                column: "AccountHolderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternalTransactions_InternalBankAccountId",
+                table: "InternalTransactions",
+                column: "InternalBankAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InternalTransactions_TransactionCategoryId",
+                table: "InternalTransactions",
                 column: "TransactionCategoryId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "ExternalTransactions");
 
             migrationBuilder.DropTable(
-                name: "BankAccounts");
+                name: "InternalTransactions");
 
             migrationBuilder.DropTable(
-                name: "ExternalParties");
+                name: "ExternalBankAccounts");
+
+            migrationBuilder.DropTable(
+                name: "InternalBankAccounts");
 
             migrationBuilder.DropTable(
                 name: "TransactionCategories");
 
             migrationBuilder.DropTable(
-                name: "AccountHolders");
+                name: "ExternalParties");
 
             migrationBuilder.DropTable(
-                name: "BankAccountIdentifiers");
+                name: "AccountHolders");
         }
     }
 }

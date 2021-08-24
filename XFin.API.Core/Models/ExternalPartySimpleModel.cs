@@ -5,12 +5,10 @@ using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
-    public class ExternalPartyModel
+    public class ExternalPartySimpleModel
     {
         public int Id { get; set; }
 
         public string Name { get; set; }
-
-        public ExternalBankAccount BankAccount { get; set; }
     }
 }
