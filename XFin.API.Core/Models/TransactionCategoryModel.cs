@@ -20,8 +20,10 @@ namespace XFin.API.Core.Models
 
         public decimal ExpensesTotal { get; set; }
 
-        public ICollection<InternalTransactionModel> Revenues { get; set; }
+        public List<InternalTransactionModel> Revenues { get; set; }
+            = new List<InternalTransactionModel>();
 
-        public ICollection<InternalTransactionModel> Expenses { get; set; }
+        public List<InternalTransactionModel> Expenses { get; set; }
+            = new List<InternalTransactionModel>();
     }
 }

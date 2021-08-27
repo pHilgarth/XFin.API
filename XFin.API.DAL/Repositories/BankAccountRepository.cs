@@ -64,23 +64,60 @@ namespace XFin.API.DAL.Repositories
         {
             var bankAccount = context.InternalBankAccounts.Where(b => b.Id == id)
                 .Include(b => b.AccountHolder)
-                .Include(b => b.Transactions)
+                .Include(b => b.Transactions).ThenInclude(t => t.TransactionCategory)
+                .Include(b => b.Transactions).ThenInclude(t => t.InternalBankAccount)
                 .FirstOrDefault();
 
             if (bankAccount != null)
             {
                 var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
-
-                //foreach (var transaction in bankAccount.Transactions)
-                //{
-                //    transaction.Date = DateTime.SpecifyKind(transaction.Date, DateTimeKind.Utc);
-                //}
+                bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
                 var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month);
                 var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month);
 
                 bankAccountModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
+
+                for (int i = 0; i < revenues.Count; i++)
+                {
+                    var revenueEntity = revenues[i];
+                    var counterParty = calculator.GetAccountNumber(context.InternalTransactions
+                        .Where(t => t.TransactionToken == revenueEntity.CounterPartTransactionToken)
+                        .Select(tt => tt.InternalBankAccount.Iban)
+                        .FirstOrDefault());
+
+                    if (counterParty == null)
+                    {
+                        counterParty = context.ExternalTransactions
+                        .Where(t => t.TransactionToken == revenueEntity.CounterPartTransactionToken)
+                        .Select(t => t.ExternalBankAccount.ExternalParty.Name)
+                        .FirstOrDefault();
+                    }
+
+                    bankAccountModel.Revenues[i].CounterParty = counterParty != null ? counterParty : "[Kontoinitialisierung]";
+                }
+
                 bankAccountModel.Expenses = mapper.Map<List<InternalTransactionModel>>(expenses);
+
+                for (int i = 0; i < expenses.Count; i++)
+                {
+                    var expenseEntity = expenses[i];
+                    var counterParty = calculator.GetAccountNumber(context.InternalTransactions
+                        .Where(t => t.TransactionToken == expenseEntity.CounterPartTransactionToken)
+                        .Select(tt => tt.InternalBankAccount.Iban)
+                        .FirstOrDefault());
+
+                    if (counterParty == null)
+                    {
+                        counterParty = context.ExternalTransactions
+                        .Where(t => t.TransactionToken == expenseEntity.CounterPartTransactionToken)
+                        .Select(t => t.ExternalBankAccount.ExternalParty.Name)
+                        .FirstOrDefault();
+                    }
+
+                    bankAccountModel.Expenses[i].CounterParty = counterParty;
+                }
+
                 bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
                 bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, year, month);
 

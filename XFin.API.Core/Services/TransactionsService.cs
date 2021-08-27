@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Services
 {
     public class TransactionsService : ITransactionService
     {
-        public decimal CalculateBalance(ICollection<InternalTransaction> transactions, int year, int month)
+        public decimal CalculateBalance(List<InternalTransaction> transactions, int year, int month)
         {
             var revenues = GetRevenuesUpToMonth(transactions, year, month).Select(r => r.Amount).Sum();
             var expenses = Math.Abs(GetExpensesUpToMonth(transactions, year, month).Select(e => e.Amount).Sum());
@@ -15,7 +16,7 @@ namespace XFin.API.Core.Services
             return revenues - expenses;
         }
 
-        public decimal GetProportionPreviousMonth(ICollection<InternalTransaction> transactions, int year, int month)
+        public decimal GetProportionPreviousMonth(List<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
@@ -35,57 +36,88 @@ namespace XFin.API.Core.Services
         }
 
         //returns expenses from a certain month
-        public ICollection<InternalTransaction> GetExpensesInMonth(ICollection<InternalTransaction> transactions, int year, int month)
+        //if _internal == true it retrieves these expenses, whose counterPartTransactions are also in the given list of transactions
+        //account internal = expenses from one category to another category on the same account
+        //category internal = expenses from one account to another account on the same category
+        public List<InternalTransaction> GetExpensesInMonth(List<InternalTransaction> transactions, int year, int month, bool _internal)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
 
-            return transactions.Where(t =>
-                t.Amount < 0 &&
-                t.Date.Year == year && t.Date.Month == month)
-                .ToList();
+            var transactionTokens = transactions
+                .Select(t => t.TransactionToken).ToHashSet<string>();
+
+
+            return _internal
+                ? transactions
+                    .Where(t => t.Amount < 0 &&
+                                t.Date.Year == year && t.Date.Month == month &&
+                                transactionTokens.Contains(t.CounterPartTransactionToken))
+                    .ToList()
+                : transactions
+                    .Where(t => t.Amount < 0 &&
+                                t.Date.Year == year && t.Date.Month == month &&
+                                !transactionTokens.Contains(t.CounterPartTransactionToken))
+                    .ToList();
         }
 
         //returns expenses up to the specified year and month
-        public ICollection<InternalTransaction> GetExpensesUpToMonth(ICollection<InternalTransaction> transactions, int year, int month)
+        public List<InternalTransaction> GetExpensesUpToMonth(List<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
+
+            var transactionTokens = transactions
+                .Select(t => t.TransactionToken).ToHashSet<string>();
 
             var result = transactions.Where(t =>
                 t.Amount < 0 &&
                 (t.Date.Year < year ||
-                t.Date.Year == year && t.Date.Month <= month))
+                t.Date.Year == year && t.Date.Month <= month) &&
+                !transactionTokens.Contains(t.CounterPartTransactionToken))
                 .ToList();
 
             return result;
         }
 
         //returns revenues from a certain month
-        public ICollection<InternalTransaction> GetRevenuesInMonth(ICollection<InternalTransaction> transactions, int year, int month)
+        public List<InternalTransaction> GetRevenuesInMonth(List<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
 
-            return transactions.Where(t =>
-                t.Amount >= 0 &&
-                t.Date.Year == year && t.Date.Month == month)
+            var transactionTokens = transactions
+                .Select(t => t.TransactionToken).ToHashSet<string>();
+
+            return transactions
+                .Where(t => t.Amount > 0 &&
+                            t.Date.Year == year && t.Date.Month == month &&
+                            !transactionTokens.Contains(t.CounterPartTransactionToken))
                 .ToList();
         }
 
         //returns revenues up to the specified year and month
-        public ICollection<InternalTransaction> GetRevenuesUpToMonth(ICollection<InternalTransaction> transactions, int year, int month)
+        public List<InternalTransaction> GetRevenuesUpToMonth(List<InternalTransaction> transactions, int year, int month)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
 
+            var transactionTokens = transactions
+                .Select(t => t.TransactionToken).ToHashSet<string>();
+
             var result = transactions.Where(t =>
                 t.Amount > 0 &&
                 (t.Date.Year < year ||
-                t.Date.Year == year && t.Date.Month <= month))
+                t.Date.Year == year && t.Date.Month <= month) &&
+                !transactionTokens.Contains(t.CounterPartTransactionToken))
                 .ToList();
 
             return result;
+        }
+
+        public string GetAccountNumber(string iban)
+        {
+            return iban == null ? null : Regex.Replace(iban.Substring(12), "^0+", "");
         }
     }
 }

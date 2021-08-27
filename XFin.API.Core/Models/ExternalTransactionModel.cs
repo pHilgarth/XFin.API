@@ -14,6 +14,8 @@ namespace XFin.API.Core.Models
 
         public string Reference { get; set; }
 
+        public string TransactionToken { get; set; }
+
         public string CounterPartTransactionToken { get; set; }
     }
 }

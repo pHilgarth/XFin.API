@@ -19,7 +19,7 @@ namespace XFin.API.Core.Entities
         [Required]
         public string Bic { get; set; }
 
-        public ICollection<ExternalTransaction> Transactions { get; set; }
+        public List<ExternalTransaction> Transactions { get; set; }
             = new List<ExternalTransaction>();
 
     }

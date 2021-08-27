@@ -15,6 +15,8 @@ namespace XFin.API.Core.Models
 
         public string Iban { get; set; }
 
+        public string AccountNumber { get; set; }
+
         public string Bic { get; set; }
 
         public string Bank { get; set; }

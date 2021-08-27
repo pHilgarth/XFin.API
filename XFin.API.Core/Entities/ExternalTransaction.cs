@@ -22,6 +22,8 @@ namespace XFin.API.Core.Entities
         [Required]
         public string Reference { get; set; }
 
+        public string TransactionToken { get; set; }
+
         public string CounterPartTransactionToken { get; set; }
 
     }

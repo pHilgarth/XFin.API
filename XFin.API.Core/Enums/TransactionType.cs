@@ -1,4 +1,6 @@
-﻿namespace XFin.API.Core.Enums
+﻿//TODO - i might not need this enum
+
+namespace XFin.API.Core.Enums
 {
     /*
      * Revenue          => the money comes from an external source

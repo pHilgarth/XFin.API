@@ -1,4 +1,6 @@
-﻿namespace XFin.API.Core.Enums
+﻿//TODO - I might not need this enum
+
+namespace XFin.API.Core.Enums
 {
     /*
      * Clearance    => the source of this transaction redeems a loan from the target    => transaction connected to a loan instance

@@ -9,16 +9,18 @@ namespace XFin.API.Core.Models
 
         public string InternalBankAccountId { get; set; }
 
+        public string InternalBankAccountIban { get; set; }
+
+        public string CounterParty { get; set; }
+
         public int TransactionCategoryId { get; set; }
 
-        public TransactionCategoryModel TransactionCategory { get; set; }
+        public string TransactionCategoryName { get; set; }
 
         public DateTime Date { get; set; }
 
         public decimal Amount { get; set; }
 
         public string Reference { get; set; }
-
-        public string CounterPartTransactionToken { get; set; }
     }
 }

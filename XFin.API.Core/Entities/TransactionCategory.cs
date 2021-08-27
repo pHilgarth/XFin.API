@@ -11,7 +11,7 @@ namespace XFin.API.Core.Entities
         [Required]
         public string Name { get; set; }
 
-        public ICollection<InternalTransaction> Transactions { get; set; }
+        public List<InternalTransaction> Transactions { get; set; }
             = new List<InternalTransaction>();
     }
 }

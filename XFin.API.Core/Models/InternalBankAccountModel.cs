@@ -19,16 +19,18 @@ namespace XFin.API.Core.Models
 
         public string Iban { get; set; }
 
+        public string AccountNumber { get; set; }
+
         public string Bic { get; set; }
 
         public string Bank { get; set; }
 
         public string Description { get; set; }
 
-        public ICollection<InternalTransactionModel> Revenues { get; set; }
+        public List<InternalTransactionModel> Revenues { get; set; }
             = new List<InternalTransactionModel>();
 
-        public ICollection<InternalTransactionModel> Expenses { get; set; }
+        public List<InternalTransactionModel> Expenses { get; set; }
             = new List<InternalTransactionModel>();
     }
 }

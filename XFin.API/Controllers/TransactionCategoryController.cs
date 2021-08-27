@@ -13,9 +13,9 @@ namespace XFin.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTransactionCategoriesByBankAccount(int id, bool includeTransactions = false, int year = 0, int month = 0)
+        public IActionResult GetTransactionCategoriesByBankAccount(int id, int year = 0, int month = 0)
         {
-            var transactionCategories = repo.GetTransactionCategoriesByBankAccount(id, includeTransactions, year, month);
+            var transactionCategories = repo.GetTransactionCategoriesByBankAccount(id, year, month);
 
             return transactionCategories != null ? Ok(transactionCategories) : NoContent();
         }

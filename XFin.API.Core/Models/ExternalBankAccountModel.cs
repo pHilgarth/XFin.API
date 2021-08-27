@@ -16,10 +16,10 @@ namespace XFin.API.Core.Models
 
         public string ExternalPartyName { get; set; }
 
-        public ICollection<ExternalTransactionModel> Revenues { get; set; }
+        public List<ExternalTransactionModel> Revenues { get; set; }
             = new List<ExternalTransactionModel>();
 
-        public ICollection<ExternalTransactionModel> Expenses { get; set; }
+        public List<ExternalTransactionModel> Expenses { get; set; }
             = new List<ExternalTransactionModel>();
     }
 }
