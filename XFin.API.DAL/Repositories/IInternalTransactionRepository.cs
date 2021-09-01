@@ -6,8 +6,8 @@ using XFin.API.Core.Models;
 
 namespace XFin.API.DAL.Repositories
 {
-    public interface ITransactionRepository
+    public interface IInternalTransactionRepository
     {
-        InternalTransaction CreateTransaction(InternalTransactionCreationModel transaction);
+        InternalTransaction CreateInternalTransaction(InternalTransactionCreationModel transaction);
     }
 }

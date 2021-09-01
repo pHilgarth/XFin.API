@@ -19,6 +19,13 @@ namespace XFin.API.DAL.Repositories
             this.mapper = mapper;
         }
 
+        public List<TransactionCategorySimpleModel> GetTransactionCategories()
+        {
+            var transactionCategories = context.TransactionCategories.ToList();
+
+            return mapper.Map<List<TransactionCategorySimpleModel>>(transactionCategories);
+        }
+
         public List<TransactionCategoryModel> GetTransactionCategoriesByBankAccount(int id, int year, int month)
         {
             var transactionCategoryModels = new List<TransactionCategoryModel>();

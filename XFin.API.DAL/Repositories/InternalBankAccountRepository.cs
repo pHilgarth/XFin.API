@@ -13,9 +13,9 @@ using XFin.API.DAL.DbContexts;
 
 namespace XFin.API.DAL.Repositories
 {
-    public class BankAccountRepository : IBankAccountRepository
+    public class InternalBankAccountRepository : IInternalBankAccountRepository
     {
-        public BankAccountRepository(ITransactionService calculator, ITransactionRepository transactionRepo, IMapper mapper, XFinDbContext context)
+        public InternalBankAccountRepository(ITransactionService calculator, IInternalTransactionRepository transactionRepo, IMapper mapper, XFinDbContext context)
         {
             this.calculator = calculator;
             this.transactionRepo = transactionRepo;
@@ -54,7 +54,7 @@ namespace XFin.API.DAL.Repositories
                     Reference = "[Kontoinitialisierung]",
                 };
 
-                transactionRepo.CreateTransaction(initializationTransaction);
+                transactionRepo.CreateInternalTransaction(initializationTransaction);
             }
 
             return newBankAccount;
@@ -127,6 +127,22 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
+        //public List<InternalBankAccountSimpleModel> GetBankAccounts()
+        //{
+        //    var bankAccounts = context.InternalBankAccounts
+        //        .Include(b => b.AccountHolder)
+        //        .ToList();
+
+        //    var bankAccountModels = mapper.Map<List<InternalBankAccountSimpleModel>>(bankAccounts);
+
+        //    foreach (var bankAccount in bankAccountModels)
+        //    {
+        //        bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+        //    }
+
+        //    return bankAccountModels;
+        //}
+
         public InternalBankAccountSimpleModel GetBankAccountSimple(int id, int year, int month)
         {
             var bankAccount = context.InternalBankAccounts.Where(b => b.Id == id)
@@ -160,7 +176,7 @@ namespace XFin.API.DAL.Repositories
         }
 
         private readonly ITransactionService calculator;
-        private readonly ITransactionRepository transactionRepo;
+        private readonly IInternalTransactionRepository transactionRepo;
         private readonly IMapper mapper;
         private readonly XFinDbContext context;
 

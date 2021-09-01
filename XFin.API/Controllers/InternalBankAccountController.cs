@@ -6,10 +6,10 @@ using XFin.API.DAL.Repositories;
 namespace XFin.API.Controllers
 {
     [ApiController]
-    [Route("api/bankAccounts")]
-    public class BankAccountController : Controller
+    [Route("api/internalBankAccounts")]
+    public class InternalBankAccountController : Controller
     {
-        public BankAccountController(IBankAccountRepository repo)
+        public InternalBankAccountController(IInternalBankAccountRepository repo)
         {
             this.repo = repo;
         }
@@ -36,6 +36,14 @@ namespace XFin.API.Controllers
             }
         }
 
+        //[HttpGet]
+        //public IActionResult GetBankAccounts()
+        //{
+        //    var bankAccounts = repo.GetBankAccounts();
+
+        //    return bankAccounts != null ? Ok(bankAccounts) : NoContent();
+        //}
+
         [HttpPatch("{id}")]
         public IActionResult UpdateBankAccountPartially(int id, JsonPatchDocument<InternalBankAccountUpdateModel> bankAccountPatch)
         {
@@ -44,6 +52,6 @@ namespace XFin.API.Controllers
             return Ok(updatedBankAccount);
         }
 
-        private readonly IBankAccountRepository repo;
+        private readonly IInternalBankAccountRepository repo;
     }
 }

@@ -13,10 +13,8 @@ namespace XFin.API.Core.Entities
         public int ExternalPartyId { get; set; }
         public ExternalParty ExternalParty { get; set; }
 
-        [Required]
         public string Iban { get; set; }
 
-        [Required]
         public string Bic { get; set; }
 
         public List<ExternalTransaction> Transactions { get; set; }

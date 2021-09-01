@@ -6,10 +6,10 @@ using XFin.API.DAL.Repositories;
 namespace XFin.API.Controllers
 {
     [ApiController]
-    [Route("api/transactions")]
-    public class TransactionController : Controller
+    [Route("api/internalTransactions")]
+    public class InternalTransactionController : Controller
     {
-        public TransactionController(ITransactionRepository repo)
+        public InternalTransactionController(IInternalTransactionRepository repo)
         {
             this.repo = repo;
         }
@@ -17,10 +17,10 @@ namespace XFin.API.Controllers
         [HttpPost()]
         public IActionResult CreateTransaction(InternalTransactionCreationModel transaction)
         {
-            var newTransaction = repo.CreateTransaction(transaction);
+            var newTransaction = repo.CreateInternalTransaction(transaction);
             return Ok(newTransaction);
         }
 
-        private readonly ITransactionRepository repo;
+        private readonly IInternalTransactionRepository repo;
     }
 }

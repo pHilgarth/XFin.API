@@ -9,6 +9,7 @@ namespace XFin.API.AutoMapperProfiles
         public InternalTransactionProfile()
         {
             CreateMap<InternalTransaction, InternalTransactionModel>();
+            CreateMap<InternalTransactionCreationModel, InternalTransaction>();
         }
     }
 }
