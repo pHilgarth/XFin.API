@@ -26,6 +26,12 @@ namespace XFin.API.DAL.Repositories
             var newTransaction = mapper.Map<InternalTransaction>(transaction);
             newTransaction.Date = DateTime.Parse(transaction.DateString);
 
+            if (newTransaction.TransactionToken == null)
+            {
+                newTransaction.TransactionToken = Guid.NewGuid().ToString();
+                newTransaction.CounterPartTransactionToken = Guid.NewGuid().ToString();
+            }
+
             //var newTransaction = new InternalTransaction
             //{
             //    InternalBankAccountId = transaction.InternalBankAccountId,

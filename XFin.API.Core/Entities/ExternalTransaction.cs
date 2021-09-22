@@ -19,7 +19,6 @@ namespace XFin.API.Core.Entities
         [Required]
         public decimal Amount { get; set; }
 
-        [Required]
         public string Reference { get; set; }
 
         public string TransactionToken { get; set; }
