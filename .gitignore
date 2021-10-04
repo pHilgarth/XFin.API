@@ -1,4 +1,6 @@
 .vs
+.DS_Store
+.idea
 
 XFin.API/bin
 XFin.API/obj
