@@ -21,6 +21,12 @@ namespace XFin.API.DAL.Repositories
 
         public AccountHolder CreateAccountHolder(AccountHolderCreationModel accountHolder)
         {
+            //check if accountHolder already exists
+            if (context.AccountHolders.Where(a => a.Name == accountHolder.Name).FirstOrDefault() != null)
+            {
+                return null;
+            }
+
             var newAccountHolder = mapper.Map<AccountHolder>(accountHolder);
 
             context.AccountHolders.Add(newAccountHolder);

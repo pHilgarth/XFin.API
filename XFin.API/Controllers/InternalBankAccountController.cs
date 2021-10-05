@@ -18,7 +18,15 @@ namespace XFin.API.Controllers
         public IActionResult CreateBankAccount(InternalBankAccountCreationModel bankAccount)
         {
             var newBankAccount = repo.CreateBankAccount(bankAccount);
-            return newBankAccount != null ? Ok(newBankAccount) : BadRequest("No AccountHolder with the given id available!");
+            //return newBankAccount != null ? Ok(newBankAccount) : Conflict();
+            if (newBankAccount != null)
+            {
+                return Ok(newBankAccount);
+            }
+            else
+            {
+                return Conflict();
+            }
         }
 
         [HttpGet("{id}")]

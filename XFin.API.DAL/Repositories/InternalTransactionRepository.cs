@@ -19,14 +19,13 @@ namespace XFin.API.DAL.Repositories
 
         public InternalTransaction CreateInternalTransaction(InternalTransactionCreationModel transaction)
         {
-            var transactionCategory = transaction.TransactionCategoryId > 0 ?
-                context.TransactionCategories.Where(t => t.Id == transaction.TransactionCategoryId).FirstOrDefault() :
-                context.TransactionCategories.Where(t => t.Name == "Nicht zugewiesen").FirstOrDefault();
-
             var newTransaction = mapper.Map<InternalTransaction>(transaction);
             newTransaction.Date = DateTime.Parse(transaction.DateString);
+            newTransaction.TransactionCategoryId = transaction.TransactionCategoryId > 0 ?
+                context.TransactionCategories.Where(t => t.Id == transaction.TransactionCategoryId).FirstOrDefault().Id :
+                context.TransactionCategories.Where(t => t.Name == "Nicht zugewiesen").FirstOrDefault().Id;
 
-            if (newTransaction.TransactionToken == null)
+            if (newTransaction.Reference != "[Kontoinitialisierung]" && newTransaction.TransactionToken == null)
             {
                 newTransaction.TransactionToken = Guid.NewGuid().ToString();
                 newTransaction.CounterPartTransactionToken = Guid.NewGuid().ToString();

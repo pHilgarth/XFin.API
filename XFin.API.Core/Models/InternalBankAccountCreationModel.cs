@@ -6,8 +6,6 @@ namespace XFin.API.Core.Models
 {
     public class InternalBankAccountCreationModel
     {
-        public int Id { get; set; }
-
         public int AccountHolderId { get; set; }
 
         public string Iban { get; set; }

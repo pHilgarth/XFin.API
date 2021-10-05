@@ -24,13 +24,20 @@ namespace XFin.API.DAL.Repositories
         }
 
         public InternalBankAccount CreateBankAccount(InternalBankAccountCreationModel bankAccount)
-        {//TODO add error handling when wrong id is passed, if no accountholder with this bankAccount.id exists
-            var accountHolder = context.AccountHolders.Where(a => a.Id == bankAccount.AccountHolderId).FirstOrDefault();
-
-            if (accountHolder == null)
+        {
+            //check if bankAccount already exists
+            if (context.InternalBankAccounts.Where(b => b.Iban == bankAccount.Iban).FirstOrDefault() != null)
             {
                 return null;
             }
+
+            //TODO - can I delete this?
+            //var accountholder = context.accountholders.where(a => a.id == bankaccount.accountholderid).firstordefault();
+
+            //if (accountholder == null)
+            //{
+            //    return null;
+            //}
 
             var newBankAccount = new InternalBankAccount
             {

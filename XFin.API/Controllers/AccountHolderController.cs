@@ -16,10 +16,10 @@ namespace XFin.API.Controllers
         [HttpPost()]
         public IActionResult CreateAccountHolder(AccountHolderCreationModel accountHolder)
         {
-            //TODO
-            //do we need some error handling here?
+            //TODO - improve error handling - I need to know when it fails due to duplicate records
             var newAccountHolder = repo.CreateAccountHolder(accountHolder);
-            return Ok(newAccountHolder);
+
+            return newAccountHolder != null ? Ok(newAccountHolder) : Conflict();
         }
 
         [HttpGet("{id}")]
