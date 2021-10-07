@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Repositories;
 
@@ -44,13 +45,13 @@ namespace XFin.API.Controllers
             }
         }
 
-        //[HttpGet]
-        //public IActionResult GetBankAccounts()
-        //{
-        //    var bankAccounts = repo.GetBankAccounts();
+        [HttpGet("iban/{iban}")]
+        public IActionResult GetBankAccountByIban(string iban)
+        {
+            var bankAccount = repo.GetBankAccountByIban(iban);
 
-        //    return bankAccounts != null ? Ok(bankAccounts) : NoContent();
-        //}
+            return bankAccount != null ? Ok(bankAccount) : NoContent();
+        }
 
         [HttpPatch("{id}")]
         public IActionResult UpdateBankAccountPartially(int id, JsonPatchDocument<InternalBankAccountUpdateModel> bankAccountPatch)

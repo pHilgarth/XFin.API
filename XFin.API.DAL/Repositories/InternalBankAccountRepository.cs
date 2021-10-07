@@ -139,21 +139,19 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        //public List<InternalBankAccountSimpleModel> GetBankAccounts()
-        //{
-        //    var bankAccounts = context.InternalBankAccounts
-        //        .Include(b => b.AccountHolder)
-        //        .ToList();
+        public InternalBankAccountSimpleModel GetBankAccountByIban(string iban)
+        {
+            var bankAccount = context.InternalBankAccounts.Where(b => b.Iban == iban).FirstOrDefault();
 
-        //    var bankAccountModels = mapper.Map<List<InternalBankAccountSimpleModel>>(bankAccounts);
+            if (bankAccount != null)
+            {
+                var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
 
-        //    foreach (var bankAccount in bankAccountModels)
-        //    {
-        //        bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
-        //    }
+                return bankAccountModel;
+            }
 
-        //    return bankAccountModels;
-        //}
+            return null;
+        }
 
         public InternalBankAccountSimpleModel GetBankAccountSimple(int id, int year, int month)
         {
