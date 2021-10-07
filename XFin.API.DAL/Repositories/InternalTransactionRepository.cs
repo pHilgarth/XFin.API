@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
 using XFin.API.DAL.DbContexts;
