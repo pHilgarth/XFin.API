@@ -27,7 +27,7 @@ namespace XFin.API.DAL.Repositories
             if (context.InternalBankAccounts.Where(b => b.Iban == bankAccount.Iban).FirstOrDefault() != null)
             {
                 //check if the accountHolder of "bankAccount" has accounts - if not, it has to be removed again
-                if(context.InternalBankAccounts.Where(b => b.AccountHolderId == bankAccount.AccountHolderId).FirstOrDefault() == null)
+                if (context.InternalBankAccounts.Where(b => b.AccountHolderId == bankAccount.AccountHolderId).FirstOrDefault() == null)
                 {
                     var accountHolder = context.AccountHolders.Where(a => a.Id == bankAccount.AccountHolderId).FirstOrDefault();
                     context.AccountHolders.Remove(accountHolder);
