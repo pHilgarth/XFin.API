@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Repositories;
 

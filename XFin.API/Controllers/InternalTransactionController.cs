@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Repositories;
 
