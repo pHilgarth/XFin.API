@@ -74,7 +74,7 @@ namespace XFin.API.Core.Services
                 t.Amount < 0 &&
                 (t.Date.Year < year ||
                 t.Date.Year == year && t.Date.Month <= month) &&
-                !transactionTokens.Contains(t.CounterPartTransactionToken))
+                (!transactionTokens.Contains(t.CounterPartTransactionToken) || t.CounterPartTransactionToken == null))
                 .ToList();
 
             return result;
@@ -109,7 +109,7 @@ namespace XFin.API.Core.Services
                 t.Amount > 0 &&
                 (t.Date.Year < year ||
                 t.Date.Year == year && t.Date.Month <= month) &&
-                !transactionTokens.Contains(t.CounterPartTransactionToken))
+                (!transactionTokens.Contains(t.CounterPartTransactionToken) || t.CounterPartTransactionToken == null))
                 .ToList();
 
             return result;
