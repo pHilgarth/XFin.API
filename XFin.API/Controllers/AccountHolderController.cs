@@ -58,7 +58,7 @@ namespace XFin.API.Controllers
         {
             var updatedAccountHolder = repo.UpdateAccountHolder(id, accountHolder);
 
-            return Ok(updatedAccountHolder);
+            return updatedAccountHolder != null ? Ok(updatedAccountHolder) : Conflict();
         }
 
         [HttpDelete("{id}")]

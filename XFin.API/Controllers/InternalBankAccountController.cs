@@ -44,10 +44,10 @@ namespace XFin.API.Controllers
             }
         }
 
-        [HttpGet("iban/{iban}")]
-        public IActionResult GetBankAccountByIban(string iban)
+        [HttpGet("{id}/{iban}")]
+        public IActionResult GetBankAccountByIban(int id, string iban)
         {
-            var bankAccount = repo.GetBankAccountByIban(iban);
+            var bankAccount = repo.GetBankAccountByIban(id, iban);
 
             return bankAccount != null ? Ok(bankAccount) : NoContent();
         }

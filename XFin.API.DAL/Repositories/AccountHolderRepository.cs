@@ -91,6 +91,7 @@ namespace XFin.API.DAL.Repositories
                         var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
 
                         bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
+                        bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
                         accountHolderModel.BankAccounts.Add(bankAccountModel);
                     }
@@ -126,10 +127,17 @@ namespace XFin.API.DAL.Repositories
         public AccountHolder UpdateAccountHolder(int id, AccountHolderUpdateModel accountHolder)
         {
             var accountHolderEntity = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
+            var duplicateAccountHolder = context.AccountHolders.Where(a => a.Name == accountHolder.Name).FirstOrDefault();
 
-            if (accountHolderEntity != null)
+            if (accountHolderEntity != null && duplicateAccountHolder == null)
             {
                 mapper.Map(accountHolder, accountHolderEntity);
+            }
+            else
+            {
+                //TODO -- it returns null if the accountHolder is not found AS WELL if the name already exists
+                //TODO -- right now there is now way of determining what went wrong
+                return null;
             }
 
             context.SaveChanges();

@@ -9,7 +9,7 @@ namespace XFin.API.DAL.Repositories
     {
         InternalBankAccount CreateBankAccount(InternalBankAccountCreationModel bankAccount);
         InternalBankAccountModel GetBankAccount(int id, int year, int month);
-        InternalBankAccountSimpleModel GetBankAccountByIban(string iban);
+        InternalBankAccountSimpleModel GetBankAccountByIban(int id, string iban);
         InternalBankAccountSimpleModel GetBankAccountSimple(int id, int year, int month);
         InternalBankAccount UpdateBankAccountPartially(int id, JsonPatchDocument<InternalBankAccountUpdateModel> bankAccountPatch);
     }
