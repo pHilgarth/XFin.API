@@ -92,7 +92,7 @@ namespace XFin.API.Core.Services
             return transactions
                 .Where(t => t.Amount > 0 &&
                             t.Date.Year == year && t.Date.Month == month &&
-                            !transactionTokens.Contains(t.CounterPartTransactionToken))
+                            (!transactionTokens.Contains(t.CounterPartTransactionToken) || t.CounterPartTransactionToken == null))
                 .ToList();
         }
 
