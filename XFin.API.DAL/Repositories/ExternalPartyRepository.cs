@@ -34,22 +34,29 @@ namespace XFin.API.DAL.Repositories
         public List<ExternalPartyModel> GetExternalParties()
         {
             var externalParties = context.ExternalParties.ToList();
-            var externalPartyModels = new List<ExternalPartyModel>();
 
-            foreach (var externalParty in externalParties)
+            if (externalParties != null && externalParties.Count > 0)
             {
-                var externalBankAccountId = context.ExternalBankAccounts.
-                    Where(e => e.ExternalPartyId == externalParty.Id)
-                    .FirstOrDefault()
-                    .Id;
+                var externalPartyModels = new List<ExternalPartyModel>();
 
-                var externalPartyModel = mapper.Map<ExternalPartyModel>(externalParty);
-                externalPartyModel.ExternalBankAccountId = externalBankAccountId;
+                foreach (var externalParty in externalParties)
+                {
+                    var externalBankAccount = context.ExternalBankAccounts.
+                        Where(e => e.ExternalPartyId == externalParty.Id)
+                        .FirstOrDefault();
 
-                externalPartyModels.Add(externalPartyModel);
+                    var externalBankAccountModel = mapper.Map<ExternalBankAccountModel>(externalBankAccount);
+
+                    var externalPartyModel = mapper.Map<ExternalPartyModel>(externalParty);
+                    externalPartyModel.ExternalBankAccount = externalBankAccountModel;
+
+                    externalPartyModels.Add(externalPartyModel);
+                }
+
+                return externalPartyModels != null && externalPartyModels.Count > 0 ? externalPartyModels : null;
             }
 
-            return externalPartyModels != null ? externalPartyModels : null;
+            return null;
         }
 
         private readonly XFinDbContext context;

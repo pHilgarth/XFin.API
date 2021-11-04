@@ -41,7 +41,10 @@ namespace XFin.API.Controllers
         public IActionResult GetExternalParties()
         {
             var externalParties = repo.GetExternalParties();
-            return externalParties.Count > 0 ? Ok(externalParties) : NoContent();
+
+            return externalParties != null && externalParties.Count > 0
+                ? Ok(externalParties)
+                : NoContent();
         }
 
         private readonly IExternalPartyRepository repo;

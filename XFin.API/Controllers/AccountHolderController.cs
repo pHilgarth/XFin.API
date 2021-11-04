@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Repositories;
-
+//TODO - return NoContent when there are no records - on every endpoint, even on TransactionCategory, which always should
+//      have records. SHOULD HAVE - you'll never know
 namespace XFin.API.Controllers
 {
     [ApiController]

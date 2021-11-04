@@ -11,6 +11,6 @@ namespace XFin.API.Core.Models
 
         public string Name { get; set; }
 
-        public int ExternalBankAccountId { get; set; }
+        public ExternalBankAccountModel ExternalBankAccount { get; set; }
     }
 }
