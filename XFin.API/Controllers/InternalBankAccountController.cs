@@ -44,6 +44,8 @@ namespace XFin.API.Controllers
             }
         }
 
+        //this endpoint is used to check for iban duplicates when creating new accounts
+        //i need the id and the iban to distinguish it from endpoint "GetBankAccount" - it doesn't work with only one param "iban"
         [HttpGet("{id}/{iban}")]
         public IActionResult GetBankAccountByIban(int id, string iban)
         {
