@@ -49,19 +49,6 @@ namespace XFin.API.DAL.Repositories
             context.InternalBankAccounts.Add(newBankAccount);
             context.SaveChanges();
 
-            if (bankAccount.Balance != 0)
-            {
-                var initializationTransaction = new InternalTransactionCreationModel
-                {
-                    InternalBankAccountId = newBankAccount.Id,
-                    DateString = DateTime.Now.ToShortDateString(),
-                    Amount = bankAccount.Balance,
-                    Reference = "[Kontoinitialisierung]",
-                };
-
-                transactionRepo.CreateInternalTransaction(initializationTransaction);
-            }
-
             var newBankAccountSettings = new InternalBankAccountSettings
             {
                 InternalBankAccountId = newBankAccount.Id,
