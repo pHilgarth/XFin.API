@@ -34,6 +34,7 @@ namespace XFin.API
 
             services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
             services.AddScoped<IInternalBankAccountRepository, InternalBankAccountRepository>();
+            services.AddScoped<IInternalBankAccountSettingsRepository, InternalBankAccountSettingsRepository>();
             services.AddScoped<IExternalBankAccountRepository, ExternalBankAccountRepository>();
             services.AddScoped<IInternalTransactionRepository, InternalTransactionRepository>();
             services.AddScoped<IExternalTransactionRepository, ExternalTransactionRepository>();
