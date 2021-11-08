@@ -8,9 +8,9 @@ namespace XFin.API.Core.Services
 {
     public class TransactionsService : ITransactionService
     {
-        decimal CalculateAvailableAmount(InternalBankAccount bankAccount)
+        public decimal CalculateAvailableAmount(InternalBankAccount bankAccount)
         {
-
+            return 3m;
         }
 
         public decimal CalculateBalance(List<InternalTransaction> transactions, int year, int month)

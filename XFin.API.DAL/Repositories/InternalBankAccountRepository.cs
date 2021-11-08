@@ -20,7 +20,7 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
             this.mapper = mapper;
         }
-
+        //TODO - when creating a new account, the default settings must be persisted into the db
         public InternalBankAccount CreateBankAccount(InternalBankAccountCreationModel bankAccount)
         {
             //check if "bankAccount" already exists
@@ -61,6 +61,17 @@ namespace XFin.API.DAL.Repositories
 
                 transactionRepo.CreateInternalTransaction(initializationTransaction);
             }
+
+            var newBankAccountSettings = new InternalBankAccountSettings
+            {
+                InternalBankAccountId = newBankAccount.Id,
+                EffectsExpenses = true,
+                ReceivesRevenues = true,
+                AllowsOverdraft = true,
+            };
+
+            context.InternalBankAccountSettings.Add(newBankAccountSettings);
+            context.SaveChanges();
 
             return newBankAccount;
         }
@@ -125,7 +136,7 @@ namespace XFin.API.DAL.Repositories
 
                 bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
                 bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, year, month);
-                bankAccountModel.AvailableAmount = calculator.CalculateAvailableAmount();
+                bankAccountModel.AvailableAmount = calculator.CalculateAvailableAmount(bankAccount);
 
                 return bankAccountModel;
             }
@@ -140,6 +151,7 @@ namespace XFin.API.DAL.Repositories
             if (bankAccount != null && bankAccount.Id != id)
             {
                 var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
+                bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
                 return bankAccountModel;
             }
@@ -158,6 +170,7 @@ namespace XFin.API.DAL.Repositories
             {
                 var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
                 bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
+                bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
                 return bankAccountModel;
             }

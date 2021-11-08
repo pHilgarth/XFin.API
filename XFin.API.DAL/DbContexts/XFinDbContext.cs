@@ -16,6 +16,7 @@ namespace XFin.API.DAL.DbContexts
         public DbSet<TransactionCategory> TransactionCategories { get; set; }
         public DbSet<InternalTransaction> InternalTransactions { get; set; }
         public DbSet<ExternalTransaction> ExternalTransactions { get; set; }
+        public DbSet<InternalBankAccountSettings> InternalBankAccountSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
