@@ -37,7 +37,7 @@ namespace XFin.API.DAL.Repositories
             return newTransaction;
         }
 
-        private XFinDbContext context;
+        private readonly XFinDbContext context;
         private readonly IMapper mapper;
     }
 }
