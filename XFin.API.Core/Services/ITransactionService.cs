@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Text;
 using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Services

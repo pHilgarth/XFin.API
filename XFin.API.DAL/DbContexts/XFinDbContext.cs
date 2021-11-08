@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using XFin.API.Core.Entities;
 
 namespace XFin.API.DAL.DbContexts

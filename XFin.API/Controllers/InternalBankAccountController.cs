@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
-using XFin.API.DAL.Repositories;
+using XFin.API.DAL.Interfaces;
 
 namespace XFin.API.Controllers
 {

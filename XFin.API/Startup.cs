@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using System;
 using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
+using XFin.API.DAL.Interfaces;
 using XFin.API.DAL.Repositories;
 
 namespace XFin.API

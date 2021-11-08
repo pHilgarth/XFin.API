@@ -1,5 +1,4 @@
 ﻿using System;
-using XFin.API.Core.Enums;
 
 namespace XFin.API.Core.Models
 {

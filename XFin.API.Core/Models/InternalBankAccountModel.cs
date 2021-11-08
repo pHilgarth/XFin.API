@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using XFin.API.Core.Entities;
+﻿using System.Collections.Generic;
 
 namespace XFin.API.Core.Models
 {

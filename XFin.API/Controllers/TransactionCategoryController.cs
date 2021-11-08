@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using XFin.API.DAL.Repositories;
+using XFin.API.DAL.Interfaces;
 
 namespace XFin.API.Controllers
 {

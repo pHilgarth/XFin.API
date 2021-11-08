@@ -1,5 +1,4 @@
-﻿using System;
-namespace XFin.API.Core.Models
+﻿namespace XFin.API.Core.Models
 {
     public class InternalBankAccountSettingsModel
     {

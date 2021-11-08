@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
 using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
+using XFin.API.DAL.Interfaces;
 
 namespace XFin.API.DAL.Repositories
 {

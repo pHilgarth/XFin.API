@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace XFin.API.Core.Models
+﻿namespace XFin.API.Core.Models
 {
     public class TransactionCategoryCreationModel
     {
