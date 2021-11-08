@@ -4,7 +4,7 @@ using XFin.API.DAL.Interfaces;
 namespace XFin.API.Controllers
 {
     [ApiController]
-    [Route("api/internalBankAccounts")]
+    [Route("api/internalBankAccountSettings")]
     public class InternalBankAccountSettingsController : Controller
     {
         public InternalBankAccountSettingsController(IInternalBankAccountSettingsRepository repo)
