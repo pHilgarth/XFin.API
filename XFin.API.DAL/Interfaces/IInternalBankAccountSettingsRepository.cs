@@ -1,7 +1,6 @@
-﻿using System;
-using XFin.API.Core.Models;
+﻿using XFin.API.Core.Models;
 
-namespace XFin.API.DAL.Repositories
+namespace XFin.API.DAL.Interfaces
 {
     public interface IInternalBankAccountSettingsRepository
     {
