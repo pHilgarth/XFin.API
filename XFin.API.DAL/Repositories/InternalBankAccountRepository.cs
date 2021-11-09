@@ -131,11 +131,11 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public InternalBankAccountSimpleModel GetBankAccountByIban(int id, string iban)
+        public InternalBankAccountSimpleModel GetByIban(string iban)
         {
             var bankAccount = context.InternalBankAccounts.Where(b => b.Iban == iban).FirstOrDefault();
 
-            if (bankAccount != null && bankAccount.Id != id)
+            if (bankAccount != null)
             {
                 var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
                 bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
