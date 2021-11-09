@@ -22,12 +22,6 @@ namespace XFin.API.DAL.Repositories
 
         public AccountHolder CreateAccountHolder(AccountHolderCreationModel accountHolder)
         {
-            //check if accountHolder already exists
-            if (context.AccountHolders.Where(a => a.Name == accountHolder.Name).FirstOrDefault() != null)
-            {
-                return null;
-            }
-
             var newAccountHolder = mapper.Map<AccountHolder>(accountHolder);
 
             context.AccountHolders.Add(newAccountHolder);
@@ -120,6 +114,14 @@ namespace XFin.API.DAL.Repositories
         public AccountHolderSimpleModel GetAccountHolderSimple(int id)
         {
             var accountHolder = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
+            var accountHolderModel = mapper.Map<AccountHolderSimpleModel>(accountHolder);
+
+            return accountHolderModel != null ? accountHolderModel : null;
+        }
+
+        public AccountHolderSimpleModel GetByName(string name)
+        {
+            var accountHolder = context.AccountHolders.Where(a => a.Name == name).FirstOrDefault();
             var accountHolderModel = mapper.Map<AccountHolderSimpleModel>(accountHolder);
 
             return accountHolderModel != null ? accountHolderModel : null;

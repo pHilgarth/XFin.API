@@ -3,6 +3,7 @@ using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
 //TODO - return NoContent when there are no records - on every endpoint, even on TransactionCategory, which always should
 //      have records. SHOULD HAVE - you'll never know
+//TODO - maybe change the action names just to "Get", "GetByName", "Create", the controller name tells, what record(s) to get
 namespace XFin.API.Controllers
 {
     [ApiController]
@@ -17,10 +18,10 @@ namespace XFin.API.Controllers
         [HttpPost()]
         public IActionResult CreateAccountHolder(AccountHolderCreationModel accountHolder)
         {
-            //TODO - improve error handling - I need to know when it fails due to duplicate records
             var newAccountHolder = repo.CreateAccountHolder(accountHolder);
 
-            return newAccountHolder != null ? Ok(newAccountHolder) : Conflict();
+            //TODO - if no accountHolder was created, what do I return, is BadRequest ok?
+            return newAccountHolder != null ? Ok(newAccountHolder) : BadRequest();
         }
 
         [HttpGet("{id}")]
@@ -36,6 +37,14 @@ namespace XFin.API.Controllers
                 var accountHolder = repo.GetAccountHolderSimple(id);
                 return accountHolder != null ? Ok(accountHolder) : NoContent();
             }
+        }
+
+        //This endpoint is for duplicate checks
+        [HttpGet("name/{name}")]
+        public IActionResult GetByName(string name)
+        {
+            var accountHolder = repo.GetByName(name);
+            return accountHolder != null ? Ok(accountHolder) : NoContent();
         }
 
         [HttpGet()]
