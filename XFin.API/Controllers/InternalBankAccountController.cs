@@ -56,9 +56,10 @@ namespace XFin.API.Controllers
         [HttpPatch("{id}")]
         public IActionResult UpdateBankAccountPartially(int id, JsonPatchDocument<InternalBankAccountUpdateModel> bankAccountPatch)
         {
+            //TODO - error handling
             var updatedBankAccount = repo.UpdateBankAccountPartially(id, bankAccountPatch);
 
-            return Ok(updatedBankAccount);
+            return updatedBankAccount != null ? Ok(updatedBankAccount) : NotFound();
         }
 
         private readonly IInternalBankAccountRepository repo;

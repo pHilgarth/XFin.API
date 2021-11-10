@@ -169,15 +169,22 @@ namespace XFin.API.DAL.Repositories
         public InternalBankAccount UpdateBankAccountPartially(int id, JsonPatchDocument<InternalBankAccountUpdateModel> bankAccountPatch)
         {
             var bankAccountEntity = context.InternalBankAccounts.Where(b => b.Id == id).FirstOrDefault();
-            var bankAccountToPatch = mapper.Map<InternalBankAccountUpdateModel>(bankAccountEntity);
 
-            bankAccountPatch.ApplyTo(bankAccountToPatch);
+            if (bankAccountEntity != null)
+            {
+                //TODO - test what happens if the patchDoc is invalid, i.e. contains a path / prop that does not exist
+                var bankAccountToPatch = mapper.Map<InternalBankAccountUpdateModel>(bankAccountEntity);
 
-            mapper.Map(bankAccountToPatch, bankAccountEntity);
+                bankAccountPatch.ApplyTo(bankAccountToPatch);
 
-            context.SaveChanges();
+                mapper.Map(bankAccountToPatch, bankAccountEntity);
 
-            return bankAccountEntity;
+                context.SaveChanges();
+
+                return bankAccountEntity;
+            }
+
+            return null;
         }
 
         private readonly ITransactionService calculator;
