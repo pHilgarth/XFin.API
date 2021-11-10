@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
 //TODO - return NoContent when there are no records - on every endpoint, even on TransactionCategory, which always should
@@ -44,6 +45,7 @@ namespace XFin.API.Controllers
         public IActionResult GetByName(string name)
         {
             var accountHolder = repo.GetByName(name);
+
             return accountHolder != null ? Ok(accountHolder) : NoContent();
         }
 
@@ -63,12 +65,13 @@ namespace XFin.API.Controllers
 
         }
 
-        [HttpPut("{id}")]
-        public IActionResult UpdateAccountHolder(int id, AccountHolderUpdateModel accountHolder)
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch)
         {
-            var updatedAccountHolder = repo.UpdateAccountHolder(id, accountHolder);
+            //TODO - error handling
+            var updatedBankAccount = repo.Update(id, accountHolderPatch);
 
-            return updatedAccountHolder != null ? Ok(updatedAccountHolder) : Conflict();
+            return updatedBankAccount != null ? Ok(updatedBankAccount) : NotFound();
         }
 
         [HttpDelete("{id}")]

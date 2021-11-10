@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -127,25 +128,25 @@ namespace XFin.API.DAL.Repositories
             return accountHolderModel != null ? accountHolderModel : null;
         }
 
-        public AccountHolder UpdateAccountHolder(int id, AccountHolderUpdateModel accountHolder)
+        public AccountHolder Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch)
         {
             var accountHolderEntity = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
-            var duplicateAccountHolder = context.AccountHolders.Where(a => a.Name == accountHolder.Name).FirstOrDefault();
 
-            if (accountHolderEntity != null && duplicateAccountHolder == null)
+            if (accountHolderEntity != null)
             {
-                mapper.Map(accountHolder, accountHolderEntity);
-            }
-            else
-            {
-                //TODO -- it returns null if the accountHolder is not found AS WELL if the name already exists
-                //TODO -- right now there is now way of determining what went wrong
-                return null;
+                //TODO - test what happens if the patchDoc is invalid, i.e. contains a path / prop that does not exist
+                var accountHolderToPatch = mapper.Map<AccountHolderUpdateModel>(accountHolderEntity);
+
+                accountHolderPatch.ApplyTo(accountHolderToPatch);
+
+                mapper.Map(accountHolderToPatch, accountHolderEntity);
+
+                context.SaveChanges();
+
+                return accountHolderEntity;
             }
 
-            context.SaveChanges();
-
-            return accountHolderEntity;
+            return null;
         }
 
         private readonly ITransactionService calculator;

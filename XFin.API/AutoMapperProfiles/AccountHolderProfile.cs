@@ -11,7 +11,7 @@ namespace XFin.API.AutoMapperProfiles
             CreateMap<AccountHolder, AccountHolderModel>();
             CreateMap<AccountHolder, AccountHolderSimpleModel>();
             CreateMap<AccountHolderCreationModel, AccountHolder>();
-            CreateMap<AccountHolderUpdateModel, AccountHolder>();
+            CreateMap<AccountHolderUpdateModel, AccountHolder>().ReverseMap();
         }
     }
 }

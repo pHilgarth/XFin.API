@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using System.Collections.Generic;
 using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
 
@@ -12,6 +13,6 @@ namespace XFin.API.DAL.Interfaces
         AccountHolderModel GetAccountHolder(int id, bool includeTransactions);
         AccountHolderSimpleModel GetAccountHolderSimple(int id);
         AccountHolderSimpleModel GetByName(string name);
-        AccountHolder UpdateAccountHolder(int id, AccountHolderUpdateModel accountHolder);
+        AccountHolder Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch);
     }
 }
