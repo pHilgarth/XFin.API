@@ -8,6 +8,7 @@ namespace XFin.API.Core.Services
 {
     public class TransactionsService : ITransactionService
     {
+        //TODO - finish calculation of available amount
         public decimal CalculateAvailableAmount(InternalBankAccount bankAccount)
         {
             return 3m;

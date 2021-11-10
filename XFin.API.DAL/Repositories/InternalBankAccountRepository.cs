@@ -123,6 +123,7 @@ namespace XFin.API.DAL.Repositories
 
                 bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
                 bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, year, month);
+                //TODO - finish calculation of available amount
                 bankAccountModel.AvailableAmount = calculator.CalculateAvailableAmount(bankAccount);
 
                 return bankAccountModel;
