@@ -12,8 +12,8 @@
 
         public bool AllowsOverdraft { get; set; }
 
-        public decimal BalanceThreshold { get; set; }
+        public decimal? BalanceThreshold { get; set; }
 
-        public decimal ExpensesThreshold { get; set; }
+        public decimal? ExpensesThreshold { get; set; }
     }
 }
