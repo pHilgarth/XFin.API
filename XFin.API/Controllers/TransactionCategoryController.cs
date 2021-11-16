@@ -28,15 +28,6 @@ namespace XFin.API.Controllers
             return transactionCategories != null ? Ok(transactionCategories) : NoContent();
         }
 
-        //this endpoint gets all categories for a specified account without transactions but with blockedBudget
-        [HttpGet("simple/{id}")]
-        public IActionResult GetAllSimpleByAccount(int id)
-        {
-            var transactionCategories = repo.GetAllSimpleByAccount(id);
-
-            return transactionCategories != null ? Ok(transactionCategories) : NoContent();
-        }
-
         private ITransactionCategoryRepository repo;
     }
 }

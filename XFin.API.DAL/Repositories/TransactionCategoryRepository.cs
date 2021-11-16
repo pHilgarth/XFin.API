@@ -82,26 +82,6 @@ namespace XFin.API.DAL.Repositories
             return transactionCategoryModels;
         }
 
-        public List<TransactionCategorySimpleModel> GetAllSimpleByAccount(int id)
-        {
-            var transactionCategoryModels = new List<TransactionCategorySimpleModel>();
-            var transactionCategories = context.TransactionCategories.ToList();
-
-            foreach (var transactionCategory in transactionCategories)
-            {
-                var categoryId = transactionCategory.Id;
-                var transactionCategoryModel = mapper.Map<TransactionCategorySimpleModel>(transactionCategory);
-
-                transactionCategoryModel.BlockedBudget =
-                    context.BlockedBudget.Where(b => b.TransactionCategoryId == categoryId && b.InternalBankAccountId == id).ToList();
-
-                transactionCategoryModels.Add(transactionCategoryModel);
-            }
-
-            return transactionCategoryModels.Count > 0 ? transactionCategoryModels : null;
-
-        }
-
         private IMapper mapper;
         private ITransactionService calculator;
         private XFinDbContext context;
