@@ -21,7 +21,7 @@ namespace XFin.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTransactionCategoriesByBankAccount(int id, bool simple = false, int year = 0, int month = 0)
+        public IActionResult GetAllByAccount(int id, int year = 0, int month = 0)
         {
             var transactionCategories = repo.GetAllByAccount(id, year, month);
 
