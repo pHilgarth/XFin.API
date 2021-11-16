@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
 using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
@@ -19,14 +20,15 @@ namespace XFin.API.DAL.Repositories
             this.mapper = mapper;
         }
 
-        public List<TransactionCategorySimpleModel> GetTransactionCategories()
+        public List<TransactionCategorySimpleModel> GetAll()
         {
             var transactionCategories = context.TransactionCategories.ToList();
 
             return mapper.Map<List<TransactionCategorySimpleModel>>(transactionCategories);
         }
 
-        public List<TransactionCategoryModel> GetTransactionCategoriesByBankAccount(int id, int year, int month)
+        //TODO - review - include a possibility for NoContent
+        public List<TransactionCategoryModel> GetAllByAccount(int id, int year, int month)
         {
             var transactionCategoryModels = new List<TransactionCategoryModel>();
             var transactionCategories = context.TransactionCategories
@@ -78,6 +80,26 @@ namespace XFin.API.DAL.Repositories
             }
 
             return transactionCategoryModels;
+        }
+
+        public List<TransactionCategorySimpleModel> GetAllSimpleByAccount(int id)
+        {
+            var transactionCategoryModels = new List<TransactionCategorySimpleModel>();
+            var transactionCategories = context.TransactionCategories.ToList();
+
+            foreach (var transactionCategory in transactionCategories)
+            {
+                var categoryId = transactionCategory.Id;
+                var transactionCategoryModel = mapper.Map<TransactionCategorySimpleModel>(transactionCategory);
+
+                transactionCategoryModel.BlockedBudget =
+                    context.BlockedBudget.Where(b => b.TransactionCategoryId == categoryId && b.InternalBankAccountId == id).ToList();
+
+                transactionCategoryModels.Add(transactionCategoryModel);
+            }
+
+            return transactionCategoryModels.Count > 0 ? transactionCategoryModels : null;
+
         }
 
         private IMapper mapper;

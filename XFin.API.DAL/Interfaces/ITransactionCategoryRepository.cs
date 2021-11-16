@@ -5,7 +5,9 @@ namespace XFin.API.DAL.Interfaces
 {
     public interface ITransactionCategoryRepository
     {
-        List<TransactionCategorySimpleModel> GetTransactionCategories();
-        List<TransactionCategoryModel> GetTransactionCategoriesByBankAccount(int id, int year, int month);
+        List<TransactionCategorySimpleModel> GetAll();
+        List<TransactionCategoryModel> GetAllByAccount(int id, int year, int month);
+        List<TransactionCategorySimpleModel> GetAllSimpleByAccount(int id);
+
     }
 }

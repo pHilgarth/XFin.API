@@ -15,15 +15,24 @@ namespace XFin.API.Controllers
         [HttpGet]
         public IActionResult GetTransactionCategories()
         {
-            var transactionCategories = repo.GetTransactionCategories();
+            var transactionCategories = repo.GetAll();
 
             return transactionCategories != null ? Ok(transactionCategories) : NoContent();
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetTransactionCategoriesByBankAccount(int id, int year = 0, int month = 0)
+        public IActionResult GetTransactionCategoriesByBankAccount(int id, bool simple = false, int year = 0, int month = 0)
         {
-            var transactionCategories = repo.GetTransactionCategoriesByBankAccount(id, year, month);
+            var transactionCategories = repo.GetAllByAccount(id, year, month);
+
+            return transactionCategories != null ? Ok(transactionCategories) : NoContent();
+        }
+
+        //this endpoint gets all categories for a specified account without transactions but with blockedBudget
+        [HttpGet("simple/{id}")]
+        public IActionResult GetAllSimpleByAccount(int id)
+        {
+            var transactionCategories = repo.GetAllSimpleByAccount(id);
 
             return transactionCategories != null ? Ok(transactionCategories) : NoContent();
         }
