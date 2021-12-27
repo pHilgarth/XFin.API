@@ -64,7 +64,8 @@ namespace XFin.API.DAL.Repositories
             return mapper.Map<List<AccountHolderSimpleModel>>(context.AccountHolders);
         }
 
-        public AccountHolderModel GetAccountHolder(int id, bool simpleAccounts)
+        //public AccountHolderModel GetAccountHolder(int id, bool simpleAccounts)
+        public AccountHolderModel GetAccountHolder(int id)
         {
             var accountHolder = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
 
@@ -82,28 +83,35 @@ namespace XFin.API.DAL.Repositories
                     var currentYear = DateTime.Now.Year;
                     var currentMonth = DateTime.Now.Month;
 
-                    if (simpleAccounts)
-                    {
-                        var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
+                    var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
 
-                        bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
-                        bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
+                    bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
+                    bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
-                        accountHolderModel.BankAccounts.Add(bankAccountModel);
-                    }
-                    else
-                    {
-                        var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
-                        var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, currentYear, currentMonth);
-                        var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, currentYear, currentMonth);
+                    accountHolderModel.BankAccounts.Add(bankAccountModel);
 
-                        bankAccountModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
-                        bankAccountModel.Expenses = mapper.Map<List<InternalTransactionModel>>(expenses);
-                        bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
-                        bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, currentYear, currentMonth);
+                    //if (simpleAccounts)
+                    //{
+                    //    var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
 
-                        accountHolderModel.BankAccounts.Add(bankAccountModel);
-                    }
+                    //    bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
+                    //    bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
+
+                    //    accountHolderModel.BankAccounts.Add(bankAccountModel);
+                    //}
+                    //else
+                    //{
+                    //    var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
+                    //    var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, currentYear, currentMonth);
+                    //    var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, currentYear, currentMonth);
+
+                    //    bankAccountModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
+                    //    bankAccountModel.Expenses = mapper.Map<List<InternalTransactionModel>>(expenses);
+                    //    bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
+                    //    bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, currentYear, currentMonth);
+
+                    //    accountHolderModel.BankAccounts.Add(bankAccountModel);
+                    //}
                 }
 
                 return accountHolderModel;

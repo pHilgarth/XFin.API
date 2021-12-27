@@ -26,11 +26,13 @@ namespace XFin.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetAccountHolder(int id, bool includeAccounts = false, bool simpleAccounts = true)
+        //public IActionResult GetAccountHolder(int id, bool includeAccounts = false, bool simpleAccounts = true)
+        public IActionResult GetAccountHolder(int id, bool includeAccounts = false)
         {
             if (includeAccounts)
             {
-                var accountHolder = repo.GetAccountHolder(id, simpleAccounts);
+                //var accountHolder = repo.GetAccountHolder(id, simpleAccounts);
+                var accountHolder = repo.GetAccountHolder(id);
                 return accountHolder != null ? Ok(accountHolder) : NoContent();
             }
             else
@@ -49,7 +51,7 @@ namespace XFin.API.Controllers
             return accountHolder != null ? Ok(accountHolder) : NoContent();
         }
 
-        [HttpGet()]
+        [HttpGet]
         public IActionResult GetAccountHolders(bool includeAccounts = false)
         {
             if (includeAccounts)

@@ -10,7 +10,8 @@ namespace XFin.API.DAL.Interfaces
         AccountHolder CreateAccountHolder(AccountHolderCreationModel accountHolder);
         List<AccountHolderModel> GetAccountHolders();
         List<AccountHolderSimpleModel> GetAccountHoldersSimple();
-        AccountHolderModel GetAccountHolder(int id, bool includeTransactions);
+        //AccountHolderModel GetAccountHolder(int id, bool simpleAccounts);
+        AccountHolderModel GetAccountHolder(int id);
         AccountHolderSimpleModel GetAccountHolderSimple(int id);
         AccountHolderSimpleModel GetByName(string name);
         AccountHolder Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch);
