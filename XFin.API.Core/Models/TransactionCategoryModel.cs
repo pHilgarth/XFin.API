@@ -14,6 +14,8 @@ namespace XFin.API.Core.Models
 
         public decimal RevenuesTotal { get; set; }
 
+        public decimal InternalTransfersAmount { get; set; }
+
         public decimal Budget { get; set; }
 
         public decimal ExpensesTotal { get; set; }
