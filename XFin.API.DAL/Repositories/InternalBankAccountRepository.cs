@@ -76,8 +76,8 @@ namespace XFin.API.DAL.Repositories
                 var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
                 bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
-                var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month);
-                var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month);
+                var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, false);
+                var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, false);
 
                 bankAccountModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
 

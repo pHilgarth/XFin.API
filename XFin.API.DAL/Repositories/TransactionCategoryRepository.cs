@@ -41,39 +41,39 @@ namespace XFin.API.DAL.Repositories
 
             foreach (var transactionCategory in transactionCategories)
             {
-                //accountExternalExpenses = all expenses from this transactionCategory to another bankAccount or external party
-                //these are needed to calculate the total expenses for this transactionCategory
-                var externalExpenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month)
-                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
-                    .ToList();
-
-                //accountInternalExpenses = all expenses from this transactionCategory to another transactionCategory on the same account
-                //these are needed to subtract them from the total revenues for this transactionCategory
-                var internalExpenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, true)
-                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
-                    .ToList();
-
-                transactionCategory.Transactions = transactionCategory.Transactions.Where(t => t.InternalBankAccountId == id).ToList();
-
-                //TODO - I think I dont really need the transactions for transactionCategories - I need them only to calculate this
-                //var revenues = calculator.GetRevenuesInMonth(transactionCategory.Transactions, year, month).ToList();
-                //var expenses = calculator.GetExpensesInMonth(transactionCategory.Transactions, year, month).ToList();
-
                 var transactionCategoryModel = mapper.Map<TransactionCategoryModel>(transactionCategory);
 
-                //transactionCategoryModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
-                //transactionCategoryModel.Expenses = mapper.Map<List<InternalTransactionModel>>(expenses);
+                transactionCategory.Transactions = transactionCategory.Transactions.Where(t => t.InternalBankAccountId == id).ToList();
 
                 //TODO - check if prop prev month is calculated correctly (need more data)
                 transactionCategoryModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(transactionCategory.Transactions, year, month);
 
-                //get total revenues and subtract the account internal expenses from it
-                //Math.Abs because Amount of expenses is < 0
-                transactionCategoryModel.RevenuesTotal = calculator.GetRevenuesInMonth(transactionCategory.Transactions, year, month)
-                    .Select(r => r.Amount).Sum() - Math.Abs(internalExpenses.Select(e => e.Amount).Sum());
+                //account external revenues (from another account or initialization transaction)
+                transactionCategoryModel.RevenuesTotal = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, false)
+                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                    .Select(r => r.Amount).Sum();
 
-                transactionCategoryModel.Budget = transactionCategoryModel.ProportionPreviousMonth + transactionCategoryModel.RevenuesTotal;
-                transactionCategoryModel.ExpensesTotal = Math.Abs(externalExpenses.Select(e => e.Amount).Sum());
+                var internalRevenuesTotal = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, true)
+                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                    .Select(r => r.Amount).Sum();
+                //accountInternalExpenses = all expenses from this transactionCategory to another transactionCategory on the same account
+                //these are needed to subtract them from the total revenues for this transactionCategory
+                var internalExpensesTotal = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, true)
+                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                    .Select(e => Math.Abs(e.Amount)).Sum();
+
+                //accountExternalExpenses = all expenses from this transactionCategory to another bankAccount or external party
+                //these are needed to calculate the total expenses for this transactionCategory
+                var externalExpensesTotal = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, false)
+                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                    .Select(e => Math.Abs(e.Amount)).Sum();
+
+
+
+                transactionCategoryModel.InternalTransfersAmount = internalRevenuesTotal - internalExpensesTotal;
+
+                transactionCategoryModel.Budget = transactionCategoryModel.ProportionPreviousMonth + transactionCategoryModel.RevenuesTotal + transactionCategoryModel.InternalTransfersAmount;
+                transactionCategoryModel.ExpensesTotal = externalExpensesTotal;
                 transactionCategoryModel.Balance = transactionCategoryModel.Budget - transactionCategoryModel.ExpensesTotal;
 
                 transactionCategoryModels.Add(transactionCategoryModel);
