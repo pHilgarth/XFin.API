@@ -87,7 +87,7 @@ namespace XFin.API.Core.Services
         }
 
         //returns revenues from a certain month
-        public List<InternalTransaction> GetRevenuesInMonth(List<InternalTransaction> transactions, int year, int month)
+        public List<InternalTransaction> GetRevenuesInMonth(List<InternalTransaction> transactions, int year, int month, bool _internal)
         {
             year = year == 0 ? DateTime.Now.Year : year;
             month = month == 0 ? DateTime.Now.Month : month;
@@ -95,11 +95,18 @@ namespace XFin.API.Core.Services
             var transactionTokens = transactions
                 .Select(t => t.TransactionToken).ToHashSet<string>();
 
-            return transactions
-                .Where(t => t.Amount > 0 &&
-                            t.Date.Year == year && t.Date.Month == month &&
-                            (!transactionTokens.Contains(t.CounterPartTransactionToken) || t.CounterPartTransactionToken == null))
-                .ToList();
+            return _internal
+                ? transactions
+                    .Where(t => t.Amount > 0 &&
+                                t.Date.Year == year && t.Date.Month == month &&
+                                t.TransactionToken != null && transactionTokens.Contains(t.CounterPartTransactionToken))
+                    .ToList()
+                : transactions
+                    .Where(t => t.Amount > 0 &&
+                                t.Date.Year == year && t.Date.Month == month &&
+                                //t.CounterPartTransactionToken == null refers to the account initialization transaction which takes place when the account is created by the user
+                                (t.CounterPartTransactionToken == null || !transactionTokens.Contains(t.CounterPartTransactionToken)))
+                    .ToList();
         }
 
         //returns revenues up to the specified year and month
