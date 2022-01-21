@@ -2,6 +2,7 @@
 {
     public class InternalBankAccountSimpleModel : IInternalBankAccountModel
     {
+        //TODO - check if this class is used or if it can be deleted
         public int Id { get; set; }
 
         public int AccountHolderId { get; set; }

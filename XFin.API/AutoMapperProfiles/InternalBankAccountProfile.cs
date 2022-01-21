@@ -4,9 +4,9 @@ using XFin.API.Core.Models;
 
 namespace XFin.API.AutoMapperProfiles
 {
-    public class BankAccountProfile : Profile
+    public class InternalBankAccountProfile : Profile
     {
-        public BankAccountProfile()
+        public InternalBankAccountProfile()
         {
             CreateMap<InternalBankAccount, InternalBankAccountModel>();
             CreateMap<InternalBankAccount, InternalBankAccountSimpleModel>();
