@@ -48,14 +48,19 @@ namespace XFin.API.DAL.Repositories
 
                 foreach (var bankAccount in bankAccounts)
                 {
+                    var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
+
                     var bankAccountSettings = context.InternalBankAccountSettings
                         .Where(s => s.InternalBankAccountId == bankAccount.Id)
                         .FirstOrDefault();
+                    var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, 0, 0, false);
+                    var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, 0, 0, false);
 
-                    var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
 
                     bankAccountModel.AccountSettings = mapper.Map<InternalBankAccountSettingsModel>(bankAccountSettings);
                     bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
+                    bankAccountModel.Revenues = mapper.Map <List<InternalTransactionModel>>(revenues);
+                    bankAccountModel.Expenses = mapper.Map <List<InternalTransactionModel>>(expenses);
                     bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
 
                     accountHolder.BankAccounts.Add(bankAccountModel);
