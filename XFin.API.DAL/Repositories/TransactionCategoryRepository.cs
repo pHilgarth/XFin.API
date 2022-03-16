@@ -20,9 +20,19 @@ namespace XFin.API.DAL.Repositories
             this.mapper = mapper;
         }
 
+        public TransactionCategory CreateTransactionCategory(TransactionCategoryCreationModel transactionCategory)
+        {
+            var newTransactionCategory = mapper.Map<TransactionCategory>(transactionCategory);
+
+            context.TransactionCategories.Add(newTransactionCategory);
+            context.SaveChanges();
+
+            return newTransactionCategory;
+        }
+
         public List<TransactionCategorySimpleModel> GetAll()
         {
-            var transactionCategories = context.TransactionCategories.ToList();
+            var transactionCategories = context.TransactionCategories.ToList().OrderBy(t => t.Name);
 
             return mapper.Map<List<TransactionCategorySimpleModel>>(transactionCategories);
         }

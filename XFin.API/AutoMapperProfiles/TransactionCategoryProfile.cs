@@ -10,6 +10,7 @@ namespace XFin.API.AutoMapperProfiles
         {
             CreateMap<TransactionCategory, TransactionCategoryModel>();
             CreateMap<TransactionCategory, TransactionCategorySimpleModel>();
+            CreateMap<TransactionCategoryCreationModel, TransactionCategory>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
 
 namespace XFin.API.Controllers
@@ -11,6 +12,16 @@ namespace XFin.API.Controllers
         {
             this.repo = repo;
         }
+
+        [HttpPost]
+        public IActionResult Create(TransactionCategoryCreationModel transactionCategory)
+        {
+            var newTransactionCategory = repo.CreateTransactionCategory(transactionCategory);
+
+            //TODO - if no accountHolder was created, what do I return, is BadRequest ok?
+            return newTransactionCategory != null ? Ok(newTransactionCategory) : BadRequest();
+        }
+
 
         [HttpGet]
         public IActionResult GetTransactionCategories()
