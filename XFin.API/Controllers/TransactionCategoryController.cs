@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
 
@@ -37,6 +38,15 @@ namespace XFin.API.Controllers
             var transactionCategories = repo.GetAllByAccount(id, year, month);
 
             return transactionCategories != null ? Ok(transactionCategories) : NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id, JsonPatchDocument<TransactionCategoryUpdateModel> transactionCategoryPatch)
+        {
+            //TODO - error handling
+            var updatedTransactionCategory = repo.Update(id, transactionCategoryPatch);
+
+            return updatedTransactionCategory != null ? Ok(updatedTransactionCategory) : NotFound();
         }
 
         private ITransactionCategoryRepository repo;

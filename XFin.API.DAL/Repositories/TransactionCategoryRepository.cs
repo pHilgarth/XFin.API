@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -92,6 +93,27 @@ namespace XFin.API.DAL.Repositories
             }
 
             return transactionCategoryModels;
+        }
+
+        public TransactionCategory Update(int id, JsonPatchDocument<TransactionCategoryUpdateModel> transactionCategoryPatch)
+        {
+            var transactionCategoryEntity = context.TransactionCategories.Where(t => t.Id == id).FirstOrDefault();
+
+            if (transactionCategoryPatch != null)
+            {
+                //TODO - test what happens if the patchDoc is invalid, i.e. contains a path / prop that does not exist
+                var transactionCategoryTopatch = mapper.Map<TransactionCategoryUpdateModel>(transactionCategoryEntity);
+
+                transactionCategoryPatch.ApplyTo(transactionCategoryTopatch);
+
+                mapper.Map(transactionCategoryTopatch, transactionCategoryEntity);
+
+                context.SaveChanges();
+
+                return transactionCategoryEntity;
+            }
+
+            return null;
         }
 
         private IMapper mapper;
