@@ -71,6 +71,7 @@ namespace XFin.API.Controllers
         public IActionResult Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch)
         {
             //TODO - error handling
+            //TODO - check if this variable name is correct - its on accountHolderController and variable is called updatedBankAccout??
             var updatedBankAccount = repo.Update(id, accountHolderPatch);
 
             return updatedBankAccount != null ? Ok(updatedBankAccount) : NotFound();
