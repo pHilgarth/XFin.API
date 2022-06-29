@@ -10,11 +10,7 @@ namespace XFin.API.Core.Models
 
         public string AccountHolderName { get; set; }
 
-        public InternalBankAccountSettingsModel AccountSettings { get; set; }
-
         public decimal Balance { get; set; }
-
-        public decimal AvailableAmount { get; set; }
 
         public decimal ProportionPreviousMonth { get; set; }
 

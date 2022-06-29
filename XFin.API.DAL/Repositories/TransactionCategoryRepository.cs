@@ -88,8 +88,6 @@ namespace XFin.API.DAL.Repositories
                 transactionCategoryModel.Balance = transactionCategoryModel.Budget - transactionCategoryModel.ExpensesTotal;
 
                 transactionCategoryModels.Add(transactionCategoryModel);
-
-                //TODO - here I need to calculate the BlockedBudget!
             }
 
             return transactionCategoryModels;

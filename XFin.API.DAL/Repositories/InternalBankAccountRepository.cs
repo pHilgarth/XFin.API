@@ -20,7 +20,7 @@ namespace XFin.API.DAL.Repositories
             this.context = context;
             this.mapper = mapper;
         }
-        //TODO - when creating a new account, the default settings must be persisted into the db
+
         public InternalBankAccount CreateBankAccount(InternalBankAccountCreationModel bankAccount)
         {
             //check if "bankAccount" already exists
@@ -47,17 +47,6 @@ namespace XFin.API.DAL.Repositories
             };
 
             context.InternalBankAccounts.Add(newBankAccount);
-            context.SaveChanges();
-
-            var newBankAccountSettings = new InternalBankAccountSettings
-            {
-                InternalBankAccountId = newBankAccount.Id,
-                EffectsExpenses = true,
-                ReceivesRevenues = true,
-                AllowsOverdraft = true,
-            };
-
-            context.InternalBankAccountSettings.Add(newBankAccountSettings);
             context.SaveChanges();
 
             return newBankAccount;
@@ -123,8 +112,6 @@ namespace XFin.API.DAL.Repositories
 
                 bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
                 bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, year, month);
-                //TODO - finish calculation of available amount
-                bankAccountModel.AvailableAmount = calculator.CalculateAvailableAmount(bankAccount);
 
                 return bankAccountModel;
             }
