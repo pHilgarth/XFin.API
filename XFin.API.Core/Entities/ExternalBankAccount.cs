@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace XFin.API.Core.Entities
 {
+    //TODO - why did I create a separate class for ExternalBankAccount? Every ExternalParty only has one ExternalBankAccount
     public class ExternalBankAccount
     {
         [Key]

@@ -40,6 +40,7 @@ namespace XFin.API
             services.AddScoped<ITransactionCategoryRepository, TransactionCategoryRepository>();
             services.AddScoped<IExternalPartyRepository, ExternalPartyRepository>();
             services.AddScoped<ITransactionService, TransactionsService>();
+            services.AddScoped<IReserveRepository, ReserveRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }
