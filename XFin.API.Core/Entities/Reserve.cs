@@ -10,27 +10,25 @@ namespace XFin.API.Core.Entities
         [Key]
         public int Id { get; set; }
 
-        [ForeignKey("InternalBankAccountId")]
-        public int InternalBankAccountId { get; set; }
-        public InternalBankAccount InternalBankAccount { get; set; }
+        [ForeignKey("BankAccountId")]
+        public int BankAccountId { get; set; }
+        public BankAccount BankAccount { get; set; }
+
+        [ForeignKey("CostCenterId")]
+        public int CostCenterId { get; set; }
+        public CostCenter CostCenter { get; set; }
 
         [Required]
-        public string Title { get; set; }
-
-        [Required]
-        public decimal Amount { get; set; }
+        [MaxLength(25)]
+        public string Reference { get; set; }
 
         public decimal TargetAmount { get; set; }
 
         public DateTime TargetDate { get; set; }
 
-        public List<InternalTransaction> Transactions { get; set; }
-            = new List<InternalTransaction>();
+        public List<Transaction> Transactions { get; set; }
+            = new List<Transaction>();
 
-        public List<RecurringRevenue> SavingRatesExternal { get; set; }
-            = new List<RecurringRevenue>();
-
-        public List<RecurringTransfer> SavingRatesInternal { get; set; }
-            = new List<RecurringTransfer>();
+        public List<RecurringTransaction> RecurringTransactions { get; set; }
     }
 }
