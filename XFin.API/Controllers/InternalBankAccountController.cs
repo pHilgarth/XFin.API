@@ -29,19 +29,18 @@ namespace XFin.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetBankAccount(int id, bool simple = true, int year = 0, int month = 0)
+        [HttpGet]
+        public IActionResult GetAll()
         {
-            if (simple)
-            {
-                var bankAccount = repo.GetBankAccountSimple(id, year, month);
-                return bankAccount != null ? Ok(bankAccount) : NoContent();
-            }
-            else
-            {
-                var bankAccount = repo.GetBankAccount(id, year, month);
-                return bankAccount != null ? Ok(bankAccount) : NoContent();
-            }
+            var bankAccounts = repo.GetAll();
+            return bankAccounts.Count > 0 ? Ok(bankAccounts) : NoContent();
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetBankAccount(int id, int year = 0, int month = 0)
+        {
+            var bankAccount = repo.GetBankAccount(id, year, month);
+            return bankAccount != null ? Ok(bankAccount) : NoContent();
         }
 
         //this endpoint is used to check for iban duplicates when creating new accounts

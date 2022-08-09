@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace XFin.API.Core.Entities
 {
-    public class TransactionCategory
+    public class CostCenter
     {
         [Key]
         public int Id { get; set; }

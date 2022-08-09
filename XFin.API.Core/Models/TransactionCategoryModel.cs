@@ -2,7 +2,7 @@
 
 namespace XFin.API.Core.Models
 {
-    public class TransactionCategoryModel
+    public class CostCenterModel
     {
         public int Id { get; set; }
 

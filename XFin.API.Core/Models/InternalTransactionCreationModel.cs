@@ -4,7 +4,7 @@
     {
         public int InternalBankAccountId { get; set; }
 
-        public int TransactionCategoryId { get; set; }
+        public int CostCenterId { get; set; }
 
         public string DateString { get; set; }
 

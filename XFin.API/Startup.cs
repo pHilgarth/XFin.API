@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +29,7 @@ namespace XFin.API
 
             services.AddDbContextPool<XFinDbContext>(options =>
             {
-                options.UseSqlServer(Configuration.GetConnectionString("XFinDb"));
+                options.UseMySQL(Configuration.GetConnectionString("XFinDb"));
             });
 
             services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
@@ -37,10 +37,11 @@ namespace XFin.API
             services.AddScoped<IExternalBankAccountRepository, ExternalBankAccountRepository>();
             services.AddScoped<IInternalTransactionRepository, InternalTransactionRepository>();
             services.AddScoped<IExternalTransactionRepository, ExternalTransactionRepository>();
-            services.AddScoped<ITransactionCategoryRepository, TransactionCategoryRepository>();
+            services.AddScoped<ICostCenterRepository, CostCenterRepository>();
             services.AddScoped<IExternalPartyRepository, ExternalPartyRepository>();
             services.AddScoped<ITransactionService, TransactionsService>();
             services.AddScoped<IReserveRepository, ReserveRepository>();
+            services.AddScoped<ILoanRepository, LoanRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }

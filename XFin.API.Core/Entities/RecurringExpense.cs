@@ -15,11 +15,12 @@ namespace XFin.API.Core.Entities
 
         [ForeignKey("ExternalPartyId")]
         public int ExternalPartyId { get; set; }
+        //TODO - wtf, this is just wrong
         public InternalBankAccount ExternalParty { get; set; }
 
-        [ForeignKey("SourceTransactionCategoryId")]
-        public int SourceTransactionCategoryId { get; set; }
-        public TransactionCategory SourceTransactionCategory { get; set; }
+        [ForeignKey("SourceCostCenterId")]
+        public int SourceCostCenterId { get; set; }
+        public CostCenter SourceCostCenter { get; set; }
 
         [Required]
         public int Cycle { get; set; }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
-//TODO - return NoContent when there are no records - on every endpoint, even on TransactionCategory, which always should
+//TODO - return NoContent when there are no records - on every endpoint, even on CostCenter, which always should
 //      have records. SHOULD HAVE - you'll never know
 //TODO - maybe change the action names just to "Get", "GetByName", "Create", the controller name tells, what record(s) to get
 namespace XFin.API.Controllers
@@ -27,19 +27,10 @@ namespace XFin.API.Controllers
 
         [HttpGet("{id}")]
         //public IActionResult GetAccountHolder(int id, bool includeAccounts = false, bool simpleAccounts = true)
-        public IActionResult GetAccountHolder(int id, bool includeAccounts = false)
+        public IActionResult GetAccountHolder(int id)
         {
-            if (includeAccounts)
-            {
-                //var accountHolder = repo.GetAccountHolder(id, simpleAccounts);
-                var accountHolder = repo.GetAccountHolder(id);
-                return accountHolder != null ? Ok(accountHolder) : NoContent();
-            }
-            else
-            {
-                var accountHolder = repo.GetAccountHolderSimple(id);
-                return accountHolder != null ? Ok(accountHolder) : NoContent();
-            }
+            var accountHolder = repo.GetAccountHolder(id);
+            return accountHolder != null ? Ok(accountHolder) : NoContent();
         }
 
         //This endpoint is for duplicate checks
@@ -52,19 +43,10 @@ namespace XFin.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAccountHolders(bool includeAccounts = false)
+        public IActionResult GetAccountHolders()
         {
-            if (includeAccounts)
-            {
-                var accountHolders = repo.GetAccountHolders();
-                return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
-            }
-            else
-            {
-                var accountHolders = repo.GetAccountHoldersSimple();
-                return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
-            }
-
+            var accountHolders = repo.GetAccountHolders();
+            return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
         }
 
         [HttpPatch("{id}")]

@@ -5,11 +5,11 @@ using XFin.API.Core.Models;
 
 namespace XFin.API.DAL.Interfaces
 {
-    public interface ITransactionCategoryRepository
+    public interface ICostCenterRepository
     {
-        TransactionCategory CreateTransactionCategory(TransactionCategoryCreationModel transactionCategory);
-        List<TransactionCategorySimpleModel> GetAll();
-        List<TransactionCategoryModel> GetAllByAccount(int id, int year, int month);
-        TransactionCategory Update(int id, JsonPatchDocument<TransactionCategoryUpdateModel> transactionCategoryPatch);
+        CostCenter CreateCostCenter(CostCenterCreationModel costCenter);
+        List<CostCenterSimpleModel> GetAll();
+        List<CostCenterModel> GetAllByAccount(int id, int year, int month);
+        CostCenter Update(int id, JsonPatchDocument<CostCenterUpdateModel> costCenterPatch);
     }
 }

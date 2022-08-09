@@ -21,7 +21,7 @@ namespace XFin.API.DAL.Repositories
             this.mapper = mapper;
         }
 
-        public Reserve CreateReserve(ReserveCreationModel reserve)
+        public Reserve Create(ReserveCreationModel reserve)
         {
             var newReserve = mapper.Map<Reserve>(reserve);
 
@@ -31,10 +31,43 @@ namespace XFin.API.DAL.Repositories
             return newReserve;
         }
 
-        //public List<ReserveModel> GetReserves()
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public List<ReserveModel> GetAllByAccount(int accountId)
+        {
+            return mapper.Map<List<ReserveModel>>(
+                context.Reserves
+                .Where(r => r.InternalBankAccountId == accountId)
+                .ToList());
+        }
+
+        private int List<T>(List<Reserve> reserves)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<ReserveModel> GetAllByAccountHolder(int accountHolderId)
+        {
+            var bankAccountIds = context.InternalBankAccounts.
+                Where(b => b.AccountHolderId == accountHolderId).
+                Select(b => b.Id).
+                ToList();
+
+            var reserves = context.Reserves.
+                Where(r => bankAccountIds.Contains(r.InternalBankAccountId)).
+                Include(r => r.Transactions).
+                ToList();
+
+            var reserveModels = new List<ReserveModel>();
+
+            foreach(var reserve in reserves)
+            {
+                var reserveModel = mapper.Map<ReserveModel>(reserve);
+                reserveModel.Amount = reserve.Transactions.Sum(t => t.Amount);
+
+                reserveModels.Add(reserveModel);
+            }
+
+            return reserveModels;
+        }
 
         //public List<ReserveSimpleModel> GetReversesSimple()
         //{

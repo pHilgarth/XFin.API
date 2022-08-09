@@ -9,6 +9,7 @@ namespace XFin.API.AutoMapperProfiles
         public ExternalBankAccountProfile()
         {
             CreateMap<ExternalBankAccount, ExternalBankAccountModel>();
+            CreateMap<ExternalBankAccountCreationModel, ExternalBankAccount>();
         }
     }
 }

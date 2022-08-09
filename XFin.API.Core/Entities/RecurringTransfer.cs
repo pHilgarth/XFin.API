@@ -17,13 +17,13 @@ namespace XFin.API.Core.Entities
         public int TargetBankAccountId { get; set; }
         public InternalBankAccount TargetBankAccount { get; set; }
 
-        [ForeignKey("SourceTransactionCategoryId")]
-        public int SourceTransactionCategoryId { get; set; }
-        public TransactionCategory SourceTransactionCategory { get; set; }
+        [ForeignKey("SourceCostCenterId")]
+        public int SourceCostCenterId { get; set; }
+        public CostCenter SourceCostCenter { get; set; }
 
-        [ForeignKey("TargetTransactionCategoryId")]
-        public int TargetTransactionCategoryId { get; set; }
-        public TransactionCategory TargetTransactionCategory { get; set; }
+        [ForeignKey("TargetCostCenterId")]
+        public int TargetCostCenterId { get; set; }
+        public CostCenter TargetCostCenter { get; set; }
 
         [Required]
         public int Cycle { get; set; }

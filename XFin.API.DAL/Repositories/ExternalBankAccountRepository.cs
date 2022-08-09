@@ -16,12 +16,13 @@ namespace XFin.API.DAL.Repositories
 
         public ExternalBankAccount CreateExternalBankAccount(ExternalBankAccountCreationModel bankAccount)
         {//TODO add error handling when wrong id is passed, if no accountholder with this bankAccount.id exists
-            var newBankAccount = new ExternalBankAccount
-            {
-                Iban    = bankAccount.Iban != null ? bankAccount.Iban : null,
-                Bic     = bankAccount.Bic != null ? bankAccount.Bic : null,
-                ExternalPartyId = bankAccount.ExternalPartyId
-            };
+            var newBankAccount = mapper.Map<ExternalBankAccount>(bankAccount);
+            //var newBankAccount = new ExternalBankAccount
+            //{
+            //    Iban    = bankAccount.Iban != null ? bankAccount.Iban : null,
+            //    Bic     = bankAccount.Bic != null ? bankAccount.Bic : null,
+            //    ExternalPartyId = bankAccount.ExternalPartyId
+            //};
 
             context.ExternalBankAccounts.Add(newBankAccount);
             context.SaveChanges();

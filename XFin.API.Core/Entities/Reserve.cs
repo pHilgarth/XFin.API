@@ -15,14 +15,14 @@ namespace XFin.API.Core.Entities
         public InternalBankAccount InternalBankAccount { get; set; }
 
         [Required]
+        public string Title { get; set; }
+
+        [Required]
         public decimal Amount { get; set; }
 
         public decimal TargetAmount { get; set; }
 
         public DateTime TargetDate { get; set; }
-
-        [Required]
-        public string Reference { get; set; }
 
         public List<InternalTransaction> Transactions { get; set; }
             = new List<InternalTransaction>();

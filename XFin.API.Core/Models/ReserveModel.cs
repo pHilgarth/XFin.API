@@ -9,15 +9,15 @@ namespace XFin.API.Core.Models
 
         public int InternalBankAccountId { get; set; }
 
+        public string Title { get; set; }
+
         public decimal Amount { get; set; }
 
         public decimal TargetAmount { get; set; }
 
-        public DateTime TargetDate { get; set; }
+        public string TargetDate { get; set; }
 
-        public string Reference { get; set; }
-
-        public List<InternalTransactionModel> PaymentReceipts { get; set; }
+        public List<InternalTransactionModel> Transactions { get; set; }
             = new List<InternalTransactionModel>();
     }
 }

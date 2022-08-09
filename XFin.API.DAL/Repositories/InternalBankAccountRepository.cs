@@ -52,11 +52,26 @@ namespace XFin.API.DAL.Repositories
             return newBankAccount;
         }
 
+        public List<InternalBankAccountModel> GetAll()
+        {
+            var bankAccounts = mapper.Map<List<InternalBankAccountModel>>(
+                context.InternalBankAccounts
+                .Include(i => i.AccountHolder)
+                .ToList());
+
+            foreach(var bankAccount in bankAccounts)
+            {
+                bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+            }
+
+            return bankAccounts;
+        }
+
         public InternalBankAccountModel GetBankAccount(int id, int year, int month)
         {
             var bankAccount = context.InternalBankAccounts.Where(b => b.Id == id)
                 .Include(b => b.AccountHolder)
-                .Include(b => b.Transactions).ThenInclude(t => t.TransactionCategory)
+                .Include(b => b.Transactions).ThenInclude(t => t.CostCenter)
                 .Include(b => b.Transactions).ThenInclude(t => t.InternalBankAccount)
                 .FirstOrDefault();
 
@@ -119,13 +134,13 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public InternalBankAccountSimpleModel GetByIban(string iban)
+        public InternalBankAccountModel GetByIban(string iban)
         {
             var bankAccount = context.InternalBankAccounts.Where(b => b.Iban == iban).FirstOrDefault();
 
             if (bankAccount != null)
             {
-                var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
+                var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
                 bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
                 return bankAccountModel;
@@ -134,7 +149,7 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public InternalBankAccountSimpleModel GetBankAccountSimple(int id, int year, int month)
+        public InternalBankAccountModel GetBankAccountSimple(int id, int year, int month)
         {
             var bankAccount = context.InternalBankAccounts.Where(b => b.Id == id)
                 .Include(b => b.AccountHolder)
@@ -143,7 +158,7 @@ namespace XFin.API.DAL.Repositories
 
             if (bankAccount != null)
             {
-                var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
+                var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
                 bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
                 bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
@@ -195,16 +210,16 @@ namespace XFin.API.DAL.Repositories
         //    }
         //}
 
-        private TransactionCategoryModel GetTransactionCategoryModel(InternalTransaction transaction)
+        private CostCenterModel GetCostCenterModel(InternalTransaction transaction)
         {
             if (transaction != null)
             {
-                var transactionCategory = context.TransactionCategories.Where(t => t.Id == transaction.TransactionCategoryId).FirstOrDefault();
+                var costCenter = context.CostCenters.Where(t => t.Id == transaction.CostCenterId).FirstOrDefault();
 
-                return new TransactionCategoryModel
+                return new CostCenterModel
                 {
-                    Id = transaction.TransactionCategory.Id,
-                    Name = transaction.TransactionCategory.Name
+                    Id = transaction.CostCenter.Id,
+                    Name = transaction.CostCenter.Name
                 };
             }
 

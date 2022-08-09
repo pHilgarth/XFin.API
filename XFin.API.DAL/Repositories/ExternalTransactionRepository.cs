@@ -18,6 +18,7 @@ namespace XFin.API.DAL.Repositories
         public ExternalTransaction CreateExternalTransaction(ExternalTransactionCreationModel transaction)
         {
             var newTransaction = mapper.Map<ExternalTransaction>(transaction);
+            //TODO - check why I need the next line here - in ReserveRepository, I don't need a DateTime.Parse -> maybe some datatypes are different
             newTransaction.Date = DateTime.Parse(transaction.DateString);
             newTransaction.CounterPartTransactionToken = Guid.NewGuid().ToString();
             newTransaction.TransactionToken = Guid.NewGuid().ToString();

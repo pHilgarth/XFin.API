@@ -1,6 +1,6 @@
 ﻿namespace XFin.API.Core.Models
 {
-    public class TransactionCategoryCreationModel
+    public class CostCenterCreationModel
     {
         public string Name { get; set; }
     }

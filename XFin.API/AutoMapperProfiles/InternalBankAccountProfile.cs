@@ -9,7 +9,6 @@ namespace XFin.API.AutoMapperProfiles
         public InternalBankAccountProfile()
         {
             CreateMap<InternalBankAccount, InternalBankAccountModel>();
-            CreateMap<InternalBankAccount, InternalBankAccountSimpleModel>();
             CreateMap<InternalBankAccountUpdateModel, InternalBankAccount>().ReverseMap();
         }
     }

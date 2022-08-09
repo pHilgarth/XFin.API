@@ -12,37 +12,37 @@ using XFin.API.DAL.Interfaces;
 
 namespace XFin.API.DAL.Repositories
 {
-    public class TransactionCategoryRepository : ITransactionCategoryRepository
+    public class CostCenterRepository : ICostCenterRepository
     {
-        public TransactionCategoryRepository(ITransactionService calculator, IMapper mapper, XFinDbContext context)
+        public CostCenterRepository(ITransactionService calculator, IMapper mapper, XFinDbContext context)
         {
             this.context = context;
             this.calculator = calculator;
             this.mapper = mapper;
         }
 
-        public TransactionCategory CreateTransactionCategory(TransactionCategoryCreationModel transactionCategory)
+        public CostCenter CreateCostCenter(CostCenterCreationModel costCenter)
         {
-            var newTransactionCategory = mapper.Map<TransactionCategory>(transactionCategory);
+            var newCostCenter = mapper.Map<CostCenter>(costCenter);
 
-            context.TransactionCategories.Add(newTransactionCategory);
+            context.CostCenters.Add(newCostCenter);
             context.SaveChanges();
 
-            return newTransactionCategory;
+            return newCostCenter;
         }
 
-        public List<TransactionCategorySimpleModel> GetAll()
+        public List<CostCenterSimpleModel> GetAll()
         {
-            var transactionCategories = context.TransactionCategories.ToList().OrderBy(t => t.Name);
+            var costCenters = context.CostCenters.ToList().OrderBy(t => t.Name);
 
-            return mapper.Map<List<TransactionCategorySimpleModel>>(transactionCategories);
+            return mapper.Map<List<CostCenterSimpleModel>>(costCenters);
         }
 
         //TODO - review - include a possibility for NoContent
-        public List<TransactionCategoryModel> GetAllByAccount(int id, int year, int month)
+        public List<CostCenterModel> GetAllByAccount(int id, int year, int month)
         {
-            var transactionCategoryModels = new List<TransactionCategoryModel>();
-            var transactionCategories = context.TransactionCategories
+            var costCenterModels = new List<CostCenterModel>();
+            var costCenters = context.CostCenters
                 .Include(t => t.Transactions)
                 .ToList();
             var bankAccount = context.InternalBankAccounts
@@ -50,65 +50,65 @@ namespace XFin.API.DAL.Repositories
                 .Include(b => b.Transactions)
                 .FirstOrDefault();
 
-            foreach (var transactionCategory in transactionCategories)
+            foreach (var costCenter in costCenters)
             {
-                var transactionCategoryModel = mapper.Map<TransactionCategoryModel>(transactionCategory);
+                var costCenterModel = mapper.Map<CostCenterModel>(costCenter);
 
-                transactionCategory.Transactions = transactionCategory.Transactions.Where(t => t.InternalBankAccountId == id).ToList();
+                costCenter.Transactions = costCenter.Transactions.Where(t => t.InternalBankAccountId == id).ToList();
 
                 //TODO - check if prop prev month is calculated correctly (need more data)
-                transactionCategoryModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(transactionCategory.Transactions, year, month);
+                costCenterModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(costCenter.Transactions, year, month);
 
                 //account external revenues (from another account or initialization transaction)
-                transactionCategoryModel.RevenuesTotal = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, false)
-                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                costCenterModel.RevenuesTotal = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, false)
+                    .Where(t => t.CostCenterId == costCenter.Id)
                     .Select(r => r.Amount).Sum();
 
                 var internalRevenuesTotal = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, true)
-                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                    .Where(t => t.CostCenterId == costCenter.Id)
                     .Select(r => r.Amount).Sum();
-                //accountInternalExpenses = all expenses from this transactionCategory to another transactionCategory on the same account
-                //these are needed to subtract them from the total revenues for this transactionCategory
+                //accountInternalExpenses = all expenses from this costCenter to another costCenter on the same account
+                //these are needed to subtract them from the total revenues for this costCenter
                 var internalExpensesTotal = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, true)
-                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                    .Where(t => t.CostCenterId == costCenter.Id)
                     .Select(e => Math.Abs(e.Amount)).Sum();
 
-                //accountExternalExpenses = all expenses from this transactionCategory to another bankAccount or external party
-                //these are needed to calculate the total expenses for this transactionCategory
+                //accountExternalExpenses = all expenses from this costCenter to another bankAccount or external party
+                //these are needed to calculate the total expenses for this costCenter
                 var externalExpensesTotal = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, false)
-                    .Where(t => t.TransactionCategoryId == transactionCategory.Id)
+                    .Where(t => t.CostCenterId == costCenter.Id)
                     .Select(e => Math.Abs(e.Amount)).Sum();
 
 
 
-                transactionCategoryModel.InternalTransfersAmount = internalRevenuesTotal - internalExpensesTotal;
+                costCenterModel.InternalTransfersAmount = internalRevenuesTotal - internalExpensesTotal;
 
-                transactionCategoryModel.Budget = transactionCategoryModel.ProportionPreviousMonth + transactionCategoryModel.RevenuesTotal + transactionCategoryModel.InternalTransfersAmount;
-                transactionCategoryModel.ExpensesTotal = externalExpensesTotal;
-                transactionCategoryModel.Balance = transactionCategoryModel.Budget - transactionCategoryModel.ExpensesTotal;
+                costCenterModel.Budget = costCenterModel.ProportionPreviousMonth + costCenterModel.RevenuesTotal + costCenterModel.InternalTransfersAmount;
+                costCenterModel.ExpensesTotal = externalExpensesTotal;
+                costCenterModel.Balance = costCenterModel.Budget - costCenterModel.ExpensesTotal;
 
-                transactionCategoryModels.Add(transactionCategoryModel);
+                costCenterModels.Add(costCenterModel);
             }
 
-            return transactionCategoryModels;
+            return costCenterModels;
         }
 
-        public TransactionCategory Update(int id, JsonPatchDocument<TransactionCategoryUpdateModel> transactionCategoryPatch)
+        public CostCenter Update(int id, JsonPatchDocument<CostCenterUpdateModel> costCenterPatch)
         {
-            var transactionCategoryEntity = context.TransactionCategories.Where(t => t.Id == id).FirstOrDefault();
+            var costCenterEntity = context.CostCenters.Where(t => t.Id == id).FirstOrDefault();
 
-            if (transactionCategoryPatch != null)
+            if (costCenterPatch != null)
             {
                 //TODO - test what happens if the patchDoc is invalid, i.e. contains a path / prop that does not exist
-                var transactionCategoryTopatch = mapper.Map<TransactionCategoryUpdateModel>(transactionCategoryEntity);
+                var costCenterTopatch = mapper.Map<CostCenterUpdateModel>(costCenterEntity);
 
-                transactionCategoryPatch.ApplyTo(transactionCategoryTopatch);
+                costCenterPatch.ApplyTo(costCenterTopatch);
 
-                mapper.Map(transactionCategoryTopatch, transactionCategoryEntity);
+                mapper.Map(costCenterTopatch, costCenterEntity);
 
                 context.SaveChanges();
 
-                return transactionCategoryEntity;
+                return costCenterEntity;
             }
 
             return null;

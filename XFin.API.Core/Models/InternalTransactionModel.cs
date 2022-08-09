@@ -12,9 +12,9 @@ namespace XFin.API.Core.Models
 
         public string CounterParty { get; set; }
 
-        public int TransactionCategoryId { get; set; }
+        public int CostCenterId { get; set; }
 
-        public string TransactionCategoryName { get; set; }
+        public string CostCenterName { get; set; }
 
         public DateTime Date { get; set; }
 

@@ -65,12 +65,6 @@ namespace XFin.API.DAL.Repositories
             return accountHolders;
         }
 
-        public List<AccountHolderSimpleModel> GetAccountHoldersSimple()
-        {
-            return mapper.Map<List<AccountHolderSimpleModel>>(context.AccountHolders);
-        }
-
-        //public AccountHolderModel GetAccountHolder(int id, bool simpleAccounts)
         public AccountHolderModel GetAccountHolder(int id)
         {
             var accountHolder = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
@@ -89,35 +83,12 @@ namespace XFin.API.DAL.Repositories
                     var currentYear = DateTime.Now.Year;
                     var currentMonth = DateTime.Now.Month;
 
-                    var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
+                    var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
 
                     bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
                     bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
                     accountHolderModel.BankAccounts.Add(bankAccountModel);
-
-                    //if (simpleAccounts)
-                    //{
-                    //    var bankAccountModel = mapper.Map<InternalBankAccountSimpleModel>(bankAccount);
-
-                    //    bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
-                    //    bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
-
-                    //    accountHolderModel.BankAccounts.Add(bankAccountModel);
-                    //}
-                    //else
-                    //{
-                    //    var bankAccountModel = mapper.Map<InternalBankAccountModel>(bankAccount);
-                    //    var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, currentYear, currentMonth);
-                    //    var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, currentYear, currentMonth);
-
-                    //    bankAccountModel.Revenues = mapper.Map<List<InternalTransactionModel>>(revenues);
-                    //    bankAccountModel.Expenses = mapper.Map<List<InternalTransactionModel>>(expenses);
-                    //    bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
-                    //    bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, currentYear, currentMonth);
-
-                    //    accountHolderModel.BankAccounts.Add(bankAccountModel);
-                    //}
                 }
 
                 return accountHolderModel;
@@ -126,18 +97,10 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public AccountHolderSimpleModel GetAccountHolderSimple(int id)
-        {
-            var accountHolder = context.AccountHolders.Where(a => a.Id == id).FirstOrDefault();
-            var accountHolderModel = mapper.Map<AccountHolderSimpleModel>(accountHolder);
-
-            return accountHolderModel != null ? accountHolderModel : null;
-        }
-
-        public AccountHolderSimpleModel GetByName(string name)
+        public AccountHolderModel GetByName(string name)
         {
             var accountHolder = context.AccountHolders.Where(a => a.Name == name).FirstOrDefault();
-            var accountHolderModel = mapper.Map<AccountHolderSimpleModel>(accountHolder);
+            var accountHolderModel = mapper.Map<AccountHolderModel>(accountHolder);
 
             return accountHolderModel != null ? accountHolderModel : null;
         }

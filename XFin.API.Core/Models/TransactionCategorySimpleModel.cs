@@ -3,7 +3,7 @@ using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
-    public class TransactionCategorySimpleModel
+    public class CostCenterSimpleModel
     {
         public int Id { get; set; }
 

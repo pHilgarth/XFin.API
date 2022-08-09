@@ -17,9 +17,9 @@ namespace XFin.API.Core.Entities
         public int TargetBankAccountId { get; set; }
         public InternalBankAccount TargetBankAccount { get; set; }
 
-        [ForeignKey("TargetTransactionCategoryId")]
-        public int TargetTransactionCategoryId { get; set; }
-        public TransactionCategory TargetTransactionCategory { get; set; }
+        [ForeignKey("TargetCostCenterId")]
+        public int TargetCostCenterId { get; set; }
+        public CostCenter TargetCostCenter { get; set; }
 
         [Required]
         public int Cycle { get; set; }
