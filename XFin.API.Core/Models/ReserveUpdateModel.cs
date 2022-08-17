@@ -6,14 +6,14 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
-        public int InternalBankAccountId { get; set; }
+        public int BankAccountId { get; set; }
 
-        public string Title { get; set; }
+        public int CostCenterId { get; set; }
 
-        public decimal Amount { get; set; }
+        public string Reference { get; set; }
 
         public decimal TargetAmount { get; set; }
 
-        public string TargetDate { get; set; }
+        public DateTime TargetDate { get; set; }
     }
 }

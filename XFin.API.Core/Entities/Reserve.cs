@@ -30,5 +30,6 @@ namespace XFin.API.Core.Entities
             = new List<Transaction>();
 
         public List<RecurringTransaction> RecurringTransactions { get; set; }
+            = new List<RecurringTransaction>();
     }
 }

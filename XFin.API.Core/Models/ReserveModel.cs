@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
@@ -7,17 +8,20 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
-        public int InternalBankAccountId { get; set; }
+        public BankAccount BankAccount { get; set; }
 
-        public string Title { get; set; }
+        public CostCenter CostCenter { get; set; }
 
-        public decimal Amount { get; set; }
+        public string Reference { get; set; }
 
         public decimal TargetAmount { get; set; }
 
-        public string TargetDate { get; set; }
+        public DateTime TargetDate { get; set; }
 
-        public List<InternalTransactionModel> Transactions { get; set; }
-            = new List<InternalTransactionModel>();
+        public List<Transaction> Transactions { get; set; }
+            = new List<Transaction>();
+
+        public List<RecurringTransaction> RecurringTransactions { get; set; }
+            = new List<RecurringTransaction>();
     }
 }

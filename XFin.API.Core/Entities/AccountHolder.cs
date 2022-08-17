@@ -20,5 +20,6 @@ namespace XFin.API.Core.Entities
         public bool External { get; set; }
 
         public List<BankAccount> BankAccounts { get; set; }
+            = new List<BankAccount>();
     }
 }

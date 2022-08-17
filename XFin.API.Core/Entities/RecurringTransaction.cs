@@ -30,10 +30,6 @@ namespace XFin.API.Core.Entities
         public int ReserveId { get; set; }
         public Reserve Reserve { get; set; }
 
-        [ForeignKey("LoanId")]
-        public int LoanId { get; set; }
-        public Loan Loan { get; set; }
-
         [Required]
         public decimal Amount { get; set; }
 

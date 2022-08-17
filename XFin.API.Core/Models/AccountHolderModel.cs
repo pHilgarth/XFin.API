@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
@@ -6,9 +7,12 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
+        public User User { get; set; }
+
         public string Name { get; set; }
 
-        public List<IInternalBankAccountModel> BankAccounts { get; set; }
-            = new List<IInternalBankAccountModel>();
+        public bool External { get; set; }
+
+        public List<BankAccountModel> BankAccounts { get; set; }
     }
 }

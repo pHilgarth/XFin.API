@@ -8,17 +8,13 @@ namespace XFin.API.DAL.DbContexts
         public XFinDbContext(DbContextOptions<XFinDbContext> options) : base(options) { }
 
         public DbSet<AccountHolder> AccountHolders { get; set; }
-        public DbSet<InternalBankAccount> InternalBankAccounts { get; set; }
-        public DbSet<ExternalBankAccount> ExternalBankAccounts { get; set; }
-        public DbSet<ExternalParty> ExternalParties { get; set; }
+        public DbSet<BankAccount> BankAccounts { get; set; }
         public DbSet<CostCenter> CostCenters { get; set; }
-        public DbSet<InternalTransaction> InternalTransactions { get; set; }
-        public DbSet<ExternalTransaction> ExternalTransactions { get; set; }
-        public DbSet<Reserve> Reserves { get; set; }
-        public DbSet<RecurringExpense> RecurringExpenses { get; set; }
-        public DbSet<RecurringRevenue> RecurringRevenues { get; set; }
-        public DbSet<RecurringTransfer> RecurringTransfer { get; set; }
         public DbSet<Loan> Loans { get; set; }
+        public DbSet<RecurringTransaction> RecurringTransactions { get; set; }
+        public DbSet<Reserve> Reserves { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,6 +29,56 @@ namespace XFin.API.DAL.DbContexts
                     Id = 2,
                     Name = "Essen, Trinken"
                 });
+
+            modelBuilder.Entity<Loan>()
+                .HasOne(l => l.CreditorBankAccount)
+                .WithMany(b => b.CreditorLoans)
+                .HasForeignKey(l => l.CreditorBankAccountId);
+
+            modelBuilder.Entity<Loan>()
+                .HasOne(l => l.DebitorBankAccount)
+                .WithMany(b => b.DebitorLoans)
+                .HasForeignKey(l => l.DebitorBankAccountId);
+
+            modelBuilder.Entity<RecurringTransaction>()
+                .HasOne(r => r.SourceBankAccount)
+                .WithMany(b => b.RecurringExpenses)
+                .HasForeignKey(r => r.SourceBankAccountId);
+
+            modelBuilder.Entity<RecurringTransaction>()
+                .HasOne(r => r.TargetBankAccount)
+                .WithMany(b => b.RecurringRevenues)
+                .HasForeignKey(r => r.TargetBankAccountId);
+
+            modelBuilder.Entity<RecurringTransaction>()
+                .HasOne(r => r.SourceCostCenter)
+                .WithMany(c => c.RecurringExpenses)
+                .HasForeignKey(r => r.SourceCostCenterId);
+
+            modelBuilder.Entity<RecurringTransaction>()
+                .HasOne(r => r.TargetCostCenter)
+                .WithMany(b => b.RecurringRevenues)
+                .HasForeignKey(r => r.TargetCostCenterId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.SourceBankAccount)
+                .WithMany(b => b.Expenses)
+                .HasForeignKey(t => t.SourceBankAccountId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.TargetBankAccount)
+                .WithMany(b => b.Revenues)
+                .HasForeignKey(t => t.TargetBankAccountId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.SourceCostCenter)
+                .WithMany(c => c.Expenses)
+                .HasForeignKey(t => t.SourceCostCenterId);
+
+            modelBuilder.Entity<Transaction>()
+                .HasOne(t => t.TargetCostCenter)
+                .WithMany(c => c.Revenues)
+                .HasForeignKey(t => t.TargetCostCenterId);
 
             base.OnModelCreating(modelBuilder);
         }

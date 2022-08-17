@@ -2,6 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
+//TODO - IMPORTANT -> check for modelstate, check for duplicated names/titles/references.... when posting or updating objects!!
+            //in general: more error handling...
+
+
 //TODO - return NoContent when there are no records - on every endpoint, even on CostCenter, which always should
 //      have records. SHOULD HAVE - you'll never know
 //TODO - maybe change the action names just to "Get", "GetByName", "Create", the controller name tells, what record(s) to get
@@ -17,19 +21,26 @@ namespace XFin.API.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateAccountHolder(AccountHolderCreationModel accountHolder)
+        public IActionResult Create(AccountHolderCreationModel accountHolder)
         {
-            var newAccountHolder = repo.CreateAccountHolder(accountHolder);
+            var newAccountHolder = repo.Create(accountHolder);
 
             //TODO - if no accountHolder was created, what do I return, is BadRequest ok?
             return newAccountHolder != null ? Ok(newAccountHolder) : BadRequest();
         }
 
+        [HttpGet("user/{userId}")]
+        public IActionResult GetAllByUser(int userId)
+        {
+            var accountHolders = repo.GetAllByUser(userId);
+            return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
+        }
+
         [HttpGet("{id}")]
         //public IActionResult GetAccountHolder(int id, bool includeAccounts = false, bool simpleAccounts = true)
-        public IActionResult GetAccountHolder(int id)
+        public IActionResult GetSingle(int id)
         {
-            var accountHolder = repo.GetAccountHolder(id);
+            var accountHolder = repo.GetSingle(id);
             return accountHolder != null ? Ok(accountHolder) : NoContent();
         }
 
@@ -40,13 +51,6 @@ namespace XFin.API.Controllers
             var accountHolder = repo.GetByName(name);
 
             return accountHolder != null ? Ok(accountHolder) : NoContent();
-        }
-
-        [HttpGet]
-        public IActionResult GetAccountHolders()
-        {
-            var accountHolders = repo.GetAccountHolders();
-            return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
         }
 
         [HttpPatch("{id}")]
@@ -60,8 +64,9 @@ namespace XFin.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteAccountHolder(int id)
+        public IActionResult Delete(int id)
         {
+            //TODO - implement it ;)
             return BadRequest();
         }
         private readonly IAccountHolderRepository repo;

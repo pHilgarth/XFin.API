@@ -26,16 +26,25 @@ namespace XFin.API.Core.Entities
 
         public bool External { get; set; }
 
-        public List<Loan> Loans { get; set; }
+        public List<Loan> CreditorLoans { get; set; }
             = new List<Loan>();
 
-        public List<RecurringTransaction> RecurringTransactions { get; set; }
+        public List<Loan> DebitorLoans { get; set; }
+            = new List<Loan>();
+
+        public List<RecurringTransaction> RecurringRevenues { get; set; }
+            = new List<RecurringTransaction>();
+
+        public List<RecurringTransaction> RecurringExpenses { get; set; }
             = new List<RecurringTransaction>();
 
         public List<Reserve> Reserves { get; set; }
             = new List<Reserve>();
 
-        public List<Transaction> Transactions { get; set; }
+        public List<Transaction> Revenues { get; set; }
+            = new List<Transaction>();
+
+        public List<Transaction> Expenses { get; set; }
             = new List<Transaction>();
     }
 }

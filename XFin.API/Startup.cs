@@ -33,15 +33,14 @@ namespace XFin.API
             });
 
             services.AddScoped<IAccountHolderRepository, AccountHolderRepository>();
-            services.AddScoped<IInternalBankAccountRepository, InternalBankAccountRepository>();
-            services.AddScoped<IExternalBankAccountRepository, ExternalBankAccountRepository>();
-            services.AddScoped<IInternalTransactionRepository, InternalTransactionRepository>();
-            services.AddScoped<IExternalTransactionRepository, ExternalTransactionRepository>();
+            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<ICostCenterRepository, CostCenterRepository>();
-            services.AddScoped<IExternalPartyRepository, ExternalPartyRepository>();
-            services.AddScoped<ITransactionService, TransactionsService>();
-            services.AddScoped<IReserveRepository, ReserveRepository>();
             services.AddScoped<ILoanRepository, LoanRepository>();
+            services.AddScoped<IRecurringTransactionRepository, RecurringTransactionRepository>();
+            services.AddScoped<IReserveRepository, ReserveRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<ITransactionService, TransactionsService>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         }

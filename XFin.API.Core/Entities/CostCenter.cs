@@ -15,13 +15,19 @@ namespace XFin.API.Core.Entities
         public List<Loan> Loans { get; set; }
             = new List<Loan>();
 
-        public List<RecurringTransaction> RecurringTransactions { get; set; }
+        public List<RecurringTransaction> RecurringRevenues { get; set; }
+            = new List<RecurringTransaction>();
+
+        public List<RecurringTransaction> RecurringExpenses { get; set; }
             = new List<RecurringTransaction>();
 
         public List<Reserve> Reserves { get; set; }
             = new List<Reserve>();
 
-        public List<Transaction> Transactions { get; set; }
+        public List<Transaction> Revenues { get; set; }
+            = new List<Transaction>();
+
+        public List<Transaction> Expenses { get; set; }
             = new List<Transaction>();
     }
 }

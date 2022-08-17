@@ -17,7 +17,7 @@ namespace XFin.API.Controllers
         [HttpPost]
         public IActionResult Create(CostCenterCreationModel costCenter)
         {
-            var newCostCenter = repo.CreateCostCenter(costCenter);
+            var newCostCenter = repo.Create(costCenter);
 
             //TODO - if no accountHolder was created, what do I return, is BadRequest ok?
             return newCostCenter != null ? Ok(newCostCenter) : BadRequest();
@@ -25,7 +25,7 @@ namespace XFin.API.Controllers
 
 
         [HttpGet]
-        public IActionResult GetCostCenters()
+        public IActionResult GetAll()
         {
             var costCenters = repo.GetAll();
 

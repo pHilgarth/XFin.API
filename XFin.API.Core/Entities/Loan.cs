@@ -24,7 +24,7 @@ namespace XFin.API.Core.Entities
 
         [ForeignKey("RecurringTransactionId")]
         public int RecurringTransactionId { get; set; }
-        public CostCenter RecurringTransaction { get; set; }
+        public RecurringTransaction RecurringTransaction { get; set; }
 
         [Required]
         [MaxLength(25)]

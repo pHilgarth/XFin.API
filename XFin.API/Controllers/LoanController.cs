@@ -21,7 +21,7 @@ namespace XFin.API.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetLoans()
+        public IActionResult GetAll()
         {
             var loans = repo.GetAll();
 

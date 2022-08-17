@@ -17,7 +17,7 @@ namespace XFin.API.Controllers
         }
 
         [HttpPost()]
-        public IActionResult CreateReserve(ReserveCreationModel reserve)
+        public IActionResult Create(ReserveCreationModel reserve)
         {
             var newReserve = repo.Create(reserve);
 

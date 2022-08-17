@@ -37,7 +37,7 @@ namespace XFin.API.DAL.Repositories
         public List<LoanModel> GetAllByAccount(int bankAccountId)
         {
             var loans = context.Loans
-                .Where(l => l.InternalBankAccount.Id == bankAccountId)
+                //.Where(l => l.BankAccount.Id == bankAccountId)
                 .ToList();
 
             return mapper.Map<List<LoanModel>>(loans);

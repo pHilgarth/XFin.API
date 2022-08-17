@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using XFin.API.Core.Enums;
 
 namespace XFin.API.Core.Entities
 {
@@ -42,13 +43,10 @@ namespace XFin.API.Core.Entities
         [MaxLength(25)]
         public string Reference { get; set; }
 
-        public decimal TargetAmount { get; set; }
+        public decimal Amount { get; set; }
 
-        public DateTime TargetDate { get; set; }
+        public DateTime Date { get; set; }
 
-        public List<Transactions> Transactions { get; set; }
-            = new List<Transactions>();
-
-        public List<RecurringTransaction> RecurringTransactions { get; set; }
+        public TransactionType TransactionType { get; set; }
     }
 }
