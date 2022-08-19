@@ -25,16 +25,15 @@ namespace XFin.API.Controllers
         {
             var newAccountHolder = repo.Create(accountHolder);
 
-            //TODO - if no accountHolder was created, what do I return, is BadRequest ok?
-            return newAccountHolder != null ? Ok(newAccountHolder) : BadRequest();
+            //TODO - if no accountHolder was created, what do I return, is NoContent the right thing?
+            return newAccountHolder != null ? Ok(newAccountHolder) : NoContent();
         }
 
         [HttpGet("{userId}")]
         public IActionResult GetAllByUser(int userId)
         {
             var accountHolders = repo.GetAllByUser(userId);
-            //return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
-            return NoContent();
+            return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
         }
 
         [HttpGet("{userId}/{accountHolderId}")]
