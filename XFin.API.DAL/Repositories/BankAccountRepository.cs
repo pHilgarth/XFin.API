@@ -29,14 +29,14 @@ namespace XFin.API.DAL.Repositories
                 return null;
             }
 
-            var newBankAccount = new BankAccount
+            //TODO - check if accountHolder with given id exists!
+
+            var newBankAccount = mapper.Map<BankAccount>(bankAccount);
+
+            if (newBankAccount.Description == null)
             {
-                Iban                = bankAccount.Iban,
-                Bic                 = bankAccount.Bic,
-                AccountHolderId     = bankAccount.AccountHolderId,
-                Bank                = bankAccount.Bank,
-                Description         = bankAccount.Description
-            };
+                newBankAccount.Description = "Konto";
+            }
 
             context.BankAccounts.Add(newBankAccount);
             context.SaveChanges();
