@@ -9,16 +9,16 @@ namespace XFin.API.Core.Models
 
         public string Name { get; set; }
 
-        public List<Loan> Loans { get; set; }
-            = new List<Loan>();
+        public List<LoanModel> Loans { get; set; }
+            = new List<LoanModel>();
 
-        public List<RecurringTransaction> RecurringTransactions { get; set; }
-            = new List<RecurringTransaction>();
+        public List<RecurringTransactionModel> RecurringTransactions { get; set; }
+            = new List<RecurringTransactionModel>();
 
-        public List<Reserve> Reserves { get; set; }
-            = new List<Reserve>();
+        public List<ReserveModel> Reserves { get; set; }
+            = new List<ReserveModel>();
 
-        public List<Transaction> Transactions { get; set; }
-            = new List<Transaction>();
+        public List<TransactionModel> Transactions { get; set; }
+            = new List<TransactionModel>();
     }
 }

@@ -8,30 +8,24 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
-        public BankAccount SourceBankAccount { get; set; }
+        public int SourceBankAccountId { get; set; }
 
-        public BankAccount TargetBankAccount { get; set; }
+        public int TargetBankAccountId { get; set; }
 
-        public CostCenter SourceCostCenter { get; set; }
+        public int SourceCostCenterId { get; set; }
 
-        public CostCenter TargetCostCenter { get; set; }
+        public int TargetCostCenterId { get; set; }
 
-        public RecurringTransaction RecurringTransaction { get; set; }
+        public int RecurringTransactionId { get; set; }
 
-        public Reserve Reserve { get; set; }
+        public int ReserveId { get; set; }
 
-        public Loan Loan { get; set; }
+        public int LoanId { get; set; }
 
         public string Reference { get; set; }
 
         public decimal Amount { get; set; }
 
         public DateTime Date { get; set; }
-
-        public List<Transaction> Transactions { get; set; }
-            = new List<Transaction>();
-
-        public List<RecurringTransaction> RecurringTransactions { get; set; }
-            = new List<RecurringTransaction>();
     }
 }

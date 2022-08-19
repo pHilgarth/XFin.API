@@ -10,7 +10,7 @@ namespace XFin.API.Core.Models
 
         public int? SourceCostCenterId { get; set; }
 
-        public int TargetCostCenterId { get; set; }
+        public int? TargetCostCenterId { get; set; }
 
         public int? RecurringTransactionId { get; set; }
 
@@ -23,5 +23,7 @@ namespace XFin.API.Core.Models
         public decimal Amount { get; set; }
 
         public string DateString { get; set; }
+
+        public int? TransactionType { get; set; }
     }
 }
