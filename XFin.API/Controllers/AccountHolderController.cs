@@ -25,22 +25,24 @@ namespace XFin.API.Controllers
         {
             var newAccountHolder = repo.Create(accountHolder);
 
-            //TODO - if no accountHolder was created, what do I return, is NoContent the right thing?
-            return newAccountHolder != null ? Ok(newAccountHolder) : NoContent();
+            return newAccountHolder != null ? Ok(newAccountHolder) : NotFound();
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("user/{userId}")]
         public IActionResult GetAllByUser(int userId)
         {
             var accountHolders = repo.GetAllByUser(userId);
-            return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
+
+            return accountHolders != null
+                ? accountHolders.Count > 0 ? Ok(accountHolders) : NoContent()
+                : NotFound();
         }
 
-        [HttpGet("{userId}/{accountHolderId}")]
+        [HttpGet("{accountHolderId}")]
         //public IActionResult GetAccountHolder(int id, bool includeAccounts = false, bool simpleAccounts = true)
-        public IActionResult GetSingle(int userId, int accountHolderId)
+        public IActionResult GetSingle(int accountHolderId)
         {
-            var accountHolder = repo.GetSingle(userId, accountHolderId);
+            var accountHolder = repo.GetSingle(accountHolderId);
             return accountHolder != null ? Ok(accountHolder) : NoContent();
         }
 

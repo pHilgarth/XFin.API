@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Models;
 
 namespace XFin.API.Core.Services
 {
     public interface ITransactionService
     {
-        decimal CalculateBalance(List<Transaction> transactions, int year, int month);
+        decimal CalculateBalance(List<TransactionModel> revenues, List<TransactionModel> expenses, int year, int month);
 
         decimal GetProportionPreviousMonth(List<Transaction> transactions, int year, int month);
 

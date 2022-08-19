@@ -21,74 +21,65 @@ namespace XFin.API.DAL.Repositories
             this.mapper = mapper;
         }
 
-        public AccountHolder Create(AccountHolderCreationModel accountHolder)
+        public AccountHolderModel Create(AccountHolderCreationModel accountHolder)
         {
-            var newAccountHolder = mapper.Map<AccountHolder>(accountHolder);
+            if (context.Users.Where(u => u.Id == accountHolder.UserId).FirstOrDefault() != null)
+            {
+                var newAccountHolder = mapper.Map<AccountHolder>(accountHolder);
 
-            context.AccountHolders.Add(newAccountHolder);
-            context.SaveChanges();
+                context.AccountHolders.Add(newAccountHolder);
+                context.SaveChanges();
 
-            return newAccountHolder;
+                return mapper.Map<AccountHolderModel>(newAccountHolder);
+            }
+
+            return null;
         }
 
         public List<AccountHolderModel> GetAllByUser(int userId)
         {
-            var accountHolders = mapper.Map<List<AccountHolderModel>>(
-                context.AccountHolders
-                    .Where(a => a.UserId == userId && !a.External)
-                    .Include(a => a.BankAccounts).ThenInclude(b => b.Revenues.OrderByDescending(b => b.Date))
-                    .Include(a => a.BankAccounts).ThenInclude(b => b.Expenses.OrderByDescending(b => b.Date))
-                );
+            var bruh = context.Users.Where(u => u.Id == userId).FirstOrDefault();
 
-            var currentYear = DateTime.Now.Year;
-            var currentMonth = DateTime.Now.Month;
-
-            foreach (var accountHolder in accountHolders)
+            if (context.Users.Where(u => u.Id == userId).FirstOrDefault() != null)
             {
-                foreach (var bankAccount in accountHolder.BankAccounts)
+                var accountHolders = mapper.Map<List<AccountHolderModel>>(context.AccountHolders
+                    .Where(a => a.UserId == userId && !a.External)
+                    .Include(a => a.BankAccounts).ThenInclude(b => b.Revenues)
+                    .ToList());
+
+                foreach (var accountHolder in accountHolders)
                 {
-                    //var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, 0, 0, false);
-                    //var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, 0, 0, false);
-                    //this prevents an object cycle 500 internal server error
-                    bankAccount.AccountHolder = null;
-                    bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
-                    //bankAccountModel.Revenues = mapper.Map <List<TransactionModel>>(revenues);
-                    //bankAccountModel.Expenses = mapper.Map <List<TransactionModel>>(expenses);
-                    //bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
+                    foreach (var bankAccount in accountHolder.BankAccounts)
+                    {
+                        bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+                        bankAccount.Balance = bankAccount.Revenues.Sum(r => r.Amount) - bankAccount.Expenses.Sum(e => e.Amount);
+                    }
                 }
+
+                return accountHolders;
             }
 
-            return accountHolders;
+            return null;
         }
 
-        public AccountHolderModel GetSingle(int userId, int accountHolderId)
+        public AccountHolderModel GetSingle(int accountHolderId)
         {
-            var accountHolder = context.AccountHolders.Where(a => a.Id == accountHolderId).FirstOrDefault();
+            var accountHolder = mapper.Map<AccountHolderModel>(context.AccountHolders
+                .Where(a => a.Id == accountHolderId)
+                .Include(a => a.BankAccounts).ThenInclude(b => b.Revenues)
+                .Include(a => a.BankAccounts).ThenInclude(b => b.Expenses)
+                .FirstOrDefault());
 
             if (accountHolder != null)
             {
-                var accountHolderModel = mapper.Map<AccountHolderModel>(accountHolder);
 
-                var bankAccounts = context.BankAccounts
-                    .Where(b => b.AccountHolderId == accountHolderId)
-                    .Include(b => b.Revenues)
-                    .Include(b => b.Expenses)
-                    .ToList();
-
-                foreach (var bankAccount in bankAccounts)
+                foreach (var bankAccount in accountHolder.BankAccounts)
                 {
-                    var currentYear = DateTime.Now.Year;
-                    var currentMonth = DateTime.Now.Month;
-
-                    var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
-
-                    //bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, currentYear, currentMonth);
-                    bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
-
-                    accountHolderModel.BankAccounts.Add(bankAccountModel);
+                    bankAccount.Balance = bankAccount.Revenues.Sum(b => b.Amount) - bankAccount.Expenses.Sum(e => e.Amount);
+                    bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
                 }
 
-                return accountHolderModel;
+                return accountHolder;
             }
 
             return null;

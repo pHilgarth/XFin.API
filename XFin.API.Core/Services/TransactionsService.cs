@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Models;
 
 namespace XFin.API.Core.Services
 {
     public class TransactionsService : ITransactionService
     {
-        public decimal CalculateBalance(List<Transaction> transactions, int year, int month)
+        public decimal CalculateBalance(List<TransactionModel> revenues, List<TransactionModel> expenses, int year, int month)
         {
-            var revenues = GetRevenuesUpToMonth(transactions, year, month).Select(r => r.Amount).Sum();
-            var expenses = Math.Abs(GetExpensesUpToMonth(transactions, year, month).Select(e => e.Amount).Sum());
+            //var revenues = GetRevenuesUpToMonth(transactions, year, month).Select(r => r.Amount).Sum();
+            //var expenses = Math.Abs(GetExpensesUpToMonth(transactions, year, month).Select(e => e.Amount).Sum());
 
-            return revenues - expenses;
+            //return revenues - expenses;
+            return 0;
         }
 
         public decimal GetProportionPreviousMonth(List<Transaction> transactions, int year, int month)
@@ -32,7 +34,7 @@ namespace XFin.API.Core.Services
                 month--;
             }
 
-            return CalculateBalance(transactions, year, month);
+            return 0;// CalculateBalance(transactions, year, month);
         }
 
         //returns expenses from a certain month

@@ -7,9 +7,9 @@ namespace XFin.API.DAL.Interfaces
 {
     public interface IAccountHolderRepository
     {
-        AccountHolder Create(AccountHolderCreationModel accountHolder);
+        AccountHolderModel Create(AccountHolderCreationModel accountHolder);
         List<AccountHolderModel> GetAllByUser(int userId);
-        AccountHolderModel GetSingle(int userId, int accountHolderId);
+        AccountHolderModel GetSingle(int accountHolderId);
         AccountHolderModel GetByName(string accountHolderName);
         AccountHolder Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch);
     }

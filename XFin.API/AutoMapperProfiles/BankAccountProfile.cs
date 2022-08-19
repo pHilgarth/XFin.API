@@ -10,7 +10,7 @@ namespace XFin.API.AutoMapperProfiles
         {
             CreateMap<BankAccount, BankAccountModel>();
             CreateMap<BankAccountCreationModel, BankAccount>();
-            CreateMap<BankAccountUpdateModel, BankAccount>();
+            CreateMap<BankAccount, BankAccountUpdateModel>().ReverseMap();
         }
     }
 }

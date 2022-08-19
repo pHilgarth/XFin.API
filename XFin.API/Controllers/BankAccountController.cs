@@ -18,15 +18,7 @@ namespace XFin.API.Controllers
         public IActionResult Create(BankAccountCreationModel bankAccount)
         {
             var newBankAccount = repo.Create(bankAccount);
-            //return newBankAccount != null ? Ok(newBankAccount) : Conflict();
-            if (newBankAccount != null)
-            {
-                return Ok(newBankAccount);
-            }
-            else
-            {
-                return Conflict();
-            }
+            return newBankAccount != null ? Ok(newBankAccount) : NotFound();
         }
 
         [HttpGet]

@@ -23,25 +23,22 @@ namespace XFin.API.DAL.Repositories
 
         public BankAccountModel Create(BankAccountCreationModel bankAccount)
         {
-            //check if "bankAccount" already exists
-            if (context.BankAccounts.Where(b => b.Iban == bankAccount.Iban).FirstOrDefault() != null)
+            if (context.AccountHolders.Where(a => a.Id == bankAccount.AccountHolderId).FirstOrDefault() != null)
             {
-                return null;
+                var newBankAccount = mapper.Map<BankAccount>(bankAccount);
+
+                if (newBankAccount.Description == null)
+                {
+                    newBankAccount.Description = "Konto";
+                }
+
+                context.BankAccounts.Add(newBankAccount);
+                context.SaveChanges();
+
+                return mapper.Map<BankAccountModel>(newBankAccount);
             }
 
-            //TODO - check if accountHolder with given id exists!
-
-            var newBankAccount = mapper.Map<BankAccount>(bankAccount);
-
-            if (newBankAccount.Description == null)
-            {
-                newBankAccount.Description = "Konto";
-            }
-
-            context.BankAccounts.Add(newBankAccount);
-            context.SaveChanges();
-
-            return mapper.Map<BankAccountModel>(newBankAccount);
+            return null;
         }
 
         public List<BankAccountModel> GetAll()
@@ -149,21 +146,20 @@ namespace XFin.API.DAL.Repositories
 
         public BankAccountModel Update(int id, JsonPatchDocument<BankAccountUpdateModel> bankAccountPatch)
         {
-            var bankAccountEntity = context.BankAccounts.Where(b => b.Id == id).FirstOrDefault();
+            var bankAccount = context.BankAccounts.Where(b => b.Id == id).FirstOrDefault();
 
-            if (bankAccountEntity != null)
+            if (bankAccount != null)
             {
                 //TODO - test what happens if the patchDoc is invalid, i.e. contains a path / prop that does not exist
-                var bankAccountToPatch = mapper.Map<BankAccountUpdateModel>(bankAccountEntity);
+                var bankAccountToPatch = mapper.Map<BankAccountUpdateModel>(bankAccount);
 
                 bankAccountPatch.ApplyTo(bankAccountToPatch);
 
-                mapper.Map(bankAccountToPatch, bankAccountEntity);
+                mapper.Map(bankAccountToPatch, bankAccount);
 
                 context.SaveChanges();
 
-                //return bankAccountEntity;
-                return null;
+                return mapper.Map<BankAccountModel>(bankAccount);
             }
 
             return null;

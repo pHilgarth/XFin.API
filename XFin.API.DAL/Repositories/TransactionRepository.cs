@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Enums;
 using XFin.API.Core.Models;
 using XFin.API.DAL.DbContexts;
 using XFin.API.DAL.Interfaces;
@@ -19,34 +20,25 @@ namespace XFin.API.DAL.Repositories
 
         public TransactionModel Create(TransactionCreationModel transaction)
         {
+            if (transaction.TargetCostCenterId == null)
+            {
+                transaction.TargetCostCenterId = context.CostCenters
+                    .Where(c => c.Name == "Nicht zugewiesen")
+                    .FirstOrDefault()
+                    .Id;
+            }
+
+            if (transaction.TransactionType == null)
+            {
+                transaction.TransactionType = (int)TransactionType.Neutral;
+            }
+
             var newTransaction = mapper.Map<Transaction>(transaction);
-            ////TODO - check if I need this DateTime.Parse... i dont think so
+
             newTransaction.Date = DateTime.Parse(transaction.DateString);
-            //newTransaction.CostCenterId = transaction.CostCenterId > 0 ?
-            //    context.CostCenters.Where(t => t.Id == transaction.CostCenterId).FirstOrDefault().Id :
-            //    context.CostCenters.Where(t => t.Name == "Nicht zugewiesen").FirstOrDefault().Id;
-
-            //if (newTransaction.Reference != "[Kontoinitialisierung]" && newTransaction.TransactionToken == null)
-            //{
-            //    newTransaction.TransactionToken = Guid.NewGuid().ToString();
-            //    newTransaction.CounterPartTransactionToken = Guid.NewGuid().ToString();
-            //}
-
-            //var newTransaction = new Transaction
-            //{
-            //    InternalBankAccountId = transaction.InternalBankAccountId,
-            //    CostCenter = costCenter,
-            //    Date = DateTime.Parse(transaction.DateString),
-            //    Amount = transaction.Amount,
-            //    Reference = transaction.Reference
-            //};
 
             context.Transactions.Add(newTransaction);
             context.SaveChanges();
-
-            //this prevents an object cycle 500 internal server error
-            //newTransaction.CostCenter = null;
-            //newTransaction.InternalBankAccount = null;
 
             return mapper.Map<TransactionModel>(newTransaction);
         }
