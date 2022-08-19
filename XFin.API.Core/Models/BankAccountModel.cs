@@ -7,7 +7,7 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
-        public AccountHolder AccountHolder { get; set; }
+        public AccountHolderModel AccountHolder { get; set; }
 
         public string Iban { get; set; }
 
