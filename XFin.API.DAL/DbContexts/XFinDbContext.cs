@@ -80,6 +80,11 @@ namespace XFin.API.DAL.DbContexts
                 .WithMany(c => c.Revenues)
                 .HasForeignKey(t => t.TargetCostCenterId);
 
+            modelBuilder.Entity<Loan>()
+                .HasOne(e => e.RecurringTransaction)
+                .WithOne(r => r.Loan)
+                .HasForeignKey<RecurringTransaction>(r => r.LoanId);
+
             base.OnModelCreating(modelBuilder);
         }
     }

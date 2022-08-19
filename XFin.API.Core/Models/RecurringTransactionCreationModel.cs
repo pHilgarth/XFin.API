@@ -12,9 +12,9 @@ namespace XFin.API.Core.Models
 
         public int TargetCostCenterId { get; set; }
 
-        public int ReserveId { get; set; }
+        public int? ReserveId { get; set; }
 
-        public int LoanId { get; set; }
+        public int? LoanId { get; set; }
 
         public decimal Amount { get; set; }
 

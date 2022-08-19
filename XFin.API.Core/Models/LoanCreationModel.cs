@@ -10,7 +10,7 @@ namespace XFin.API.Core.Models
 
         public int DebitorCostCenterId { get; set; }
 
-        public int RecurringTransactionId { get; set; }
+        public int? RecurringTransactionId { get; set; }
 
         public string Reference { get; set; }
 

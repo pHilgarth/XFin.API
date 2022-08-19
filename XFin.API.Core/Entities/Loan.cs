@@ -23,7 +23,7 @@ namespace XFin.API.Core.Entities
         public CostCenter DebitorCostCenter { get; set; }
 
         [ForeignKey("RecurringTransactionId")]
-        public int RecurringTransactionId { get; set; }
+        public int? RecurringTransactionId { get; set; }
         public RecurringTransaction RecurringTransaction { get; set; }
 
         [Required]
