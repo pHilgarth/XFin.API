@@ -35,7 +35,7 @@ namespace XFin.API.DAL.Repositories
         {
             var accountHolders = mapper.Map<List<AccountHolderModel>>(
                 context.AccountHolders
-                    .Where(a => a.UserId == userId)
+                    .Where(a => a.UserId == userId && !a.External)
                     .Include(a => a.BankAccounts).ThenInclude(b => b.Revenues.OrderByDescending(b => b.Date))
                     .Include(a => a.BankAccounts).ThenInclude(b => b.Expenses.OrderByDescending(b => b.Date))
                 );
@@ -49,7 +49,8 @@ namespace XFin.API.DAL.Repositories
                 {
                     //var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, 0, 0, false);
                     //var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, 0, 0, false);
-
+                    //this prevents an object cycle 500 internal server error
+                    bankAccount.AccountHolder = null;
                     bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
                     //bankAccountModel.Revenues = mapper.Map <List<TransactionModel>>(revenues);
                     //bankAccountModel.Expenses = mapper.Map <List<TransactionModel>>(expenses);
@@ -60,7 +61,7 @@ namespace XFin.API.DAL.Repositories
             return accountHolders;
         }
 
-        public AccountHolderModel GetSingle(int accountHolderId)
+        public AccountHolderModel GetSingle(int userId, int accountHolderId)
         {
             var accountHolder = context.AccountHolders.Where(a => a.Id == accountHolderId).FirstOrDefault();
 

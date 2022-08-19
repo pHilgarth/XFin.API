@@ -29,18 +29,19 @@ namespace XFin.API.Controllers
             return newAccountHolder != null ? Ok(newAccountHolder) : BadRequest();
         }
 
-        [HttpGet("user/{userId}")]
+        [HttpGet("{userId}")]
         public IActionResult GetAllByUser(int userId)
         {
             var accountHolders = repo.GetAllByUser(userId);
-            return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
+            //return accountHolders.Count > 0 ? Ok(accountHolders) : NoContent();
+            return NoContent();
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{userId}/{accountHolderId}")]
         //public IActionResult GetAccountHolder(int id, bool includeAccounts = false, bool simpleAccounts = true)
-        public IActionResult GetSingle(int id)
+        public IActionResult GetSingle(int userId, int accountHolderId)
         {
-            var accountHolder = repo.GetSingle(id);
+            var accountHolder = repo.GetSingle(userId, accountHolderId);
             return accountHolder != null ? Ok(accountHolder) : NoContent();
         }
 

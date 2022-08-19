@@ -9,7 +9,7 @@ namespace XFin.API.DAL.Interfaces
     {
         AccountHolder Create(AccountHolderCreationModel accountHolder);
         List<AccountHolderModel> GetAllByUser(int userId);
-        AccountHolderModel GetSingle(int accountHolderId);
+        AccountHolderModel GetSingle(int userId, int accountHolderId);
         AccountHolderModel GetByName(string accountHolderName);
         AccountHolder Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch);
     }
