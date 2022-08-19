@@ -24,9 +24,9 @@ namespace XFin.API.Core.Models
 
         public string Reference { get; set; }
 
-        public decimal TargetAmount { get; set; }
+        public decimal Amount { get; set; }
 
-        public DateTime TargetDate { get; set; }
+        public DateTime Date { get; set; }
 
         public List<Transaction> Transactions { get; set; }
             = new List<Transaction>();

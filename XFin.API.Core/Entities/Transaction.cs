@@ -12,7 +12,7 @@ namespace XFin.API.Core.Entities
         public int Id { get; set; }
 
         [ForeignKey("SourceBankAccountId")]
-        public int SourceBankAccountId { get; set; }
+        public int? SourceBankAccountId { get; set; }
         public BankAccount SourceBankAccount { get; set; }
 
         [ForeignKey("TargetBankAccountId")]
@@ -20,7 +20,7 @@ namespace XFin.API.Core.Entities
         public BankAccount TargetBankAccount { get; set; }
 
         [ForeignKey("SourceCostCenterId")]
-        public int SourceCostCenterId { get; set; }
+        public int? SourceCostCenterId { get; set; }
         public CostCenter SourceCostCenter { get; set; }
 
         [ForeignKey("TargetCostCenterId")]
@@ -28,15 +28,15 @@ namespace XFin.API.Core.Entities
         public CostCenter TargetCostCenter { get; set; }
 
         [ForeignKey("RecurringTransactionId")]
-        public int RecurringTransactionId { get; set; }
+        public int? RecurringTransactionId { get; set; }
         public RecurringTransaction RecurringTransaction { get; set; }
 
         [ForeignKey("ReserveId")]
-        public int ReserveId { get; set; }
+        public int? ReserveId { get; set; }
         public Reserve Reserve { get; set; }
 
         [ForeignKey("LoanId")]
-        public int LoanId { get; set; }
+        public int? LoanId { get; set; }
         public Loan Loan { get; set; }
 
         [Required]
