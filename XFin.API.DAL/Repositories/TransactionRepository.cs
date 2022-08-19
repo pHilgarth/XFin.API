@@ -21,7 +21,7 @@ namespace XFin.API.DAL.Repositories
         {
             var newTransaction = mapper.Map<Transaction>(transaction);
             ////TODO - check if I need this DateTime.Parse... i dont think so
-            //newTransaction.Date = DateTime.Parse(transaction.DateString);
+            newTransaction.Date = DateTime.Parse(transaction.DateString);
             //newTransaction.CostCenterId = transaction.CostCenterId > 0 ?
             //    context.CostCenters.Where(t => t.Id == transaction.CostCenterId).FirstOrDefault().Id :
             //    context.CostCenters.Where(t => t.Name == "Nicht zugewiesen").FirstOrDefault().Id;
