@@ -30,7 +30,7 @@ namespace XFin.API.DAL.Repositories
 
             if (transaction.TransactionType == null)
             {
-                transaction.TransactionType = (int)TransactionType.Neutral;
+                transaction.TransactionType = "Default";
             }
 
             var newTransaction = mapper.Map<Transaction>(transaction);
