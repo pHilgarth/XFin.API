@@ -24,6 +24,6 @@ namespace XFin.API.Core.Models
 
         public string DateString { get; set; }
 
-        public int? TransactionType { get; set; }
+        public string TransactionType { get; set; }
     }
 }
