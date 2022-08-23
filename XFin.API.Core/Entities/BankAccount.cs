@@ -13,10 +13,8 @@ namespace XFin.API.Core.Entities
         public int AccountHolderId { get; set; }
         public AccountHolder AccountHolder { get; set; }
 
-        [Required]
         public string Iban { get; set; }
 
-        [Required]
         public string Bic { get; set; }
 
         public string Bank { get; set; }
