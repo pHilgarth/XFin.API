@@ -29,9 +29,9 @@ namespace XFin.API.Controllers
         }
 
         [HttpGet("user/{userId}")]
-        public IActionResult GetAllByUser(int userId)
+        public IActionResult GetAllByUser(int userId, bool external)
         {
-            var accountHolders = repo.GetAllByUser(userId);
+            var accountHolders = repo.GetAllByUser(userId, external);
 
             return accountHolders != null
                 ? accountHolders.Count > 0 ? Ok(accountHolders) : NoContent()
@@ -59,10 +59,9 @@ namespace XFin.API.Controllers
         public IActionResult Update(int id, JsonPatchDocument<AccountHolderUpdateModel> accountHolderPatch)
         {
             //TODO - error handling
-            //TODO - check if this variable name is correct - its on accountHolderController and variable is called updatedBankAccout??
-            var updatedBankAccount = repo.Update(id, accountHolderPatch);
+            var updatedAccountHolder = repo.Update(id, accountHolderPatch);
 
-            return updatedBankAccount != null ? Ok(updatedBankAccount) : NotFound();
+            return updatedAccountHolder != null ? Ok(updatedAccountHolder) : NotFound();
         }
 
         [HttpDelete("{id}")]
