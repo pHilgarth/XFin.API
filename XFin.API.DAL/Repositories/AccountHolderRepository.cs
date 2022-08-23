@@ -36,15 +36,14 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public List<AccountHolderModel> GetAllByUser(int userId)
+        public List<AccountHolderModel> GetAllByUser(int userId, bool external)
         {
-            var bruh = context.Users.Where(u => u.Id == userId).FirstOrDefault();
-
             if (context.Users.Where(u => u.Id == userId).FirstOrDefault() != null)
             {
                 var accountHolders = mapper.Map<List<AccountHolderModel>>(context.AccountHolders
-                    .Where(a => a.UserId == userId && !a.External)
+                    .Where(a => a.UserId == userId && a.External == external)
                     .Include(a => a.BankAccounts).ThenInclude(b => b.Revenues)
+                    .Include(a => a.BankAccounts).ThenInclude(b => b.Expenses)
                     .ToList());
 
                 foreach (var accountHolder in accountHolders)
