@@ -28,11 +28,14 @@ namespace XFin.API.Controllers
             return loans.Count > 0 ? Ok(loans) : NoContent();
         }
 
-        [HttpGet("bankAccount/{bankAccountId}")]
-        public IActionResult GetAllByAccount(int bankAccountId)
+        [HttpGet("account/{accountId}")]
+        public IActionResult GetAllByAccount(int accountId)
         {
-            var loans = repo.GetAllByAccount(bankAccountId);
-            return loans.Count > 0 ? Ok(loans) : NoContent();
+            var loans = repo.GetAllByAccount(accountId);
+
+            return loans != null
+                ? loans.Count > 0 ? Ok(loans) : NoContent()
+                : NotFound();
         }
 
         private readonly ILoanRepository repo;

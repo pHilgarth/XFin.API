@@ -36,11 +36,16 @@ namespace XFin.API.DAL.Repositories
 
         public List<LoanModel> GetAllByAccount(int bankAccountId)
         {
-            var loans = context.Loans
-                //.Where(l => l.BankAccount.Id == bankAccountId)
-                .ToList();
+            if(context.BankAccounts.Where(b => b.Id == bankAccountId).FirstOrDefault() != null)
+            {
+                var loans = context.Loans
+                    .Where(l => l.DebitorBankAccountId == bankAccountId || l.CreditorBankAccountId == bankAccountId)
+                    .ToList();
 
-            return mapper.Map<List<LoanModel>>(loans);
+                return mapper.Map<List<LoanModel>>(loans);
+            }
+
+            return null;
         }
     }
 }
