@@ -9,6 +9,8 @@ namespace XFin.API.Core.Models
 
         public int AccountHolderId { get; set; }
 
+        public string AccountHolderName { get; set; }
+
         public string Iban { get; set; }
 
         public string AccountNumber { get; set; }
