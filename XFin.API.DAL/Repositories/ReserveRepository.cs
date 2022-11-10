@@ -23,6 +23,14 @@ namespace XFin.API.DAL.Repositories
 
         public Reserve Create(ReserveCreationModel reserve)
         {
+            if (reserve.CostCenterId == null)
+            {
+                reserve.CostCenterId = context.CostCenters
+                    .Where(c => c.Name == "Nicht zugewiesen")
+                    .FirstOrDefault()
+                    .Id;
+            }
+
             var newReserve = mapper.Map<Reserve>(reserve);
 
             context.Reserves.Add(newReserve);
@@ -31,42 +39,89 @@ namespace XFin.API.DAL.Repositories
             return newReserve;
         }
 
-        public List<ReserveModel> GetAllByAccount(int accountId)
+        public List<ReserveModel> GetAll()
         {
-            return mapper.Map<List<ReserveModel>>(
+            var reserves = mapper.Map<List<ReserveModel>>(
                 context.Reserves
-                //.Where(r => r.BankAccounttId == accountId)
+                .Include(r => r.BankAccount)
+                .Include(r => r.CostCenter)
                 .ToList());
-        }
-
-        private int List<T>(List<Reserve> reserves)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<ReserveModel> GetAllByAccountHolder(int accountHolderId)
-        {
-            var bankAccountIds = context.BankAccounts.
-                Where(b => b.AccountHolderId == accountHolderId).
-                Select(b => b.Id).
-                ToList();
-
-            var reserves = context.Reserves.
-                Where(r => bankAccountIds.Contains(r.BankAccountId)).
-                Include(r => r.Transactions).
-                ToList();
-
-            var reserveModels = new List<ReserveModel>();
 
             foreach(var reserve in reserves)
             {
-                var reserveModel = mapper.Map<ReserveModel>(reserve);
-                //reserveModel.Amount = reserve.Transactions.Sum(t => t.Amount);
-
-                reserveModels.Add(reserveModel);
+                //preventing a 500 cycle error
+                reserve.BankAccount.Reserves = null;
+                reserve.CostCenter.Reserves = null;
             }
 
-            return reserveModels;
+            return reserves;
+        }
+
+        public List<ReserveModel> GetAllByAccount(int accountId)
+        {
+            var reserves = mapper.Map<List<ReserveModel>>(
+                context.Reserves
+                .Where(r => r.BankAccountId == accountId)
+                .Include(r => r.BankAccount)
+                .Include(r => r.CostCenter)
+                .ToList());
+
+            foreach(var reserve in reserves)
+            {
+                reserve.Revenues = mapper.Map<List<TransactionModel>>(
+                    context.Transactions
+                    .Where(t => t.ReserveId == reserve.Id && t.TargetBankAccountId == reserve.BankAccount.Id)
+                    .ToList());
+
+                reserve.Expenses = mapper.Map <List<TransactionModel>>(
+                    context.Transactions
+                    .Where(t => t.ReserveId == reserve.Id && t.SourceBankAccountId == reserve.BankAccount.Id)
+                    .ToList());
+
+                //preventing a 500 cycle error
+                reserve.BankAccount.Reserves = null;
+                reserve.CostCenter.Reserves = null;
+            }
+
+            return reserves;
+        }
+
+        public List<ReserveModel> GetAllByAccountAndCostCenter(int accountId, int costCenterId)
+        {
+            var reserves = mapper.Map<List<ReserveModel>>(
+                context.Reserves
+                .Where(r => r.BankAccountId == accountId && r.CostCenterId == costCenterId)
+                .Include(r => r.BankAccount)
+                .Include(r => r.CostCenter)
+                .ToList());
+
+            foreach (var reserve in reserves)
+            {
+                //preventing a 500 cycle error
+                reserve.BankAccount.Reserves = null;
+                reserve.CostCenter.Reserves = null;
+            }
+
+            return reserves;
+        }
+
+        public List<ReserveModel> GetAllByCostCenter(int costCenterId)
+        {
+            var reserves = mapper.Map<List<ReserveModel>>(
+                context.Reserves
+                .Where(r => r.CostCenterId == costCenterId)
+                .Include(r => r.CostCenter)
+                .Include(r => r.BankAccount)
+                .ToList());
+
+            foreach(var reserve in reserves)
+            {
+                //preventing a 500 cycle error
+                reserve.BankAccount.Reserves = null;
+                reserve.CostCenter.Reserves = null;
+            }
+
+            return reserves;
         }
 
         //public List<ReserveSimpleModel> GetReversesSimple()

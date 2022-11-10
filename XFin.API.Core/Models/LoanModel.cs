@@ -8,13 +8,13 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
-        public BankAccount CreditorBankAccount { get; set; }
+        public BankAccountModel CreditorBankAccount { get; set; }
 
-        public BankAccount DebitorBankAccount { get; set; }
+        public BankAccountModel DebitorBankAccount { get; set; }
 
-        public CostCenter DebitorCostCenter { get; set; }
+        public CostCenterModel DebitorCostCenter { get; set; }
 
-        public CostCenter RecurringTransaction { get; set; }
+        public CostCenterModel RecurringTransaction { get; set; }
 
         public string Reference { get; set; }
 
@@ -28,7 +28,7 @@ namespace XFin.API.Core.Models
 
         public decimal MonthlyInstallment { get; set; }
 
-        public List<Transaction> Transactions { get; set; }
-            = new List<Transaction>();
+        public List<TransactionModel> Transactions { get; set; }
+            = new List<TransactionModel>();
     }
 }

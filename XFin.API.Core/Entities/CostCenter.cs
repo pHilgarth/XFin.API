@@ -12,6 +12,9 @@ namespace XFin.API.Core.Entities
         [MaxLength(50)]
         public string Name { get; set; }
 
+        public List<CostCenterAsset> CostCenterAssets { get; set; }
+            = new List<CostCenterAsset>();
+
         public List<Loan> Loans { get; set; }
             = new List<Loan>();
 

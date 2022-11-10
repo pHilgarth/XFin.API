@@ -8,7 +8,9 @@ namespace XFin.API.DAL.Interfaces
     public interface IReserveRepository
     {
         Reserve Create(ReserveCreationModel reserve);
+        List<ReserveModel> GetAll();
         List<ReserveModel> GetAllByAccount(int accountId);
-        List<ReserveModel> GetAllByAccountHolder(int accountHolderId);
+        List<ReserveModel> GetAllByAccountAndCostCenter(int accountId, int costCenterId);
+        List<ReserveModel> GetAllByCostCenter(int costCenterId);
     }
 }

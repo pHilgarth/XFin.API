@@ -25,6 +25,14 @@ namespace XFin.API.Controllers
             return newReserve != null ? Ok(newReserve) : BadRequest();
         }
 
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var reserves = repo.GetAll();
+
+            return reserves.Count > 0 ? Ok(reserves) : NoContent();
+        }
+
         //TODO - I have to check if I return the right stuff here - on "GetAllByAccountHolder" I return "reserves != null ? ..."
         // but here I check for Count -> I should be more consistent here and make sure everything works then
 
@@ -37,12 +45,20 @@ namespace XFin.API.Controllers
             return reserves.Count > 0 ? Ok(reserves) : NoContent();
         }
 
-        [HttpGet("accountHolder/{id}")]
-        public IActionResult GetAllByAccountHolder(int id)
+        [HttpGet("{accountId}/{costCenterId}")]
+        public IActionResult GetAllByAccountAndCostCenter(int accountId, int costCenterId)
         {
-            var reserves = repo.GetAllByAccountHolder(id);
+            var reserves = repo.GetAllByAccountAndCostCenter(accountId, costCenterId);
 
-            return reserves != null ? Ok(reserves) : NoContent();
+            return reserves.Count > 0 ? Ok(reserves) : NoContent();
+        }
+
+        [HttpGet("costCenter/{costCenterId}")]
+        public IActionResult GetAllByCostCenter(int costCenterId)
+        {
+            var reserves = repo.GetAllByCostCenter(costCenterId);
+
+            return reserves.Count > 0 ? Ok(reserves) : NoContent();
         }
 
         private readonly IReserveRepository repo;

@@ -22,9 +22,9 @@ namespace XFin.API.Core.Entities
         [MaxLength(25)]
         public string Reference { get; set; }
 
-        public decimal TargetAmount { get; set; }
+        public decimal? TargetAmount { get; set; }
 
-        public DateTime TargetDate { get; set; }
+        public DateTime? TargetDate { get; set; }
 
         public List<Transaction> Transactions { get; set; }
             = new List<Transaction>();

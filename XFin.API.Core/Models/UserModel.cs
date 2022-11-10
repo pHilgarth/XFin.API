@@ -12,7 +12,7 @@ namespace XFin.API.Core.Models
         //TODO - password needs to be encrypted, and some validation must take place, until then I just store it as is
         public string Password { get; set; }
 
-        public List<AccountHolder> AccountHolders { get; set; }
+        public List<AccountHolderModel> AccountHolders { get; set; }
 
     }
 }

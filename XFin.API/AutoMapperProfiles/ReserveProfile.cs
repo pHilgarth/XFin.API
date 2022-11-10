@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoMapper;
+﻿using AutoMapper;
 using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
 

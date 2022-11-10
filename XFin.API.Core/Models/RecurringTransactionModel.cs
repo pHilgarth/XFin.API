@@ -9,17 +9,17 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
-        public BankAccount SourceBankAccount { get; set; }
+        public BankAccountModel SourceBankAccount { get; set; }
 
-        public BankAccount TargetBankAccount { get; set; }
+        public BankAccountModel TargetBankAccount { get; set; }
 
-        public CostCenter SourceCostCenter { get; set; }
+        public CostCenterModel SourceCostCenter { get; set; }
 
-        public CostCenter TargetCostCenter { get; set; }
+        public CostCenterModel TargetCostCenter { get; set; }
 
-        public Reserve Reserve { get; set; }
+        public ReserveModel Reserve { get; set; }
 
-        public Loan Loan { get; set; }
+        public LoanModel Loan { get; set; }
 
         public decimal Amount { get; set; }
 
@@ -31,7 +31,7 @@ namespace XFin.API.Core.Models
 
         public TransactionType TransactionType { get; set; }
 
-        public List<Transaction> Transactions { get; set; }
-            = new List<Transaction>();
+        public List<TransactionModel> Transactions { get; set; }
+            = new List<TransactionModel>();
     }
 }
