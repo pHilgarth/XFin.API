@@ -18,8 +18,16 @@ namespace XFin.API.DAL.Repositories
             this.mapper = mapper;
         }
 
-        public TransactionModel Create(TransactionCreationModel transaction)
+        public TransactionBasicModel Create(TransactionCreationModel transaction)
         {
+            if (transaction.SourceCostCenterId == null)
+            {
+                transaction.SourceCostCenterId = context.CostCenters
+                    .Where(c => c.Name == "Nicht zugewiesen")
+                    .FirstOrDefault()
+                    .Id;
+            }
+
             if (transaction.TargetCostCenterId == null)
             {
                 transaction.TargetCostCenterId = context.CostCenters
@@ -28,29 +36,15 @@ namespace XFin.API.DAL.Repositories
                     .Id;
             }
 
-            if (transaction.TransactionType == null)
-            {
-                transaction.TransactionType = "Default";
-            }
-
             var newTransaction = mapper.Map<Transaction>(transaction);
 
+            newTransaction.DueDate = DateTime.Parse(transaction.DueDateString);
             newTransaction.Date = DateTime.Parse(transaction.DateString);
 
             context.Transactions.Add(newTransaction);
             context.SaveChanges();
 
-            return mapper.Map<TransactionModel>(newTransaction);
-        }
-
-        public List<TransactionModel> GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<TransactionModel> GetAllByAccount(int accountId)
-        {
-            throw new NotImplementedException();
+            return mapper.Map<TransactionBasicModel>(newTransaction);
         }
 
         XFinDbContext context;

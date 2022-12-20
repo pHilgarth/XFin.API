@@ -75,6 +75,28 @@ namespace XFin.API.DAL.Repositories
                 var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
                 bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
+                //foreach (var expense in bankAccountModel.Expenses)
+                //{
+                //    expense.SourceBankAccount.Expenses = null;
+                //    expense.SourceBankAccount.Revenues = null;
+
+                //    expense.TargetBankAccount.Expenses = null;
+                //    expense.TargetBankAccount.Revenues = null;
+                //}
+
+                //foreach (var revenue in bankAccountModel.Revenues)
+                //{
+                //    if (revenue.SourceBankAccount != null)
+                //    {
+                //        revenue.SourceBankAccount.Expenses = null;
+                //        revenue.SourceBankAccount.Revenues = null;
+                //    }
+
+                //    revenue.TargetBankAccount.Expenses = null;
+                //    revenue.TargetBankAccount.Revenues = null;
+
+                //}
+
                 //var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, false);
                 //var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, false);
 

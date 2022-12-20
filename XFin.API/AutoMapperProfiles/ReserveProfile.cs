@@ -10,6 +10,8 @@ namespace XFin.API.AutoMapperProfiles
         {
             CreateMap<ReserveCreationModel, Reserve>();
             CreateMap<Reserve, ReserveModel>();
+            CreateMap<Reserve, ReserveSimpleModel>();
+            CreateMap<ReserveUpdateModel, Reserve>().ReverseMap();
         }
     }
 }

@@ -6,8 +6,6 @@ namespace XFin.API.DAL.Interfaces
 {
     public interface ITransactionRepository
     {
-        TransactionModel Create(TransactionCreationModel transaction);
-        List<TransactionModel> GetAll();
-        List<TransactionModel> GetAllByAccount(int accountId);
+        TransactionBasicModel Create(TransactionCreationModel transaction);
     }
 }

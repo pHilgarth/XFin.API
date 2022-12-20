@@ -10,7 +10,8 @@ namespace XFin.API.AutoMapperProfiles
         public TransactionProfile()
         {
             CreateMap<TransactionCreationModel, Transaction>();
-            CreateMap<Transaction, TransactionModel>();
+            CreateMap<Transaction, TransactionFullModel>();
+            CreateMap<Transaction, TransactionBasicModel>();
         }
     }
 }

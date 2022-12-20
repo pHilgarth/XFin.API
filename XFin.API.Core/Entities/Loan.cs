@@ -18,10 +18,6 @@ namespace XFin.API.Core.Entities
         public int DebitorBankAccountId { get; set; }
         public BankAccount DebitorBankAccount { get; set; }
 
-        [ForeignKey("DebitorCostCenterId")]
-        public int DebitorCostCenterId { get; set; }
-        public CostCenter DebitorCostCenter { get; set; }
-
         [ForeignKey("RecurringTransactionId")]
         public int? RecurringTransactionId { get; set; }
         public RecurringTransaction RecurringTransaction { get; set; }
@@ -32,6 +28,9 @@ namespace XFin.API.Core.Entities
 
         [Required]
         public decimal Amount { get; set; }
+
+        [Required]
+        public decimal Balance { get; set; }
 
         [Required]
         public DateTime StartDate { get; set; }

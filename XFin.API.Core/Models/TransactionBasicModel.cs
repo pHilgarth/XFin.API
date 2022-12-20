@@ -4,17 +4,17 @@ using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
-    public class TransactionModel
+    public class TransactionBasicModel
     {
         public int Id { get; set; }
 
-        public int SourceBankAccountId { get; set; }
+        public string SourceBankAccountString { get; set; }
 
-        public int TargetBankAccountId { get; set; }
+        public string TargetBankAccountString { get; set; }
 
-        public int SourceCostCenterId { get; set; }
+        public string SourceCostCenterString { get; set; }
 
-        public int TargetCostCenterId { get; set; }
+        public string TargetCostCenterString { get; set; }
 
         public int RecurringTransactionId { get; set; }
 

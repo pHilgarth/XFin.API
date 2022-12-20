@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using XFin.API.Core.Entities;
-using XFin.API.Core.Enums;
 
 namespace XFin.API.Core.Models
 {
@@ -27,11 +25,17 @@ namespace XFin.API.Core.Models
 
         public int DayOfMonth { get; set; }
 
+        public DateTime StartDate { get; set; }
+
+        public DateTime DueDate { get; set; }
+
+        public DateTime EndDate { get; set; }
+
         public string Reference { get; set; }
 
-        public TransactionType TransactionType { get; set; }
+        public string TransactionType { get; set; }
 
-        public List<TransactionModel> Transactions { get; set; }
-            = new List<TransactionModel>();
+        public List<TransactionFullModel> Transactions { get; set; }
+            = new List<TransactionFullModel>();
     }
 }

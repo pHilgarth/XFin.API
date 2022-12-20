@@ -32,14 +32,35 @@ namespace XFin.API.DAL.Repositories
         }
 
         //TODO - review - include a possibility for NoContent
-        public List<CostCenterAssetModel> GetAllByCostCenter(int id)
+        public List<CostCenterAssetModel> GetAllByAccountAndCostCenter(int accountId, int costCenterId)
         {
             var costCenterAssets = mapper.Map<List<CostCenterAssetModel>>(
                 context.CostCenterAssets
-                    .Where(c => c.CostCenterId == id)
+                    .Where(c => c.BankAccountId == accountId && c.CostCenterId == costCenterId)
                     .ToList());
 
             return costCenterAssets;
+        }
+
+        public CostCenterAssetModel Update(int id, JsonPatchDocument<CostCenterAssetUpdateModel> costCenterAssetPatch)
+        {
+            var costCenterAsset = context.CostCenterAssets.Where(c => c.Id == id).FirstOrDefault();
+
+            if (costCenterAsset != null)
+            {
+                //TODO - test what happens if the patchDoc is invalid, i.e. contains a path / prop that does not exist
+                var costCenterAssetToPatch = mapper.Map<CostCenterAssetUpdateModel>(costCenterAsset);
+
+                costCenterAssetPatch.ApplyTo(costCenterAssetToPatch);
+
+                mapper.Map(costCenterAssetToPatch, costCenterAsset);
+
+                context.SaveChanges();
+
+                return mapper.Map<CostCenterAssetModel>(costCenterAsset);
+            }
+
+            return null;
         }
 
         //public CostCenterAsset Update(int id, JsonPatchDocument<CostCenterAssetUpdateModel> costCenterAssetPatch)

@@ -61,6 +61,13 @@ namespace XFin.API.Controllers
             return reserves.Count > 0 ? Ok(reserves) : NoContent();
         }
 
+        [HttpPatch("{reserveId}")]
+        public IActionResult Update(int reserveId, JsonPatchDocument<ReserveUpdateModel> jsonPatchDocument)
+        {
+            var updatedReserve = repo.Update(reserveId, jsonPatchDocument);
+            return updatedReserve != null ? Ok(updatedReserve) : NotFound();
+        }
+
         private readonly IReserveRepository repo;
     }
 }

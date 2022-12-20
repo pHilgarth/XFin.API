@@ -10,6 +10,7 @@ namespace XFin.API.AutoMapperProfiles
         {
             CreateMap<RecurringTransaction, RecurringTransactionModel>();
             CreateMap<RecurringTransactionCreationModel, RecurringTransaction>();
+            CreateMap<RecurringTransactionUpdateModel, RecurringTransaction>().ReverseMap();
         }
     }
 }

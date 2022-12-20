@@ -6,7 +6,7 @@ namespace XFin.API.Core.Services
 {
     public interface ITransactionService
     {
-        decimal CalculateBalance(List<TransactionModel> revenues, List<TransactionModel> expenses, int year, int month);
+        decimal CalculateBalance(List<TransactionBasicModel> revenues, List<TransactionBasicModel> expenses, int year, int month);
 
         decimal GetProportionPreviousMonth(List<Transaction> transactions, int year, int month);
 

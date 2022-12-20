@@ -19,7 +19,7 @@ namespace XFin.API.Controllers
         {
             var newCostCenter = repo.Create(costCenter);
 
-            //TODO - if no accountHolder was created, what do I return, is BadRequest ok?
+            //TODO - if no costCenter was created, what do I return, is BadRequest ok?
             return newCostCenter != null ? Ok(newCostCenter) : BadRequest();
         }
 
@@ -32,10 +32,10 @@ namespace XFin.API.Controllers
             return costCenters != null ? Ok(costCenters) : NoContent();
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetAllByAccount(int id, int year = 0, int month = 0)
+        [HttpGet("{accountId}")]
+        public IActionResult GetAllByAccount(int accountId, int year = 0, int month = 0)
         {
-            var costCenters = repo.GetAllByAccount(id, year, month);
+            var costCenters = repo.GetAllByAccount(accountId, year, month);
 
             return costCenters != null ? Ok(costCenters) : NoContent();
         }

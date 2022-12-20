@@ -21,14 +21,13 @@ namespace XFin.API.Controllers
             return newUser != null ? Ok(newUser) : BadRequest();
         }
 
-        [HttpPatch("{id}")]
-        public IActionResult Update(int id, JsonPatchDocument<UserUpdateModel> userPatch)
-        {
-            //TODO - error handling
-            //TODO - check if this variable name is correct - its on accountHolderController and variable is called updatedBankAccout??
-            var updatedBankAccount = repo.Update(id, userPatch);
 
-            return updatedBankAccount != null ? Ok(updatedBankAccount) : NotFound();
+        [HttpGet("{email}/{password}")]
+        public IActionResult Get(string email, string password)
+        {
+            var user = repo.Get(email, password);
+
+            return user != null ? Ok(user) : NotFound();
         }
 
         private readonly IUserRepository repo;

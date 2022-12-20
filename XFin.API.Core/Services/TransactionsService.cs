@@ -9,7 +9,7 @@ namespace XFin.API.Core.Services
 {
     public class TransactionsService : ITransactionService
     {
-        public decimal CalculateBalance(List<TransactionModel> revenues, List<TransactionModel> expenses, int year, int month)
+        public decimal CalculateBalance(List<TransactionBasicModel> revenues, List<TransactionBasicModel> expenses, int year, int month)
         {
             //var revenues = GetRevenuesUpToMonth(transactions, year, month).Select(r => r.Amount).Sum();
             //var expenses = Math.Abs(GetExpensesUpToMonth(transactions, year, month).Select(e => e.Amount).Sum());

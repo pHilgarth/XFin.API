@@ -8,6 +8,7 @@ namespace XFin.API.DAL.Interfaces
     public interface ICostCenterAssetRepository
     {
         CostCenterAsset Create(CostCenterAssetCreationModel costCenterAsset);
-        List<CostCenterAssetModel> GetAllByCostCenter(int id);
+        List<CostCenterAssetModel> GetAllByAccountAndCostCenter(int accountId, int costCenterId);
+        CostCenterAssetModel Update(int id, JsonPatchDocument<CostCenterAssetUpdateModel> costCenterAssetPatch);
     }
 }

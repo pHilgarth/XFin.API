@@ -22,21 +22,6 @@ namespace XFin.API.Controllers
             return newTransaction != null ? Ok(newTransaction) : BadRequest();
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var transactions = repo.GetAll();
-
-            return transactions.Count > 0 ? Ok(transactions) : NoContent();
-        }
-
-        [HttpGet("bankAccount/{bankAccountId}")]
-        public IActionResult GetAllByAccount(int bankAccountId)
-        {
-            var transactions = repo.GetAllByAccount(bankAccountId);
-            return transactions.Count > 0 ? Ok(transactions) : NoContent();
-        }
-
         private readonly ITransactionRepository repo;
     }
 }

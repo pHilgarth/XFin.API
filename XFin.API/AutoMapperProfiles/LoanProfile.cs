@@ -10,6 +10,7 @@ namespace XFin.API.AutoMapperProfiles
         {
             CreateMap<Loan, LoanModel>();
             CreateMap<LoanCreationModel, Loan>();
+            CreateMap<Loan, LoanUpdateModel>().ReverseMap();
         }
     }
 }

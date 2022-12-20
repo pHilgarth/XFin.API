@@ -31,63 +31,53 @@ namespace XFin.API.DAL.Repositories
             return newCostCenter;
         }
 
-        public List<CostCenterModel> GetAll()
+        public List<CostCenterSimpleModel> GetAll()
         {
             var costCenters = context.CostCenters.ToList().OrderBy(t => t.Name);
 
-            return mapper.Map<List<CostCenterModel>>(costCenters);
+            return mapper.Map<List<CostCenterSimpleModel>>(costCenters);
         }
 
         //TODO - review - include a possibility for NoContent
-        public List<CostCenterModel> GetAllByAccount(int id, int year, int month)
+        public List<CostCenterModel> GetAllByAccount(int accountId, int year, int month)
         {
-            var costCenterModels = new List<CostCenterModel>();
+            //var costCenters = mapper.Map<List<CostCenterModel>>(context.CostCenters
             var costCenters = context.CostCenters
-                .Include(t => t.Revenues)
-                .Include(t => t.Expenses)
+                .Include(c => c.CostCenterAssets.Where(ca => ca.BankAccountId == accountId))
+                .Include(c => c.Reserves.Where(r => r.BankAccountId == accountId))
+                .Include(c => c.Expenses)
+                .Include(c => c.Revenues)
                 .ToList();
-            var bankAccount = context.BankAccounts
-                .Where(b => b.Id == id)
-                .Include(b => b.Revenues)
-                .Include(b => b.Expenses)
-                .FirstOrDefault();
+
+            var costCenterModels = new List<CostCenterModel>();
 
             foreach (var costCenter in costCenters)
             {
                 var costCenterModel = mapper.Map<CostCenterModel>(costCenter);
 
-                //costCenter.Transactions = costCenter.Transactions.Where(t => t.BankAccountId == id).ToList();
+                //TODO - check if the transactions are properly sorted into expenses and revenues
+                costCenter.Expenses = costCenter.Expenses.Where(e => e.SourceBankAccountId == accountId).ToList();
+                costCenter.Revenues = costCenter.Revenues.Where(r => r.TargetBankAccountId == accountId).ToList();
+                
+                var revenues = costCenter.Revenues.Select(r => r.Amount).Sum();
+                var expenses = costCenter.Expenses.Select(e => e.Amount).Sum();
+                costCenterModel.Amount = costCenter.Revenues.Select(r => r.Amount).Sum() - costCenter.Expenses.Select(e => e.Amount).Sum();
 
-                //TODO - check if prop prev month is calculated correctly (need more data)
-                //costCenterModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(costCenter.Transactions, year, month);
+                var reserveModels = new List<ReserveSimpleModel>();
 
-                ////account external revenues (from another account or initialization transaction)
-                //costCenterModel.RevenuesTotal = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, false)
-                //    .Where(t => t.CostCenterId == costCenter.Id)
-                //    .Select(r => r.Amount).Sum();
+                foreach (var reserve in costCenter.Reserves)
+                {
+                    var reserveModel = mapper.Map<ReserveSimpleModel>(reserve);
 
-                //var internalRevenuesTotal = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, true)
-                //    .Where(t => t.CostCenterId == costCenter.Id)
-                //    .Select(r => r.Amount).Sum();
-                ////accountInternalExpenses = all expenses from this costCenter to another costCenter on the same account
-                ////these are needed to subtract them from the total revenues for this costCenter
-                //var internalExpensesTotal = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, true)
-                //    .Where(t => t.CostCenterId == costCenter.Id)
-                //    .Select(e => Math.Abs(e.Amount)).Sum();
+                    //balance = revenues - expenses
+                    reserveModel.Balance =
+                        reserve.Transactions.Where(t => t.TargetBankAccountId == reserve.BankAccountId && t.TargetCostCenterId == reserve.CostCenterId).Select(t => t.Amount).Sum() -
+                        reserve.Transactions.Where(t => t.SourceBankAccountId == reserve.BankAccountId && t.SourceCostCenterId == reserve.CostCenterId).Select(t => t.Amount).Sum();
 
-                ////accountExternalExpenses = all expenses from this costCenter to another bankAccount or external party
-                ////these are needed to calculate the total expenses for this costCenter
-                //var externalExpensesTotal = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, false)
-                //    .Where(t => t.CostCenterId == costCenter.Id)
-                //    .Select(e => Math.Abs(e.Amount)).Sum();
+                    reserveModels.Add(reserveModel);
+                }
 
-
-
-                //costCenterModel.InternalTransfersAmount = internalRevenuesTotal - internalExpensesTotal;
-
-                //costCenterModel.Budget = costCenterModel.ProportionPreviousMonth + costCenterModel.RevenuesTotal + costCenterModel.InternalTransfersAmount;
-                //costCenterModel.ExpensesTotal = externalExpensesTotal;
-                //costCenterModel.Balance = costCenterModel.Budget - costCenterModel.ExpensesTotal;
+                costCenterModel.Reserves = reserveModels;
 
                 costCenterModels.Add(costCenterModel);
             }

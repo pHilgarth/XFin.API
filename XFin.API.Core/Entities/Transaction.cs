@@ -47,6 +47,12 @@ namespace XFin.API.Core.Entities
 
         public DateTime Date { get; set; }
 
+        //equals property 'Date' on non-recurring transactions - does NOT equal property 'Date' on transactions, that are linked to a recurringTransaction!
+        public DateTime DueDate { get; set; }
+
+        //always true on non-recurring regular transactions - can be false on recurringTransactions, that have been cancelled by the user 
+        public bool Executed { get; set; }
+
         public TransactionType TransactionType { get; set; }
     }
 }

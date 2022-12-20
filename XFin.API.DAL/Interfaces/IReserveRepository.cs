@@ -12,5 +12,6 @@ namespace XFin.API.DAL.Interfaces
         List<ReserveModel> GetAllByAccount(int accountId);
         List<ReserveModel> GetAllByAccountAndCostCenter(int accountId, int costCenterId);
         List<ReserveModel> GetAllByCostCenter(int costCenterId);
+        ReserveModel Update(int reserveId, JsonPatchDocument<ReserveUpdateModel> jsonPatchDocument);
     }
 }

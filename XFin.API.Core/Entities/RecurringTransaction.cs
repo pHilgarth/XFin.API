@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using XFin.API.Core.Enums;
@@ -38,6 +39,10 @@ namespace XFin.API.Core.Entities
         public decimal Amount { get; set; }
 
         [Required]
+        [MaxLength(25)]
+        public string Reference { get; set; }
+
+        [Required]
         [Range(1, 12)]
         public int Cycle { get; set; }
 
@@ -45,9 +50,9 @@ namespace XFin.API.Core.Entities
         [Range(1, 31)]
         public int DayOfMonth { get; set; }
 
-        [Required]
-        [MaxLength(25)]
-        public string Reference { get; set; }
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
 
         public TransactionType TransactionType { get; set; }
 

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using XFin.API.Core.Entities;
 
 namespace XFin.API.Core.Models
 {
@@ -9,16 +8,22 @@ namespace XFin.API.Core.Models
 
         public string Name { get; set; }
 
-        public List<LoanModel> Loans { get; set; }
-            = new List<LoanModel>();
+        public decimal Amount { get; set; }
 
-        public List<RecurringTransactionModel> RecurringTransactions { get; set; }
-            = new List<RecurringTransactionModel>();
+        public List<CostCenterAssetModel> CostCenterAssets { get; set; }
+            = new List<CostCenterAssetModel>();
 
-        public List<ReserveModel> Reserves { get; set; }
-            = new List<ReserveModel>();
+        public List<ReserveSimpleModel> Reserves { get; set; }
+            = new List<ReserveSimpleModel>();
 
-        public List<TransactionModel> Transactions { get; set; }
-            = new List<TransactionModel>();
+        //TODO - do I need this?
+        //public List<RecurringTransactionModel> RecurringTransactions { get; set; }
+        //    = new List<RecurringTransactionModel>();
+
+
+
+        //TODO - do I need this?
+        //public List<TransactionBasicModel> Transactions { get; set; }
+        //    = new List<TransactionBasicModel>();
     }
 }

@@ -10,7 +10,7 @@ namespace XFin.API.AutoMapperProfiles
         {
             CreateMap<CostCenterAsset, CostCenterAssetModel>();
             CreateMap<CostCenterAssetCreationModel, CostCenterAsset>();
-            CreateMap<CostCenterAssetUpdateModel, CostCenterAsset>();
+            CreateMap<CostCenterAssetUpdateModel, CostCenterAsset>().ReverseMap();
         }
     }
 }

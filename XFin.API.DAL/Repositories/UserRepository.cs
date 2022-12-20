@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using XFin.API.Core.Entities;
 using XFin.API.Core.Models;
@@ -28,9 +29,11 @@ namespace XFin.API.DAL.Repositories
             return mapper.Map<UserModel>(newUser);
         }
 
-        public UserModel Update(int id, JsonPatchDocument<UserUpdateModel> costCenterPatch)
+        public UserModel Get(string email, string password)
         {
-            throw new System.NotImplementedException();
+            return mapper.Map<UserModel>(context.Users
+                .Where(u => u.Email == email && u.Password == password)
+                .FirstOrDefault());
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using XFin.API.Core.Entities;
-
-namespace XFin.API.Core.Models
+﻿namespace XFin.API.Core.Models
 {
     public class CostCenterAssetModel
     {

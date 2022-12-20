@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
 
@@ -20,19 +21,34 @@ namespace XFin.API.Controllers
             return newRecurringTransaction != null ? Ok(newRecurringTransaction) : BadRequest();
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("sourceAccount/{accountId}")]
+        public IActionResult GetAllBySourceAccount(int accountId)
         {
-            var recurringTransactions = repo.GetAll();
+            var recurringTransactions = repo.GetAllBySourceAccount(accountId);
+            return recurringTransactions.Count > 0 ? Ok(recurringTransactions) : NoContent();
+        }
+
+        [HttpGet("targetAccount/{accountId}")]
+        public IActionResult GetAllByTargetAccount(int accountId)
+        {
+            var recurringTransactions = repo.GetAllByTargetAccount(accountId);
+            return recurringTransactions.Count > 0 ? Ok(recurringTransactions) : NoContent();
+        }
+
+        [HttpGet("{year}/{month}/{day}")]
+        public IActionResult GetAllByDueDate(int year, int month, int day)
+        {
+            var recurringTransactions = repo.GetAllByDueDate(year, month, day);
 
             return recurringTransactions.Count > 0 ? Ok(recurringTransactions) : NoContent();
         }
 
-        [HttpGet("bankAccount/{bankAccountId}")]
-        public IActionResult GetAllByAccount(int bankAccountId)
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id, JsonPatchDocument<RecurringTransactionUpdateModel> recurringTransactionPatch)
         {
-            var recurringTransactions = repo.GetAllByAccount(bankAccountId);
-            return recurringTransactions.Count > 0 ? Ok(recurringTransactions) : NoContent();
+            var updatedRecurringTransaction = repo.Update(id, recurringTransactionPatch);
+
+            return updatedRecurringTransaction != null ? Ok(updatedRecurringTransaction) : NotFound();
         }
 
         private readonly IRecurringTransactionRepository repo;

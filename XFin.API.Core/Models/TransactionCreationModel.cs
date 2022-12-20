@@ -20,8 +20,12 @@
 
         public decimal Amount { get; set; }
 
+        public string DueDateString { get; set; }
+
         public string DateString { get; set; }
 
         public string TransactionType { get; set; }
+
+        public bool Executed { get; set; }
     }
 }

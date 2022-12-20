@@ -40,22 +40,49 @@ namespace XFin.API.DAL.Repositories
         {
             if (context.Users.Where(u => u.Id == userId).FirstOrDefault() != null)
             {
-                var accountHolders = mapper.Map<List<AccountHolderModel>>(context.AccountHolders
-                    .Where(a => a.UserId == userId && a.External == external)
+                //var accountHolders = mapper.Map<List<AccountHolderModel>>(context.AccountHolders
+                var accountHolders = context.AccountHolders.Where(a => a.UserId == userId && a.External == external)
                     .Include(a => a.BankAccounts).ThenInclude(b => b.Revenues)
                     .Include(a => a.BankAccounts).ThenInclude(b => b.Expenses)
-                    .ToList());
+                    .ToList();
+
+                var accountHolderModels = new List<AccountHolderModel>();
 
                 foreach (var accountHolder in accountHolders)
                 {
+                    var bankAccountModels = new List<BankAccountModel>();
+
                     foreach (var bankAccount in accountHolder.BankAccounts)
                     {
-                        bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
-                        bankAccount.Balance = bankAccount.Revenues.Sum(r => r.Amount) - bankAccount.Expenses.Sum(e => e.Amount);
+                        var accountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+                        //TODO - überall, wo Balance berechnet wird, muss die neue Property 'Executed' berücksichtigt werden!!!!
+                        var balance = bankAccount.Revenues.Where(r => r.Executed).Sum(r => r.Amount) - bankAccount.Expenses.Where(e => e.Executed).Sum(e => e.Amount);
+
+                        //bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+                        //bankAccount.Balance = bankAccount.Revenues.Sum(r => r.Amount) - bankAccount.Expenses.Sum(e => e.Amount);
+
+                        //prevents 500 object cycle error
+                        bankAccount.Revenues = null;
+                        bankAccount.Expenses = null;
+
+                        var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
+
+                        bankAccountModel.AccountNumber = accountNumber;
+                        bankAccountModel.Balance = balance;
+
+                        bankAccountModels.Add(bankAccountModel);
                     }
+
+                    accountHolder.BankAccounts = null;
+
+                    var accountHolderModel = mapper.Map<AccountHolderModel>(accountHolder);
+                    accountHolderModel.BankAccounts = bankAccountModels;
+
+                    accountHolderModels.Add(accountHolderModel);
+
                 }
 
-                return accountHolders;
+                return accountHolderModels;
             }
 
             return null;

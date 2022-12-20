@@ -12,13 +12,13 @@ namespace XFin.API.Core.Models
 
         public int DebitorBankAccountId { get; set; }
 
-        public int DebitorCostCenterId { get; set; }
-
         public int RecurringTransactionId { get; set; }
 
         public string Reference { get; set; }
 
         public decimal Amount { get; set; }
+
+        public decimal Balance { get; set; }
 
         public DateTime StartDate { get; set; }
 

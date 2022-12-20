@@ -8,6 +8,10 @@ namespace XFin.API.Core.Entities
         [Key]
         public int Id { get; set; }
 
+        [ForeignKey("BankAccountId")]
+        public int BankAccountId { get; set; }
+        public BankAccount BankAccount { get; set; }
+
         [ForeignKey("CostCenterId")]
         public int CostCenterId { get; set; }
         public CostCenter CostCenter { get; set; }

@@ -19,16 +19,25 @@ namespace XFin.API.Controllers
         {
             var newCostCenterAsset = repo.Create(costCenterAsset);
 
-            //TODO - if no accountHolder was created, what do I return, is BadRequest ok?
+            //TODO - if no costCenterAsset was created, what do I return, is BadRequest ok?
             return newCostCenterAsset != null ? Ok(newCostCenterAsset) : BadRequest();
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetAllByCostCenter(int id)
+        [HttpGet("{accountId}/{costCenterId}")]
+        public IActionResult GetAllByAccountAndCostCenter(int accountId, int costCenterId)
         {
-            var costCenterAssets = repo.GetAllByCostCenter(id);
+            var costCenterAssets = repo.GetAllByAccountAndCostCenter(accountId, costCenterId);
 
             return costCenterAssets != null ? Ok(costCenterAssets) : NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Update(int id, JsonPatchDocument<CostCenterAssetUpdateModel> costCenterAssetPatch)
+        {
+            //TODO - error handling
+            var updatedCostCenterAsset = repo.Update(id, costCenterAssetPatch);
+
+            return updatedCostCenterAsset != null ? Ok(updatedCostCenterAsset) : NotFound();
         }
 
         private ICostCenterAssetRepository repo;

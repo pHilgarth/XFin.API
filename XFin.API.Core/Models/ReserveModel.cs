@@ -18,13 +18,13 @@ namespace XFin.API.Core.Models
 
         public DateTime? TargetDate { get; set; }
 
-        public List<TransactionModel> Revenues { get; set; }
-            = new List<TransactionModel>();
+        public List<TransactionBasicModel> Revenues { get; set; }
+            = new List<TransactionBasicModel>();
 
-        public List<TransactionModel> Expenses { get; set; }
-            = new List<TransactionModel>();
+        public List<TransactionBasicModel> Expenses { get; set; }
+            = new List<TransactionBasicModel>();
 
-        public List<RecurringTransactionModel> RecurringTransactions { get; set; }
-            = new List<RecurringTransactionModel>();
+        public List<TransactionBasicModel> RecurringTransactions { get; set; }
+            = new List<TransactionBasicModel>();
     }
 }

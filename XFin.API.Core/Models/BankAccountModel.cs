@@ -34,10 +34,10 @@ namespace XFin.API.Core.Models
         public List<ReserveModel> Reserves { get; set; }
             = new List<ReserveModel>();
 
-        public List<TransactionModel> Revenues { get; set; }
-            = new List<TransactionModel>();
+        public List<TransactionBasicModel> Revenues { get; set; }
+            = new List<TransactionBasicModel>();
 
-        public List<TransactionModel> Expenses { get; set; }
-            = new List<TransactionModel>();
+        public List<TransactionBasicModel> Expenses { get; set; }
+            = new List<TransactionBasicModel>();
     }
 }
