@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Enums;
 using XFin.API.Core.Models;
 using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
@@ -54,21 +55,27 @@ namespace XFin.API.DAL.Repositories
 
                     foreach (var bankAccount in accountHolder.BankAccounts)
                     {
-                        var accountNumber = calculator.GetAccountNumber(bankAccount.Iban);
-                        //TODO - überall, wo Balance berechnet wird, muss die neue Property 'Executed' berücksichtigt werden!!!!
-                        var balance = bankAccount.Revenues.Where(r => r.Executed).Sum(r => r.Amount) - bankAccount.Expenses.Where(e => e.Executed).Sum(e => e.Amount);
+                        var revenues = bankAccount.Revenues
+                            .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && !r.IsCashTransaction)
+                            .ToList();
 
-                        //bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
-                        //bankAccount.Balance = bankAccount.Revenues.Sum(r => r.Amount) - bankAccount.Expenses.Sum(e => e.Amount);
+                        var cashRevenues = bankAccount.Revenues
+                            .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && r.IsCashTransaction)
+                            .ToList();
 
-                        //prevents 500 object cycle error
-                        bankAccount.Revenues = null;
-                        bankAccount.Expenses = null;
+                        var expenses = bankAccount.Expenses
+                            .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && !e.IsCashTransaction)
+                            .ToList();
+
+                        var cashExpenses = bankAccount.Expenses
+                            .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && e.IsCashTransaction)
+                            .ToList();
 
                         var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
 
-                        bankAccountModel.AccountNumber = accountNumber;
-                        bankAccountModel.Balance = balance;
+                        bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+                        bankAccountModel.Balance = calculator.CalculateBalance(revenues, expenses, DateTime.Now.Year, DateTime.Now.Month);
+                        bankAccountModel.Cash = calculator.CalculateBalance(cashRevenues, cashExpenses, DateTime.Now.Year, DateTime.Now.Month);
 
                         bankAccountModels.Add(bankAccountModel);
                     }
@@ -111,9 +118,9 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public AccountHolderModel GetByName(string name)
+        public AccountHolderModel GetSingleByUserAndName(int userId, string name)
         {
-            var accountHolder = context.AccountHolders.Where(a => a.Name == name).FirstOrDefault();
+            var accountHolder = context.AccountHolders.Where(a => a.UserId == userId && a.Name == name).FirstOrDefault();
             var accountHolderModel = mapper.Map<AccountHolderModel>(accountHolder);
 
             return accountHolderModel != null ? accountHolderModel : null;

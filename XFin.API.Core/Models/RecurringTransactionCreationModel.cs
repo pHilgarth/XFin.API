@@ -1,4 +1,5 @@
-﻿using XFin.API.Core.Enums;
+﻿using System;
+using XFin.API.Core.Enums;
 
 namespace XFin.API.Core.Models
 {
@@ -23,6 +24,10 @@ namespace XFin.API.Core.Models
         public int DayOfMonth { get; set; }
 
         public string Reference { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime? EndDate { get; set; }
 
         public TransactionType TransactionType { get; set; }
     }

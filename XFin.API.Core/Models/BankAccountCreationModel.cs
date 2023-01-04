@@ -4,6 +4,8 @@
     {
         public int AccountHolderId { get; set; }
 
+        public int UserId { get; set; }
+
         public string Iban { get; set; }
 
         public string Bic { get; set; }

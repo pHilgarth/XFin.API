@@ -28,6 +28,7 @@ namespace XFin.API.Controllers
             return newAccountHolder != null ? Ok(newAccountHolder) : NotFound();
         }
 
+        //param "external" would be provided via queryString!
         [HttpGet("user/{userId}")]
         public IActionResult GetAllByUser(int userId, bool external)
         {
@@ -47,10 +48,10 @@ namespace XFin.API.Controllers
         }
 
         //This endpoint is for duplicate checks
-        [HttpGet("name/{name}")]
-        public IActionResult GetByName(string name)
+        [HttpGet("user/{userId}/name/{name}")]
+        public IActionResult GetByUserAndName(int userId, string name)
         {
-            var accountHolder = repo.GetByName(name);
+            var accountHolder = repo.GetSingleByUserAndName(userId, name);
 
             return accountHolder != null ? Ok(accountHolder) : NoContent();
         }

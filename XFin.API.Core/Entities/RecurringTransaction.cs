@@ -39,7 +39,7 @@ namespace XFin.API.Core.Entities
         public decimal Amount { get; set; }
 
         [Required]
-        [MaxLength(25)]
+        [MaxLength(50)]
         public string Reference { get; set; }
 
         [Required]
@@ -47,12 +47,12 @@ namespace XFin.API.Core.Entities
         public int Cycle { get; set; }
 
         [Required]
-        [Range(1, 31)]
+        [Range(1, 28)]
         public int DayOfMonth { get; set; }
 
         public DateTime StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
 
         public TransactionType TransactionType { get; set; }
 

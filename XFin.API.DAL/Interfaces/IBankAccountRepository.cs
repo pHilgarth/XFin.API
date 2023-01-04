@@ -8,9 +8,9 @@ namespace XFin.API.DAL.Interfaces
     public interface IBankAccountRepository
     {
         BankAccountModel Create(BankAccountCreationModel bankAccount);
-        List<BankAccountModel> GetAll();
+        List<BankAccountModel> GetAllByUser(int userId);
         BankAccountModel GetSingle(int id, int year, int month);
-        BankAccountModel GetByIban(string iban);
+        BankAccountModel GetSingleByUserAndIban(int userId, string iban);
         BankAccountModel Update(int id, JsonPatchDocument<BankAccountUpdateModel> bankAccountPatch);
     }
 }

@@ -16,7 +16,7 @@ namespace XFin.API.Core.Entities
         public BankAccount SourceBankAccount { get; set; }
 
         [ForeignKey("TargetBankAccountId")]
-        public int TargetBankAccountId { get; set; }
+        public int? TargetBankAccountId { get; set; }
         public BankAccount TargetBankAccount { get; set; }
 
         [ForeignKey("SourceCostCenterId")]
@@ -24,7 +24,7 @@ namespace XFin.API.Core.Entities
         public CostCenter SourceCostCenter { get; set; }
 
         [ForeignKey("TargetCostCenterId")]
-        public int TargetCostCenterId { get; set; }
+        public int? TargetCostCenterId { get; set; }
         public CostCenter TargetCostCenter { get; set; }
 
         [ForeignKey("RecurringTransactionId")]
@@ -39,8 +39,7 @@ namespace XFin.API.Core.Entities
         public int? LoanId { get; set; }
         public Loan Loan { get; set; }
 
-        [Required]
-        [MaxLength(25)]
+        [MaxLength(100)]
         public string Reference { get; set; }
 
         public decimal Amount { get; set; }
@@ -52,6 +51,8 @@ namespace XFin.API.Core.Entities
 
         //always true on non-recurring regular transactions - can be false on recurringTransactions, that have been cancelled by the user 
         public bool Executed { get; set; }
+
+        public bool IsCashTransaction { get; set; }
 
         public TransactionType TransactionType { get; set; }
     }

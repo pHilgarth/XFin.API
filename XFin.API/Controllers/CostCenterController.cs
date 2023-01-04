@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using System;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
@@ -24,20 +25,31 @@ namespace XFin.API.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("user/{userId}")]
+        public IActionResult GetAllByUser(int userId)
         {
-            var costCenters = repo.GetAll();
+            var costCenters = repo.GetAllByUser(userId);
 
             return costCenters != null ? Ok(costCenters) : NoContent();
         }
 
-        [HttpGet("{accountId}")]
-        public IActionResult GetAllByAccount(int accountId, int year = 0, int month = 0)
+        [HttpGet("user/{userId}/account/{accountId}")]
+        public IActionResult GetAllByUserAndAccount(int userId, int accountId, int year = 0, int month = 0)
         {
-            var costCenters = repo.GetAllByAccount(accountId, year, month);
+            year = year == 0 ? DateTime.Now.Year : year;
+            month = month == 0 ? DateTime.Now.Month : month;
+
+            var costCenters = repo.GetAllByUserAndAccount(userId, accountId, year, month);
 
             return costCenters != null ? Ok(costCenters) : NoContent();
+        }
+
+        [HttpGet("user/{userId}/name/{name}")]
+        public IActionResult GetSingleByUserAndName(int userId, string name)
+        {
+            var costCenter = repo.GetSingleByUserAndName(userId, name);
+
+            return costCenter != null ? Ok(costCenter) : NotFound();
         }
 
         [HttpPatch("{id}")]

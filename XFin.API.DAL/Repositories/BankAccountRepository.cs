@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Enums;
 using XFin.API.Core.Models;
 using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
@@ -41,48 +43,136 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public List<BankAccountModel> GetAll()
+        public List<BankAccountModel> GetAllByUser(int userId)
         {
-            var bankAccounts = mapper.Map<List<BankAccountModel>>(
-                context.BankAccounts
-                .Include(i => i.AccountHolder)
-                .ToList());
+            var bankAccounts = context.BankAccounts
+                .Where(b => b.UserId == userId)
+                .Include(b => b.AccountHolder)
+                .Include(b => b.Revenues)
+                .Include(b => b.Expenses)
+                .ToList();
+
+            var bankAccountModels = new List<BankAccountModel>();
 
             foreach(var bankAccount in bankAccounts)
             {
-                bankAccount.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+                var revenues = bankAccount.Revenues
+                    .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && !r.IsCashTransaction)
+                    .ToList();
+
+                var cashRevenues = bankAccount.Revenues
+                    .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && r.IsCashTransaction)
+                    .ToList();
+
+                var expenses = bankAccount.Expenses
+                    .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && !e.IsCashTransaction)
+                    .ToList();
+
+                var cashExpenses = bankAccount.Expenses
+                    .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && e.IsCashTransaction)
+                    .ToList();
+
+                var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
+
+                bankAccountModel.Balance = calculator.CalculateBalance(revenues, expenses, DateTime.Now.Year, DateTime.Now.Month);
+                bankAccountModel.Cash = calculator.CalculateBalance(cashRevenues, cashExpenses, DateTime.Now.Year, DateTime.Now.Month);
+                bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccount.Iban);
+
+                bankAccountModels.Add(bankAccountModel);
             }
 
-            return bankAccounts;
+            return bankAccountModels;
         }
 
         public BankAccountModel GetSingle(int id, int year, int month)
         {
+
             var bankAccount = context.BankAccounts.Where(b => b.Id == id)
                 .Include(b => b.AccountHolder)
+
                 .Include(b => b.Revenues).ThenInclude(t => t.SourceBankAccount)
                 .Include(b => b.Revenues).ThenInclude(t => t.TargetBankAccount)
+
+                .Include(b => b.Revenues).ThenInclude(t => t.SourceCostCenter)
+                .Include(b => b.Revenues).ThenInclude(t => t.TargetCostCenter)
+
                 .Include(b => b.Expenses).ThenInclude(t => t.SourceBankAccount)
                 .Include(b => b.Expenses).ThenInclude(t => t.TargetBankAccount)
-                .Include(b => b.Revenues).ThenInclude(t => t.SourceCostCenter)
-                .Include(b => b.Expenses).ThenInclude(t => t.TargetCostCenter)
-                .Include(b => b.Revenues).ThenInclude(t => t.SourceCostCenter)
+
+                .Include(b => b.Expenses).ThenInclude(t => t.SourceCostCenter)
                 .Include(b => b.Expenses).ThenInclude(t => t.TargetCostCenter)
                 .FirstOrDefault();
 
             if (bankAccount != null)
             {
+                bankAccount.Revenues = calculator.GetTransactionsInMonth(
+                    bankAccount.Revenues.Where(r => r.TransactionType != TransactionType.AccountTransfer && r.Executed).ToList(),
+                    year,
+                    month
+                );
+
+                bankAccount.Expenses = calculator.GetTransactionsInMonth(
+                    bankAccount.Expenses.Where(e => e.TransactionType != TransactionType.AccountTransfer && e.Executed).ToList(),
+                    year,
+                    month
+                );
+
                 var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
+
                 bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
 
-                //foreach (var expense in bankAccountModel.Expenses)
-                //{
-                //    expense.SourceBankAccount.Expenses = null;
-                //    expense.SourceBankAccount.Revenues = null;
+                var revenueModels = new List<TransactionBasicModel>();
 
-                //    expense.TargetBankAccount.Expenses = null;
-                //    expense.TargetBankAccount.Revenues = null;
-                //}
+                foreach (var revenue in bankAccount.Revenues)
+                {
+                    var revenueModel = mapper.Map<TransactionBasicModel>(revenue);
+
+                    revenueModel.SourceAccountHolder = revenue.SourceBankAccount != null
+                        ? context.AccountHolders
+                            .Where(a => a.Id == revenue.SourceBankAccount.AccountHolderId)
+                            .FirstOrDefault().Name
+                        : null;
+
+                    revenueModel.SourceCostCenterName = revenue.SourceCostCenter != null
+                        ? revenue.SourceCostCenter.Name
+                        : revenue.SourceBankAccount != null
+                            ? "Nicht zugewiesen"
+                            : null;
+
+                    revenueModel.TargetCostCenterName = revenue.TargetCostCenter != null
+                        ? revenue.TargetCostCenter.Name
+                        : "Nicht zugewiesen";
+
+                    revenueModels.Add(revenueModel);
+                }
+
+                var expenseModels = new List<TransactionBasicModel>();
+
+                foreach (var expense in bankAccount.Expenses)
+                {
+                    var expenseModel = mapper.Map<TransactionBasicModel>(expense);
+
+                    expenseModel.TargetAccountHolder = expense.TargetBankAccount != null
+                        ? context.AccountHolders
+                            .Where(a => a.Id == expense.TargetBankAccount.AccountHolderId)
+                            .FirstOrDefault().Name
+                        : null;
+
+                    expenseModel.SourceCostCenterName = expense.SourceCostCenter != null
+                        ? expense.SourceCostCenter.Name
+                        : "Nicht zugewiesen";
+
+                    expenseModel.TargetCostCenterName = expense.TargetCostCenter != null
+                        ? expense.TargetCostCenter.Name
+                        : expense.TargetBankAccount != null
+                            ? "Nicht zugewiesen"
+                            : null;
+
+                    expenseModels.Add(expenseModel);
+                }
+
+                bankAccountModel.Expenses = expenseModels;
+                bankAccountModel.Revenues = revenueModels;
 
                 //foreach (var revenue in bankAccountModel.Revenues)
                 //{
@@ -151,9 +241,9 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        public BankAccountModel GetByIban(string iban)
+        public BankAccountModel GetSingleByUserAndIban(int userId, string iban)
         {
-            var bankAccount = context.BankAccounts.Where(b => b.Iban == iban).FirstOrDefault();
+            var bankAccount = context.BankAccounts.Where(b => b.UserId == userId && b.Iban == iban).FirstOrDefault();
 
             if (bankAccount != null)
             {

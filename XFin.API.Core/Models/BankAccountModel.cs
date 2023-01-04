@@ -25,14 +25,16 @@ namespace XFin.API.Core.Models
 
         public decimal Balance { get; set; }
 
-        public List<LoanModel> Loans { get; set; }
-            = new List<LoanModel>();
+        public decimal Cash { get; set; }
 
-        public List<RecurringTransactionModel> RecurringTransactions { get; set; }
-            = new List<RecurringTransactionModel>();
+        //public List<LoanModel> Loans { get; set; }
+        //    = new List<LoanModel>();
 
-        public List<ReserveModel> Reserves { get; set; }
-            = new List<ReserveModel>();
+        //public List<RecurringTransactionModel> RecurringTransactions { get; set; }
+        //    = new List<RecurringTransactionModel>();
+
+        //public List<ReserveModel> Reserves { get; set; }
+        //    = new List<ReserveModel>();
 
         public List<TransactionBasicModel> Revenues { get; set; }
             = new List<TransactionBasicModel>();

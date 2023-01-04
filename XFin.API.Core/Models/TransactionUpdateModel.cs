@@ -1,5 +1,6 @@
 ﻿using System;
 
+//TODO - I don't think, that I need this...
 namespace XFin.API.Core.Models
 {
     public class TransactionUpdateModel

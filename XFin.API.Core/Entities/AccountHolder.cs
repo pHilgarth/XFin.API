@@ -14,7 +14,7 @@ namespace XFin.API.Core.Entities
         public User User { get; set; }
 
         [Required]
-        [MaxLength(25)]
+        [MaxLength(100)]
         public string Name { get; set; }
 
         public bool External { get; set; }

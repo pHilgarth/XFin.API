@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Enums;
 
 namespace XFin.API.Core.Models
 {
@@ -8,13 +9,13 @@ namespace XFin.API.Core.Models
     {
         public int Id { get; set; }
 
-        public string SourceBankAccountString { get; set; }
+        public string SourceAccountHolder { get; set; }
 
-        public string TargetBankAccountString { get; set; }
+        public string TargetAccountHolder { get; set; }
 
-        public string SourceCostCenterString { get; set; }
+        public string SourceCostCenterName { get; set; }
 
-        public string TargetCostCenterString { get; set; }
+        public string TargetCostCenterName { get; set; }
 
         public int RecurringTransactionId { get; set; }
 
@@ -27,5 +28,11 @@ namespace XFin.API.Core.Models
         public decimal Amount { get; set; }
 
         public DateTime Date { get; set; }
+
+        public bool Executed { get; set; }
+
+        public bool IsCashTransaction { get; set; }
+
+        public TransactionType TransactionType { get; set; }
     }
 }

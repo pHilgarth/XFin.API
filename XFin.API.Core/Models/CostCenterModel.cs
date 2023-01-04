@@ -8,7 +8,15 @@ namespace XFin.API.Core.Models
 
         public string Name { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal Balance { get; set; }
+
+        public decimal BalancePreviousMonth { get; set; }
+
+        public decimal RevenuesSum { get; set; }
+
+        public decimal ExpensesSum { get; set; }
+
+        public decimal TransferSum { get; set; }
 
         public List<CostCenterAssetModel> CostCenterAssets { get; set; }
             = new List<CostCenterAssetModel>();

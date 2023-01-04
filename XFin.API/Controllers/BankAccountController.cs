@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using System;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using XFin.API.Core.Models;
 using XFin.API.DAL.Interfaces;
@@ -6,7 +7,7 @@ using XFin.API.DAL.Interfaces;
 namespace XFin.API.Controllers
 {
     [ApiController]
-    [Route("api/bankAccounts")]
+    [Route("api/accounts")]
     public class BankAccountController : Controller
     {
         public BankAccountController(IBankAccountRepository repo)
@@ -21,25 +22,28 @@ namespace XFin.API.Controllers
             return newBankAccount != null ? Ok(newBankAccount) : NotFound();
         }
 
-        [HttpGet]
-        public IActionResult GetAll()
+        [HttpGet("user/{userId}")]
+        public IActionResult GetAllByUser(int userId)
         {
-            var bankAccounts = repo.GetAll();
+            var bankAccounts = repo.GetAllByUser(userId);
             return bankAccounts.Count > 0 ? Ok(bankAccounts) : NoContent();
         }
 
         [HttpGet("{id}")]
         public IActionResult GetSingle(int id, int year = 0, int month = 0)
         {
+            year = year == 0 ? DateTime.Now.Year : year;
+            month = month == 0 ? DateTime.Now.Month : month;
+
             var bankAccount = repo.GetSingle(id, year, month);
             return bankAccount != null ? Ok(bankAccount) : NoContent();
         }
 
         //this endpoint is used to check for iban duplicates when creating new accounts
-        [HttpGet("iban/{iban}")]
-        public IActionResult GetByIban(string iban)
+        [HttpGet("user/{userId}/iban/{iban}")]
+        public IActionResult GetSingleByUserAndIban(int userId, string iban)
         {
-            var bankAccount = repo.GetByIban(iban);
+            var bankAccount = repo.GetSingleByUserAndIban(userId, iban);
 
             return bankAccount != null ? Ok(bankAccount) : NoContent();
         }

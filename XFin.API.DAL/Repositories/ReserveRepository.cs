@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using XFin.API.Core.Entities;
+using XFin.API.Core.Enums;
 using XFin.API.Core.Models;
 using XFin.API.Core.Services;
 using XFin.API.DAL.DbContexts;
@@ -50,7 +51,7 @@ namespace XFin.API.DAL.Repositories
             foreach(var reserve in reserves)
             {
                 //preventing a 500 cycle error
-                reserve.BankAccount.Reserves = null;
+                //reserve.BankAccount.Reserves = null;
                 reserve.CostCenter.Reserves = null;
             }
 
@@ -70,20 +71,30 @@ namespace XFin.API.DAL.Repositories
             {
                 reserve.Revenues = mapper.Map<List<TransactionBasicModel>>(
                     context.Transactions
-                    .Where(t => t.ReserveId == reserve.Id && t.TargetBankAccountId == reserve.BankAccount.Id)
+                    .Where(t => t.ReserveId == reserve.Id && t.TargetBankAccountId == reserve.BankAccount.Id && t.TransactionType != TransactionType.AccountTransfer)
                     .ToList());
+
+                reserve.TransferRevenues = mapper.Map<List<TransactionBasicModel>>(
+                    context.Transactions
+                        .Where(t => t.ReserveId == reserve.Id && t.TargetCostCenterId == reserve.CostCenter.Id && t.TransactionType == TransactionType.AccountTransfer)
+                        .ToList());
 
                 reserve.Expenses = mapper.Map <List<TransactionBasicModel>>(
                     context.Transactions
-                    .Where(t => t.ReserveId == reserve.Id && t.SourceBankAccountId == reserve.BankAccount.Id)
+                    .Where(t => t.ReserveId == reserve.Id && t.SourceBankAccountId == reserve.BankAccount.Id && t.TransactionType != TransactionType.AccountTransfer)
                     .ToList());
+
+                reserve.TransferExpenses = mapper.Map<List<TransactionBasicModel>>(
+                    context.Transactions
+                        .Where(t => t.ReserveId == reserve.Id && t.SourceCostCenterId == reserve.CostCenter.Id && t.TransactionType == TransactionType.AccountTransfer)
+                        .ToList());
 
                 reserve.BankAccount.AccountHolderName = context.AccountHolders
                     .Where(a => a.Id == reserve.BankAccount.AccountHolderId)
                     .FirstOrDefault().Name;
 
                 //preventing a 500 cycle error
-                reserve.BankAccount.Reserves = null;
+                //reserve.BankAccount.Reserves = null;
                 reserve.CostCenter.Reserves = null;
             }
 
@@ -102,7 +113,7 @@ namespace XFin.API.DAL.Repositories
             foreach (var reserve in reserves)
             {
                 //preventing a 500 cycle error
-                reserve.BankAccount.Reserves = null;
+                //reserve.BankAccount.Reserves = null;
                 reserve.CostCenter.Reserves = null;
             }
 
@@ -121,7 +132,7 @@ namespace XFin.API.DAL.Repositories
             foreach(var reserve in reserves)
             {
                 //preventing a 500 cycle error
-                reserve.BankAccount.Reserves = null;
+                //reserve.BankAccount.Reserves = null;
                 reserve.CostCenter.Reserves = null;
             }
 

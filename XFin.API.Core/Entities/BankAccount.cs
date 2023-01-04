@@ -13,6 +13,10 @@ namespace XFin.API.Core.Entities
         public int AccountHolderId { get; set; }
         public AccountHolder AccountHolder { get; set; }
 
+        [ForeignKey("UserId")]
+        public int UserId { get; set; }
+        public User User { get; set; }
+
         public string Iban { get; set; }
 
         public string Bic { get; set; }

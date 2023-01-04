@@ -20,22 +20,6 @@ namespace XFin.API.DAL.Repositories
 
         public TransactionBasicModel Create(TransactionCreationModel transaction)
         {
-            if (transaction.SourceCostCenterId == null)
-            {
-                transaction.SourceCostCenterId = context.CostCenters
-                    .Where(c => c.Name == "Nicht zugewiesen")
-                    .FirstOrDefault()
-                    .Id;
-            }
-
-            if (transaction.TargetCostCenterId == null)
-            {
-                transaction.TargetCostCenterId = context.CostCenters
-                    .Where(c => c.Name == "Nicht zugewiesen")
-                    .FirstOrDefault()
-                    .Id;
-            }
-
             var newTransaction = mapper.Map<Transaction>(transaction);
 
             newTransaction.DueDate = DateTime.Parse(transaction.DueDateString);

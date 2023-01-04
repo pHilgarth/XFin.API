@@ -19,7 +19,7 @@ namespace XFin.API.Core.Entities
         public CostCenter CostCenter { get; set; }
 
         [Required]
-        [MaxLength(25)]
+        [MaxLength(100)]
         public string Reference { get; set; }
 
         public decimal? TargetAmount { get; set; }

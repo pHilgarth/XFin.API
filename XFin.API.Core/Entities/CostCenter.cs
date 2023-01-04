@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace XFin.API.Core.Entities
 {
@@ -11,6 +12,10 @@ namespace XFin.API.Core.Entities
         [Required]
         [MaxLength(50)]
         public string Name { get; set; }
+
+        [ForeignKey("UserId")]
+        public int UserId { get; set; }
+        public User User { get; set; }
 
         public List<CostCenterAsset> CostCenterAssets { get; set; }
             = new List<CostCenterAsset>();

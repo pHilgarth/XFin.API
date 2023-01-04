@@ -123,7 +123,7 @@ namespace XFin.API.DAL.Repositories
             foreach (var transaction in recurringTransactions)
             {
                 //if StartDate is earlier than dueDate && dueDate is earlier than EndDate -> check if the transaction is due in the given month
-                if (DateTime.Compare(transaction.StartDate.Date, dueDate) <= 0 && DateTime.Compare(dueDate, transaction.EndDate.Date) <= 0)
+                if (TransactionIsDue(transaction, dueDate))
                 {
                     var cycle = transaction.Cycle;
                     var transactionsPerYear = 12 / cycle;
@@ -222,5 +222,13 @@ namespace XFin.API.DAL.Repositories
         XFinDbContext context;
         private readonly IMapper mapper;
         private readonly ITransactionService calculator;
+
+        private bool TransactionIsDue(RecurringTransaction transaction, DateTime dueDate)
+        {
+            //TODO - check if this (DateTime) thing works....
+            return transaction.EndDate != null
+                ? DateTime.Compare(transaction.StartDate.Date, dueDate) <= 0 && DateTime.Compare(dueDate, (DateTime)transaction.EndDate?.Date) <= 0
+                : DateTime.Compare(transaction.StartDate.Date, dueDate) <= 0;
+        }
     }
 }

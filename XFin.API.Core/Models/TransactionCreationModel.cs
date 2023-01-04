@@ -4,7 +4,7 @@
     {
         public int? SourceBankAccountId { get; set; }
 
-        public int TargetBankAccountId { get; set; }
+        public int? TargetBankAccountId { get; set; }
 
         public int? SourceCostCenterId { get; set; }
 
@@ -27,5 +27,7 @@
         public string TransactionType { get; set; }
 
         public bool Executed { get; set; }
+
+        public bool IsCashTransaction { get; set; }
     }
 }

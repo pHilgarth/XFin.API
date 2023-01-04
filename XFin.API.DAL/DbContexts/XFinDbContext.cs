@@ -19,16 +19,18 @@ namespace XFin.API.DAL.DbContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CostCenter>().HasData(
-                new CostCenter
+            modelBuilder.Entity<User>().HasData(
+                new User
                 {
                     Id = 1,
-                    Name = "Nicht zugewiesen"
+                    Email = "admin",
+                    Password = "admin"
                 },
-                new CostCenter
+                new User
                 {
                     Id = 2,
-                    Name = "Essen, Trinken"
+                    Email = "user",
+                    Password = "user",
                 });
 
             modelBuilder.Entity<Loan>()

@@ -21,7 +21,13 @@ namespace XFin.API.Core.Models
         public List<TransactionBasicModel> Revenues { get; set; }
             = new List<TransactionBasicModel>();
 
+        public List<TransactionBasicModel> TransferRevenues { get; set; }
+            = new List<TransactionBasicModel>();
+
         public List<TransactionBasicModel> Expenses { get; set; }
+            = new List<TransactionBasicModel>();
+
+        public List<TransactionBasicModel> TransferExpenses { get; set; }
             = new List<TransactionBasicModel>();
 
         public List<TransactionBasicModel> RecurringTransactions { get; set; }

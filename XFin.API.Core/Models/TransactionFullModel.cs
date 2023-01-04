@@ -27,5 +27,7 @@ namespace XFin.API.Core.Models
         public decimal Amount { get; set; }
 
         public DateTime Date { get; set; }
+
+        public bool IsCashTransaction { get; set; }
     }
 }
