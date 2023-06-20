@@ -7,7 +7,5 @@
         public int BankAccountId { get; set; }
 
         public int CostCenterId { get; set; }
-
-        public decimal? Amount { get; set; }
     }
 }

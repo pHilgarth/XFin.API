@@ -19,18 +19,6 @@ namespace XFin.API.Core.Entities
         public int TargetBankAccountId { get; set; }
         public BankAccount TargetBankAccount { get; set; }
 
-        [ForeignKey("SourceCostCenterId")]
-        public int SourceCostCenterId { get; set; }
-        public CostCenter SourceCostCenter { get; set; }
-
-        [ForeignKey("TargetCostCenterId")]
-        public int TargetCostCenterId { get; set; }
-        public CostCenter TargetCostCenter { get; set; }
-
-        [ForeignKey("ReserveId")]
-        public int? ReserveId { get; set; }
-        public Reserve Reserve { get; set; }
-
         [ForeignKey("LoanId")]
         public int? LoanId { get; set; }
         public Loan Loan { get; set; }

@@ -15,7 +15,7 @@ namespace XFin.API.DAL.Repositories
 {
     public class AccountHolderRepository : IAccountHolderRepository
     {
-        public AccountHolderRepository(ITransactionService calculator, IMapper mapper, XFinDbContext context)
+        public AccountHolderRepository(ICalculatorService calculator, IMapper mapper, XFinDbContext context)
         {
             this.calculator = calculator;
             this.context = context;
@@ -56,19 +56,19 @@ namespace XFin.API.DAL.Repositories
                     foreach (var bankAccount in accountHolder.BankAccounts)
                     {
                         var revenues = bankAccount.Revenues
-                            .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && !r.IsCashTransaction)
+                            .Where(r => r.Executed && !r.IsCashTransaction)
                             .ToList();
 
                         var cashRevenues = bankAccount.Revenues
-                            .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && r.IsCashTransaction)
+                            .Where(r => r.Executed && r.IsCashTransaction)
                             .ToList();
 
                         var expenses = bankAccount.Expenses
-                            .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && !e.IsCashTransaction)
+                            .Where(e => e.Executed && !e.IsCashTransaction)
                             .ToList();
 
                         var cashExpenses = bankAccount.Expenses
-                            .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && e.IsCashTransaction)
+                            .Where(e => e.Executed && e.IsCashTransaction)
                             .ToList();
 
                         var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
@@ -147,7 +147,7 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        private readonly ITransactionService calculator;
+        private readonly ICalculatorService calculator;
         private readonly IMapper mapper;
         private readonly XFinDbContext context;
 

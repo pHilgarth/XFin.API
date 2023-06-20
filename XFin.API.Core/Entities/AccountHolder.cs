@@ -14,9 +14,10 @@ namespace XFin.API.Core.Entities
         public User User { get; set; }
 
         [Required]
-        [MaxLength(100)]
+        [MaxLength(25)]
         public string Name { get; set; }
 
+        [Required]
         public bool External { get; set; }
 
         public List<BankAccount> BankAccounts { get; set; }

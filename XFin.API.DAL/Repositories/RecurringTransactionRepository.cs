@@ -14,7 +14,7 @@ namespace XFin.API.DAL.Repositories
 {
     public class RecurringTransactionRepository : IRecurringTransactionRepository
     {
-        public RecurringTransactionRepository(XFinDbContext context, ITransactionService calculator, IMapper mapper)
+        public RecurringTransactionRepository(XFinDbContext context, ICalculatorService calculator, IMapper mapper)
         {
             this.calculator = calculator;
             this.context = context;
@@ -57,8 +57,6 @@ namespace XFin.API.DAL.Repositories
                 .Where(r => r.SourceBankAccountId == accountId)
                 .Include(r => r.SourceBankAccount)
                 .Include(r => r.TargetBankAccount)
-                .Include(r => r.SourceCostCenter)
-                .Include(r => r.TargetCostCenter)
                 .Include(r => r.Transactions)
                 .ToList());
 
@@ -83,9 +81,7 @@ namespace XFin.API.DAL.Repositories
             var recurringTransactions = mapper.Map<List<RecurringTransactionModel>>(context.RecurringTransactions
                 .Where(r => r.TargetBankAccountId == accountId)
                 .Include(r => r.SourceBankAccount)
-                .Include(r => r.SourceCostCenter)
                 .Include(r => r.TargetBankAccount)
-                .Include(r => r.TargetCostCenter)
                 .Include(r => r.Transactions)
                 .ToList());
 
@@ -109,9 +105,7 @@ namespace XFin.API.DAL.Repositories
         {
             var recurringTransactions = context.RecurringTransactions
                 .Include(r => r.SourceBankAccount)
-                .Include(r => r.SourceCostCenter)
                 .Include(r => r.TargetBankAccount)
-                .Include(r => r.TargetCostCenter)
                 .Include(r => r.Transactions)
                 .ToList();
 
@@ -221,7 +215,7 @@ namespace XFin.API.DAL.Repositories
 
         XFinDbContext context;
         private readonly IMapper mapper;
-        private readonly ITransactionService calculator;
+        private readonly ICalculatorService calculator;
 
         private bool TransactionIsDue(RecurringTransaction transaction, DateTime dueDate)
         {

@@ -20,22 +20,23 @@ namespace XFin.API.Core.Entities
         public List<CostCenterAsset> CostCenterAssets { get; set; }
             = new List<CostCenterAsset>();
 
-        public List<Loan> Loans { get; set; }
-            = new List<Loan>();
+        public List<BudgetAllocation> BudgetAllocations { get; set; }
+            = new List<BudgetAllocation>();
 
-        public List<RecurringTransaction> RecurringRevenues { get; set; }
-            = new List<RecurringTransaction>();
+        public List<BudgetAllocation> BudgetDeallocations { get; set; }
+            = new List<BudgetAllocation>();
 
-        public List<RecurringTransaction> RecurringExpenses { get; set; }
-            = new List<RecurringTransaction>();
-
-        public List<Reserve> Reserves { get; set; }
-            = new List<Reserve>();
-
-        public List<Transaction> Revenues { get; set; }
-            = new List<Transaction>();
-
+        //TODO - check if the correct expenses are in this list
         public List<Transaction> Expenses { get; set; }
             = new List<Transaction>();
+
+        //TODO - remove if not needed
+        //public List<RecurringBudgetAllocation> RecurringBudgetAllocations { get; set; }
+        //    = new List<RecurringBudgetAllocation>();
+
+        //public List<Reserve> Reserves { get; set; }
+        //    = new List<Reserve>();
+
+
     }
 }

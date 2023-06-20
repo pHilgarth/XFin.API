@@ -1,4 +1,6 @@
-﻿namespace XFin.API.Core.Models
+﻿using System.Collections.Generic;
+
+namespace XFin.API.Core.Models
 {
     public class CostCenterAssetModel
     {
@@ -6,6 +8,10 @@
 
         public string Name { get; set; }
 
-        public decimal Amount { get; set; }
+        public decimal AllocationBalanceCurrentMonth { get; set; }
+
+        public decimal BalancePreviousMonth { get; set; }
+
+        public decimal ExpensesSum { get; set; }
     }
 }

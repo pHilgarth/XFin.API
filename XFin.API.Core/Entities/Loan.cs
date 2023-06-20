@@ -30,16 +30,13 @@ namespace XFin.API.Core.Entities
         public decimal Amount { get; set; }
 
         [Required]
-        public decimal Balance { get; set; }
-
-        [Required]
         public DateTime StartDate { get; set; }
 
-        public int Life { get; set; }
+        public int? Life { get; set; }
 
-        public double RateOfInterest { get; set; }
+        public double? RateOfInterest { get; set; }
 
-        public decimal MonthlyInstallment { get; set; }
+        public decimal? MonthlyInstallment { get; set; }
 
         public List<Transaction> Transactions { get; set; }
             = new List<Transaction>();

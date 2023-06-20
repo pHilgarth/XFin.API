@@ -15,7 +15,7 @@ namespace XFin.API.DAL.Repositories
 {
     public class BankAccountRepository : IBankAccountRepository
     {
-        public BankAccountRepository(ITransactionService calculator, ITransactionRepository transactionRepo, IMapper mapper, XFinDbContext context)
+        public BankAccountRepository(ICalculatorService calculator, ITransactionRepository transactionRepo, IMapper mapper, XFinDbContext context)
         {
             this.calculator = calculator;
             this.transactionRepo = transactionRepo;
@@ -57,19 +57,19 @@ namespace XFin.API.DAL.Repositories
             foreach(var bankAccount in bankAccounts)
             {
                 var revenues = bankAccount.Revenues
-                    .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && !r.IsCashTransaction)
+                    .Where(r => r.Executed && !r.IsCashTransaction)
                     .ToList();
 
                 var cashRevenues = bankAccount.Revenues
-                    .Where(r => r.Executed && r.TransactionType != TransactionType.AccountTransfer && r.IsCashTransaction)
+                    .Where(r => r.Executed && r.IsCashTransaction)
                     .ToList();
 
                 var expenses = bankAccount.Expenses
-                    .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && !e.IsCashTransaction)
+                    .Where(e => e.Executed && !e.IsCashTransaction)
                     .ToList();
 
                 var cashExpenses = bankAccount.Expenses
-                    .Where(e => e.Executed && e.TransactionType != TransactionType.AccountTransfer && e.IsCashTransaction)
+                    .Where(e => e.Executed && e.IsCashTransaction)
                     .ToList();
 
                 var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
@@ -93,33 +93,31 @@ namespace XFin.API.DAL.Repositories
                 .Include(b => b.Revenues).ThenInclude(t => t.SourceBankAccount)
                 .Include(b => b.Revenues).ThenInclude(t => t.TargetBankAccount)
 
-                .Include(b => b.Revenues).ThenInclude(t => t.SourceCostCenter)
-                .Include(b => b.Revenues).ThenInclude(t => t.TargetCostCenter)
-
                 .Include(b => b.Expenses).ThenInclude(t => t.SourceBankAccount)
                 .Include(b => b.Expenses).ThenInclude(t => t.TargetBankAccount)
 
-                .Include(b => b.Expenses).ThenInclude(t => t.SourceCostCenter)
-                .Include(b => b.Expenses).ThenInclude(t => t.TargetCostCenter)
                 .FirstOrDefault();
 
             if (bankAccount != null)
             {
+                var executedRevenues = bankAccount.Revenues.Where(r => r.Executed).ToList();
+                var executedExpenses = bankAccount.Expenses.Where(e => e.Executed).ToList();
+
                 bankAccount.Revenues = calculator.GetTransactionsInMonth(
-                    bankAccount.Revenues.Where(r => r.TransactionType != TransactionType.AccountTransfer && r.Executed).ToList(),
-                    year,
-                    month
-                );
+                    executedRevenues, year, month)
+                    .OrderBy(r => r.Date)
+                    .ToList();
 
                 bankAccount.Expenses = calculator.GetTransactionsInMonth(
-                    bankAccount.Expenses.Where(e => e.TransactionType != TransactionType.AccountTransfer && e.Executed).ToList(),
-                    year,
-                    month
-                );
+                    executedExpenses, year, month)
+                    .OrderBy(e => e.Date)
+                    .ToList();
 
                 var bankAccountModel = mapper.Map<BankAccountModel>(bankAccount);
 
                 bankAccountModel.AccountNumber = calculator.GetAccountNumber(bankAccountModel.Iban);
+                bankAccountModel.Balance = calculator.CalculateBalance(executedRevenues, executedExpenses, year, month);
+                bankAccountModel.BalancePreviousMonth = calculator.GetBalancePreviousMonth(executedRevenues, executedExpenses, year, month);
 
                 var revenueModels = new List<TransactionBasicModel>();
 
@@ -132,16 +130,6 @@ namespace XFin.API.DAL.Repositories
                             .Where(a => a.Id == revenue.SourceBankAccount.AccountHolderId)
                             .FirstOrDefault().Name
                         : null;
-
-                    revenueModel.SourceCostCenterName = revenue.SourceCostCenter != null
-                        ? revenue.SourceCostCenter.Name
-                        : revenue.SourceBankAccount != null
-                            ? "Nicht zugewiesen"
-                            : null;
-
-                    revenueModel.TargetCostCenterName = revenue.TargetCostCenter != null
-                        ? revenue.TargetCostCenter.Name
-                        : "Nicht zugewiesen";
 
                     revenueModels.Add(revenueModel);
                 }
@@ -158,82 +146,11 @@ namespace XFin.API.DAL.Repositories
                             .FirstOrDefault().Name
                         : null;
 
-                    expenseModel.SourceCostCenterName = expense.SourceCostCenter != null
-                        ? expense.SourceCostCenter.Name
-                        : "Nicht zugewiesen";
-
-                    expenseModel.TargetCostCenterName = expense.TargetCostCenter != null
-                        ? expense.TargetCostCenter.Name
-                        : expense.TargetBankAccount != null
-                            ? "Nicht zugewiesen"
-                            : null;
-
                     expenseModels.Add(expenseModel);
                 }
 
                 bankAccountModel.Expenses = expenseModels;
                 bankAccountModel.Revenues = revenueModels;
-
-                //foreach (var revenue in bankAccountModel.Revenues)
-                //{
-                //    if (revenue.SourceBankAccount != null)
-                //    {
-                //        revenue.SourceBankAccount.Expenses = null;
-                //        revenue.SourceBankAccount.Revenues = null;
-                //    }
-
-                //    revenue.TargetBankAccount.Expenses = null;
-                //    revenue.TargetBankAccount.Revenues = null;
-
-                //}
-
-                //var revenues = calculator.GetRevenuesInMonth(bankAccount.Transactions, year, month, false);
-                //var expenses = calculator.GetExpensesInMonth(bankAccount.Transactions, year, month, false);
-
-                //bankAccountModel.Revenues = mapper.Map<List<TransactionModel>>(revenues);
-
-                //for (int i = 0; i < revenues.Count; i++)
-                //{
-                //    var revenueEntity = revenues[i];
-                //    var counterParty = calculator.GetAccountNumber(context.Transactions
-                //        .Where(t => t.TransactionToken == revenueEntity.CounterPartTransactionToken)
-                //        .Select(tt => tt.BankAccount.Iban)
-                //        .FirstOrDefault());
-
-                //    if (counterParty == null)
-                //    {
-                //        counterParty = context.ExternalTransactions
-                //        .Where(t => t.TransactionToken == revenueEntity.CounterPartTransactionToken)
-                //        .Select(t => t.ExternalBankAccount.ExternalParty.Name)
-                //        .FirstOrDefault();
-                //    }
-
-                //    bankAccountModel.Revenues[i].CounterParty = counterParty != null ? counterParty : "[Kontoinitialisierung]";
-                //}
-
-                //bankAccountModel.Expenses = mapper.Map<List<TransactionModel>>(expenses);
-
-                //for (int i = 0; i < expenses.Count; i++)
-                //{
-                //    var expenseEntity = expenses[i];
-                //    var counterParty = calculator.GetAccountNumber(context.Transactions
-                //        .Where(t => t.TransactionToken == expenseEntity.CounterPartTransactionToken)
-                //        .Select(tt => tt.BankAccount.Iban)
-                //        .FirstOrDefault());
-
-                //    if (counterParty == null)
-                //    {
-                //        counterParty = context.ExternalTransactions
-                //        .Where(t => t.TransactionToken == expenseEntity.CounterPartTransactionToken)
-                //        .Select(t => t.ExternalBankAccount.ExternalParty.Name)
-                //        .FirstOrDefault();
-                //    }
-
-                //    bankAccountModel.Expenses[i].CounterParty = counterParty;
-                //}
-
-                //bankAccountModel.Balance = calculator.CalculateBalance(bankAccount.Transactions, year, month);
-                //bankAccountModel.ProportionPreviousMonth = calculator.GetProportionPreviousMonth(bankAccount.Transactions, year, month);
 
                 return bankAccountModel;
             }
@@ -277,7 +194,7 @@ namespace XFin.API.DAL.Repositories
             return null;
         }
 
-        private readonly ITransactionService calculator;
+        private readonly ICalculatorService calculator;
         private readonly ITransactionRepository transactionRepo;
         private readonly IMapper mapper;
         private readonly XFinDbContext context;

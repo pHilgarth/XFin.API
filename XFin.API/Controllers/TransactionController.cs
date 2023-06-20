@@ -15,8 +15,7 @@ namespace XFin.API.Controllers
 
         [HttpPost]
         public IActionResult Create(TransactionCreationModel transaction)
-        {
-            //TODO - I made targetCostCenterId in TransactionCreationModel nullable, so its optional in frontend - in the repository I have to assign the id of the
+        {            //TODO - I made targetCostCenterId in TransactionCreationModel nullable, so its optional in frontend - in the repository I have to assign the id of the
             //TODO - 'Unallocated' costCenter to TargetCostCenter, when no id is passed from the frontend
             var newTransaction = repo.Create(transaction);
             return newTransaction != null ? Ok(newTransaction) : BadRequest();

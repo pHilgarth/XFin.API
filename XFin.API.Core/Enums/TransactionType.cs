@@ -1,4 +1,4 @@
 ﻿namespace XFin.API.Core.Enums
 {
-    public enum TransactionType { AccountTransfer, Expense, Revenue, Transfer}
+    public enum TransactionType { Expense, Revenue, Transfer}
 }

@@ -25,6 +25,8 @@ namespace XFin.API.Core.Models
 
         public decimal Balance { get; set; }
 
+        public decimal BalancePreviousMonth { get; set; }
+
         public decimal Cash { get; set; }
 
         //public List<LoanModel> Loans { get; set; }

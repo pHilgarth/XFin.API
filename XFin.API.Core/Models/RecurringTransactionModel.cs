@@ -15,8 +15,6 @@ namespace XFin.API.Core.Models
 
         public CostCenterModel TargetCostCenter { get; set; }
 
-        public ReserveModel Reserve { get; set; }
-
         public LoanModel Loan { get; set; }
 
         public decimal Amount { get; set; }

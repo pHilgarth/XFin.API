@@ -15,7 +15,7 @@ namespace XFin.API.DAL.Repositories
 {
     public class CostCenterRepository : ICostCenterRepository
     {
-        public CostCenterRepository(ITransactionService calculator, IMapper mapper, XFinDbContext context)
+        public CostCenterRepository(ICalculatorService calculator, IMapper mapper, XFinDbContext context)
         {
             this.context = context;
             this.calculator = calculator;
@@ -52,10 +52,10 @@ namespace XFin.API.DAL.Repositories
             //var costCenters = mapper.Map<List<CostCenterModel>>(context.CostCenters
             var costCenters = context.CostCenters
                 .Where(c => c.UserId == userId)
-                .Include(c => c.CostCenterAssets.Where(ca => ca.BankAccountId == accountId))
-                .Include(c => c.Reserves.Where(r => r.BankAccountId == accountId))
+                .Include(c => c.BudgetAllocations)
+                .Include(c => c.BudgetDeallocations)
                 .Include(c => c.Expenses)
-                .Include(c => c.Revenues)
+                .Include(c => c.CostCenterAssets.Where(cca => cca.BankAccountId == accountId))
                 .ToList();
 
             var costCenterModels = new List<CostCenterModel>();
@@ -64,43 +64,42 @@ namespace XFin.API.DAL.Repositories
             {
                 var costCenterModel = mapper.Map<CostCenterModel>(costCenter);
 
-                var revenues = costCenter.Revenues
-                    .Where(r => r.TargetBankAccountId == accountId && r.TransactionType != TransactionType.AccountTransfer && r.Executed)
+                var budgetAllocations = costCenter.BudgetAllocations
+                    .Where(b => b.BankAccountId == accountId && b.Executed)
+                    .ToList();
+
+                var budgetDeallocations = costCenter.BudgetDeallocations
+                    .Where(b => b.BankAccountId == accountId && b.Executed)
                     .ToList();
 
                 var expenses = costCenter.Expenses
-                    .Where(e => e.SourceBankAccountId == accountId && e.TransactionType != TransactionType.AccountTransfer && e.Executed)
+                    .Where(e => e.SourceBankAccountId == accountId && e.Executed)
                     .ToList();
 
-                var transferRevenues = costCenter.Revenues
-                    .Where(r => r.TargetBankAccountId == accountId && r.TransactionType == TransactionType.AccountTransfer && r.Executed)
-                    .ToList();
-
-                var transferExpenses = costCenter.Expenses
-                    .Where(e => e.TargetBankAccountId == accountId && e.TransactionType == TransactionType.AccountTransfer && e.Executed)
-                    .ToList();
-
-                costCenterModel.BalancePreviousMonth = calculator.GetBalancePreviousMonth(costCenter.Revenues, costCenter.Expenses, year, month);
-                costCenterModel.RevenuesSum = calculator.GetTransactionsInMonth(revenues, year, month).Select(t => t.Amount).Sum();
+                costCenterModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(costCenter.BudgetAllocations, costCenter.BudgetDeallocations, costCenter.Expenses, year, month);
+                costCenterModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(costCenter.BudgetAllocations, costCenter.BudgetDeallocations, year, month);
                 costCenterModel.ExpensesSum = calculator.GetTransactionsInMonth(expenses, year, month).Select(t => t.Amount).Sum();
-                costCenterModel.TransferSum = transferRevenues.Select(t => t.Amount).Sum() - transferExpenses.Select(t => t.Amount).Sum();
-                costCenterModel.Balance = costCenterModel.BalancePreviousMonth + costCenterModel.RevenuesSum + costCenterModel.TransferSum - costCenterModel.ExpensesSum;
 
-                var reserveModels = new List<ReserveSimpleModel>();
+                var costCenterAssetModels = new List<CostCenterAssetModel>();
 
-                foreach (var reserve in costCenter.Reserves)
+                foreach (var costCenterAsset in costCenter.CostCenterAssets)
                 {
-                    var reserveModel = mapper.Map<ReserveSimpleModel>(reserve);
+                    var costCenterAssetModel = mapper.Map<CostCenterAssetModel>(costCenterAsset);
 
-                    //balance = revenues - expenses
-                    reserveModel.Balance =
-                        reserve.Transactions.Where(t => t.TargetBankAccountId == reserve.BankAccountId && t.TargetCostCenterId == reserve.CostCenterId).Select(t => t.Amount).Sum() -
-                        reserve.Transactions.Where(t => t.SourceBankAccountId == reserve.BankAccountId && t.SourceCostCenterId == reserve.CostCenterId).Select(t => t.Amount).Sum();
+                    var assetBudgetAllocations = costCenterAsset.BudgetAllocations
+                        .Where(b => b.Executed)
+                        .ToList();
 
-                    reserveModels.Add(reserveModel);
+                    var assetBudgetDeallocations = costCenterAsset.BudgetDeallocations
+                        .Where(b => b.Executed)
+                        .ToList();
+
+                    costCenterAssetModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(costCenterAsset.BudgetAllocations, costCenterAsset.BudgetDeallocations, costCenterAsset.Expenses, year, month);
+                    costCenterAssetModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(costCenterAsset.BudgetAllocations, costCenterAsset.BudgetDeallocations, year, month);
+                    costCenterAssetModel.ExpensesSum = calculator.GetTransactionsInMonth(expenses, year, month).Select(t => t.Amount).Sum();
+
+                    costCenterAssetModels.Add(costCenterAssetModel);
                 }
-
-                costCenterModel.Reserves = reserveModels;
 
                 costCenterModels.Add(costCenterModel);
             }
@@ -130,7 +129,7 @@ namespace XFin.API.DAL.Repositories
         }
 
         private IMapper mapper;
-        private ITransactionService calculator;
+        private ICalculatorService calculator;
         private XFinDbContext context;
     }
 }

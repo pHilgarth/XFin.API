@@ -8,7 +8,7 @@ namespace XFin.API.Core.Models
 
         public string Name { get; set; }
 
-        public decimal Balance { get; set; }
+        public decimal AllocationBalanceCurrentMonth { get; set; }
 
         public decimal BalancePreviousMonth { get; set; }
 
@@ -20,9 +20,6 @@ namespace XFin.API.Core.Models
 
         public List<CostCenterAssetModel> CostCenterAssets { get; set; }
             = new List<CostCenterAssetModel>();
-
-        public List<ReserveSimpleModel> Reserves { get; set; }
-            = new List<ReserveSimpleModel>();
 
         //TODO - do I need this?
         //public List<RecurringTransactionModel> RecurringTransactions { get; set; }

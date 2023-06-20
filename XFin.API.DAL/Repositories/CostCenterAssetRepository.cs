@@ -14,7 +14,7 @@ namespace XFin.API.DAL.Repositories
 {
     public class CostCenterAssetRepository : ICostCenterAssetRepository
     {
-        public CostCenterAssetRepository(ITransactionService calculator, IMapper mapper, XFinDbContext context)
+        public CostCenterAssetRepository(ICalculatorService calculator, IMapper mapper, XFinDbContext context)
         {
             this.context = context;
             this.calculator = calculator;
@@ -85,7 +85,7 @@ namespace XFin.API.DAL.Repositories
         //}
 
         private IMapper mapper;
-        private ITransactionService calculator;
+        private ICalculatorService calculator;
         private XFinDbContext context;
     }
 }

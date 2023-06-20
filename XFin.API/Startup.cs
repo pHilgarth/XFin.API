@@ -38,9 +38,8 @@ namespace XFin.API
             services.AddScoped<ICostCenterAssetRepository, CostCenterAssetRepository>();
             services.AddScoped<ILoanRepository, LoanRepository>();
             services.AddScoped<IRecurringTransactionRepository, RecurringTransactionRepository>();
-            services.AddScoped<IReserveRepository, ReserveRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
-            services.AddScoped<ITransactionService, TransactionsService>();
+            services.AddScoped<ICalculatorService, CalculatorService>();
             services.AddScoped<IUserRepository, UserRepository>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

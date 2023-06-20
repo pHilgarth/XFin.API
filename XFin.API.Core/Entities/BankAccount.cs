@@ -26,6 +26,7 @@ namespace XFin.API.Core.Entities
         [MaxLength(25)]
         public string Description { get; set; }
 
+        [Required]
         public bool External { get; set; }
 
         public List<Loan> CreditorLoans { get; set; }
@@ -39,9 +40,6 @@ namespace XFin.API.Core.Entities
 
         public List<RecurringTransaction> RecurringExpenses { get; set; }
             = new List<RecurringTransaction>();
-
-        public List<Reserve> Reserves { get; set; }
-            = new List<Reserve>();
 
         public List<Transaction> Revenues { get; set; }
             = new List<Transaction>();

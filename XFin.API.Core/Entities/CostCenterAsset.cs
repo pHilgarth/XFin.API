@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace XFin.API.Core.Entities
@@ -20,28 +22,20 @@ namespace XFin.API.Core.Entities
         [MaxLength(50)]
         public string Name { get; set; }
 
-        public decimal Amount { get; set; }
+        public List<BudgetAllocation> BudgetAllocations { get; set; }
+            = new List<BudgetAllocation>();
 
-        //TODO - I'm not sure, if I need these properties for a CostCenterAsset:
+        public List<BudgetAllocation> BudgetDeallocations { get; set; }
+            = new List<BudgetAllocation>();
 
-        //public List<Transaction> Revenues { get; set; }
-        //    = new List<Transaction>();
+        //TODO - check if the correct transactions are in that list
+        public List<Transaction> Expenses { get; set; }
+            = new List<Transaction>();
 
-        //public List<Transaction> Expenses { get; set; }
-        //    = new List<Transaction>();
+        public bool IsReserve { get; set; }
 
-        //public List<Loan> Loans { get; set; }
-        //    = new List<Loan>();
+        public decimal? TargetAmount { get; set; }
 
-        //public List<RecurringTransaction> RecurringRevenues { get; set; }
-        //    = new List<RecurringTransaction>();
-
-        //public List<RecurringTransaction> RecurringExpenses { get; set; }
-        //    = new List<RecurringTransaction>();
-
-        //public List<Reserve> Reserves { get; set; }
-        //    = new List<Reserve>();
-
-
+        public DateTime? TargetDate { get; set; }
     }
 }
