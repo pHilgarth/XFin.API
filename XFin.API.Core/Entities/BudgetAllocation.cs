@@ -33,7 +33,7 @@ namespace XFin.API.Core.Entities
 
         [ForeignKey("RecurringBudgetAllocationId")]
         public int? RecurringBudgetAllocationId { get; set; }
-        public RecurringBudgetAllocation RecurringBudgetAllocatioin { get; set; }
+        public RecurringBudgetAllocation RecurringBudgetAllocation { get; set; }
 
         public decimal Amount { get; set; }
 

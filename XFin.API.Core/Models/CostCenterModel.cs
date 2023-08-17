@@ -10,6 +10,8 @@ namespace XFin.API.Core.Models
 
         public decimal AllocationBalanceCurrentMonth { get; set; }
 
+        public decimal Balance { get; set; }
+
         public decimal BalancePreviousMonth { get; set; }
 
         public decimal RevenuesSum { get; set; }

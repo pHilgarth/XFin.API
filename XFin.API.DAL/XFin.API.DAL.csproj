@@ -24,5 +24,9 @@
   <ItemGroup>
     <None Remove="MySql.Data" />
     <None Remove="MySql.EntityFrameworkCore" />
+    <None Remove="Migrations\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

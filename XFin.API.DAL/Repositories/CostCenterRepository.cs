@@ -79,6 +79,7 @@ namespace XFin.API.DAL.Repositories
                 costCenterModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(costCenter.BudgetAllocations, costCenter.BudgetDeallocations, costCenter.Expenses, year, month);
                 costCenterModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(costCenter.BudgetAllocations, costCenter.BudgetDeallocations, year, month);
                 costCenterModel.ExpensesSum = calculator.GetTransactionsInMonth(expenses, year, month).Select(t => t.Amount).Sum();
+                costCenterModel.Balance = costCenterModel.BalancePreviousMonth + costCenterModel.AllocationBalanceCurrentMonth - costCenterModel.ExpensesSum;
 
                 var costCenterAssetModels = new List<CostCenterAssetModel>();
 
@@ -97,9 +98,12 @@ namespace XFin.API.DAL.Repositories
                     costCenterAssetModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(costCenterAsset.BudgetAllocations, costCenterAsset.BudgetDeallocations, costCenterAsset.Expenses, year, month);
                     costCenterAssetModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(costCenterAsset.BudgetAllocations, costCenterAsset.BudgetDeallocations, year, month);
                     costCenterAssetModel.ExpensesSum = calculator.GetTransactionsInMonth(expenses, year, month).Select(t => t.Amount).Sum();
+                    costCenterAssetModel.Balance = costCenterAssetModel.BalancePreviousMonth + costCenterAssetModel.AllocationBalanceCurrentMonth - costCenterAssetModel.ExpensesSum;
 
                     costCenterAssetModels.Add(costCenterAssetModel);
                 }
+
+                costCenterModel.CostCenterAssets = costCenterAssetModels;
 
                 costCenterModels.Add(costCenterModel);
             }

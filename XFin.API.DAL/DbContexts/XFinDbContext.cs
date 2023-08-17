@@ -9,9 +9,11 @@ namespace XFin.API.DAL.DbContexts
 
         public DbSet<AccountHolder> AccountHolders { get; set; }
         public DbSet<BankAccount> BankAccounts { get; set; }
+        public DbSet<BudgetAllocation> BudgetAllocations { get; set; }
         public DbSet<CostCenter> CostCenters { get; set; }
         public DbSet<CostCenterAsset> CostCenterAssets { get; set; }
         public DbSet<Loan> Loans { get; set; }
+        public DbSet<RecurringBudgetAllocation> RecurringBudgetAllocations { get; set; }
         public DbSet<RecurringTransaction> RecurringTransactions { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<User> Users { get; set; }
