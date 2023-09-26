@@ -76,8 +76,8 @@ namespace XFin.API.DAL.Repositories
                     .Where(e => e.SourceBankAccountId == accountId && e.Executed)
                     .ToList();
 
-                costCenterModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(costCenter.BudgetAllocations, costCenter.BudgetDeallocations, costCenter.Expenses, year, month);
-                costCenterModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(costCenter.BudgetAllocations, costCenter.BudgetDeallocations, year, month);
+                costCenterModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(budgetAllocations, budgetDeallocations, expenses, year, month);
+                costCenterModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(budgetAllocations, budgetDeallocations, year, month);
                 costCenterModel.ExpensesSum = calculator.GetTransactionsInMonth(expenses, year, month).Select(t => t.Amount).Sum();
                 costCenterModel.Balance = costCenterModel.BalancePreviousMonth + costCenterModel.AllocationBalanceCurrentMonth - costCenterModel.ExpensesSum;
 
@@ -95,9 +95,13 @@ namespace XFin.API.DAL.Repositories
                         .Where(b => b.Executed)
                         .ToList();
 
-                    costCenterAssetModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(costCenterAsset.BudgetAllocations, costCenterAsset.BudgetDeallocations, costCenterAsset.Expenses, year, month);
-                    costCenterAssetModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(costCenterAsset.BudgetAllocations, costCenterAsset.BudgetDeallocations, year, month);
-                    costCenterAssetModel.ExpensesSum = calculator.GetTransactionsInMonth(expenses, year, month).Select(t => t.Amount).Sum();
+                    var assetExpenses = costCenterAsset.Expenses
+                        .Where(e => e.Executed)
+                        .ToList();
+
+                    costCenterAssetModel.BalancePreviousMonth = calculator.CalculateBalancePreviousMonth(assetBudgetAllocations, assetBudgetDeallocations, assetExpenses, year, month);
+                    costCenterAssetModel.AllocationBalanceCurrentMonth = calculator.CalculateAllocationBalance(assetBudgetAllocations, assetBudgetDeallocations, year, month);
+                    costCenterAssetModel.ExpensesSum = calculator.GetTransactionsInMonth(assetExpenses, year, month).Select(t => t.Amount).Sum();
                     costCenterAssetModel.Balance = costCenterAssetModel.BalancePreviousMonth + costCenterAssetModel.AllocationBalanceCurrentMonth - costCenterAssetModel.ExpensesSum;
 
                     costCenterAssetModels.Add(costCenterAssetModel);
