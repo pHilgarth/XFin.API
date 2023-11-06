@@ -15,5 +15,7 @@ namespace XFin.API.Core.Models
         public decimal BalancePreviousMonth { get; set; }
 
         public decimal ExpensesSum { get; set; }
+
+        public bool IsReserve { get; set; }
     }
 }

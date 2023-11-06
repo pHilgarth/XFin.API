@@ -17,6 +17,8 @@ namespace XFin.API.Controllers
         public IActionResult Create(TransactionCreationModel transaction)
         {            //TODO - I made targetCostCenterId in TransactionCreationModel nullable, so its optional in frontend - in the repository I have to assign the id of the
             //TODO - 'Unallocated' costCenter to TargetCostCenter, when no id is passed from the frontend
+
+            //TODO - update TransactionBasicModel (Transaction Entity changed, there is only a CostCenter and a CostCenterAsset, no more Source / Target ..)
             var newTransaction = repo.Create(transaction);
             return newTransaction != null ? Ok(newTransaction) : BadRequest();
         }

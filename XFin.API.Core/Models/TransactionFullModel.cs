@@ -12,9 +12,9 @@ namespace XFin.API.Core.Models
 
         public BankAccountModel TargetBankAccount { get; set; }
 
-        public CostCenterModel SourceCostCenter { get; set; }
+        public CostCenterModel CostCenter { get; set; }
 
-        public CostCenterModel TargetCostCenter { get; set; }
+        public CostCenterAssetModel CostCenterAsset { get; set; }
 
         public int RecurringTransactionId { get; set; }
 

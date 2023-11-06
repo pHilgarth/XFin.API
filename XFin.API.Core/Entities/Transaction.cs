@@ -21,7 +21,7 @@ namespace XFin.API.Core.Entities
         //only needed for TransactionType.Expense
         [ForeignKey("CostCenterId")]
         public int? CostCenterId { get; set; }
-        public CostCenter CottCenter { get; set; }
+        public CostCenter CostCenter { get; set; }
 
         //only needed for TransactionType.Expense
         [ForeignKey("CostCenterAssetId")]

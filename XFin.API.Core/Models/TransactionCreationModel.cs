@@ -6,13 +6,11 @@
 
         public int? TargetBankAccountId { get; set; }
 
-        public int? SourceCostCenterId { get; set; }
+        public int? CostCenterId { get; set; }
 
-        public int? TargetCostCenterId { get; set; }
+        public int? CostCenterAssetId { get; set; }
 
         public int? RecurringTransactionId { get; set; }
-
-        public int? ReserveId { get; set; }
 
         public int? LoanId { get; set; }
 

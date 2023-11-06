@@ -11,9 +11,9 @@ namespace XFin.API.Core.Models
 
         public int TargetBankAccountId { get; set; }
 
-        public int SourceCostCenterId { get; set; }
+        public int CostCenterId { get; set; }
 
-        public int TargetCostCenterId { get; set; }
+        public int CostCenterAssetId { get; set; }
 
         public int RecurringTransactionId { get; set; }
 

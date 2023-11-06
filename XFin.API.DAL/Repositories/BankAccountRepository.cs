@@ -92,9 +92,13 @@ namespace XFin.API.DAL.Repositories
 
                 .Include(b => b.Revenues).ThenInclude(t => t.SourceBankAccount)
                 .Include(b => b.Revenues).ThenInclude(t => t.TargetBankAccount)
+                .Include(b => b.Revenues).ThenInclude(t => t.CostCenter)
+                .Include(b => b.Revenues).ThenInclude(t => t.CostCenterAsset)
 
                 .Include(b => b.Expenses).ThenInclude(t => t.SourceBankAccount)
                 .Include(b => b.Expenses).ThenInclude(t => t.TargetBankAccount)
+                .Include(b => b.Expenses).ThenInclude(t => t.CostCenter)
+                .Include(b => b.Expenses).ThenInclude(t => t.CostCenterAsset)
 
                 .FirstOrDefault();
 
@@ -144,6 +148,14 @@ namespace XFin.API.DAL.Repositories
                         ? context.AccountHolders
                             .Where(a => a.Id == expense.TargetBankAccount.AccountHolderId)
                             .FirstOrDefault().Name
+                        : null;
+
+                    expenseModel.CostCenterName = expense.CostCenter != null
+                        ? expense.CostCenter.Name
+                        : null;
+
+                    expenseModel.CostCenterAssetName = expense.CostCenterAsset != null
+                        ? expense.CostCenterAsset.Name
                         : null;
 
                     expenseModels.Add(expenseModel);

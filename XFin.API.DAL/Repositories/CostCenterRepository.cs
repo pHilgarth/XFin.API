@@ -65,11 +65,11 @@ namespace XFin.API.DAL.Repositories
                 var costCenterModel = mapper.Map<CostCenterModel>(costCenter);
 
                 var budgetAllocations = costCenter.BudgetAllocations
-                    .Where(b => b.BankAccountId == accountId && b.Executed)
+                    .Where(b => b.BankAccountId == accountId && b.Executed && b.SourceCostCenterId != b.TargetCostCenterId)
                     .ToList();
 
                 var budgetDeallocations = costCenter.BudgetDeallocations
-                    .Where(b => b.BankAccountId == accountId && b.Executed)
+                    .Where(b => b.BankAccountId == accountId && b.Executed && b.SourceCostCenterId != b.TargetCostCenterId)
                     .ToList();
 
                 var expenses = costCenter.Expenses
