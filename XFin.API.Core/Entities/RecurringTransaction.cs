@@ -19,6 +19,16 @@ namespace XFin.API.Core.Entities
         public int TargetBankAccountId { get; set; }
         public BankAccount TargetBankAccount { get; set; }
 
+        //only needed for TransactionType.Expense
+        [ForeignKey("CostCenterId")]
+        public int? CostCenterId { get; set; }
+        public CostCenter CostCenter { get; set; }
+
+        //only needed for TransactionType.Expense
+        [ForeignKey("CostCenterAssetId")]
+        public int? CostCenterAssetId { get; set; }
+        public CostCenterAsset CostCenterAsset { get; set; }
+
         [ForeignKey("LoanId")]
         public int? LoanId { get; set; }
         public Loan Loan { get; set; }
@@ -43,6 +53,8 @@ namespace XFin.API.Core.Entities
         public DateTime? EndDate { get; set; }
 
         public TransactionType TransactionType { get; set; }
+
+        public bool IsCashTransaction { get; set; }
 
         public List<Transaction> Transactions { get; set; }
             = new List<Transaction>();
